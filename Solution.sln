@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interfaces", "src\Interfaces\Interfaces.csproj", "{2258C03D-3FD6-4E5F-848B-3CBF43DAB95C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grains", "src\Grains\Grains.csproj", "{FC1C5CBD-C11A-494E-951F-9EBCB6412F22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{2258C03D-3FD6-4E5F-848B-3CBF43DAB95C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2258C03D-3FD6-4E5F-848B-3CBF43DAB95C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2258C03D-3FD6-4E5F-848B-3CBF43DAB95C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC1C5CBD-C11A-494E-951F-9EBCB6412F22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC1C5CBD-C11A-494E-951F-9EBCB6412F22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC1C5CBD-C11A-494E-951F-9EBCB6412F22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC1C5CBD-C11A-494E-951F-9EBCB6412F22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
