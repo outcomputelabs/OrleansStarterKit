@@ -6,6 +6,8 @@ using System.Net;
 using Orleans;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using Serilog;
+using Serilog.Events;
 
 namespace Silo
 {
@@ -18,6 +20,12 @@ namespace Silo
 
         public static async Task MainAsync()
         {
+            // configure serilog
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console(LogEventLevel.Information)
+                .CreateLogger();
+
+            // configure orleans
             var builder = new SiloHostBuilder()
                 .UseLocalhostClustering()
                 .Configure<ClusterOptions>(options =>
@@ -35,9 +43,10 @@ namespace Silo
                 })
                 .ConfigureLogging(config =>
                 {
-                    config.AddConsole();
+                    config.AddSerilog();
                 });
 
+            // start orleans
             using (var host = builder.Build())
             {
                 await host.StartAsync();
