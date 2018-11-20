@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Serilog;
+using Serilog.Events;
 
 namespace Api
 {
@@ -7,6 +9,10 @@ namespace Api
     {
         public static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Debug(LogEventLevel.Information)
+                .CreateLogger();
+
             CreateWebHostBuilder(args).Build().Run();
         }
 

@@ -8,6 +8,7 @@ using Orleans;
 using Orleans.Configuration;
 using System;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace Api
 {
@@ -25,6 +26,9 @@ namespace Api
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            // configure global logging
+            services.AddLogging(config => config.AddSerilog());
+
             // configure the orleans client
             services.AddSingleton(new ClientBuilder()
                 .UseLocalhostClustering()
@@ -33,7 +37,7 @@ namespace Api
                     options.ClusterId = "MyCluster";
                     options.ServiceId = "MyService";
                 })
-                .ConfigureLogging(config => config.AddDebug())
+                .ConfigureLogging(config => config.AddSerilog())
                 .Build());
         }
 
