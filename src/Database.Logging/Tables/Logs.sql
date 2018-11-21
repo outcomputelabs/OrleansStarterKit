@@ -1,0 +1,16 @@
+﻿CREATE TABLE [dbo].[Logs]
+(
+	[Id] BIGINT NOT NULL IDENTITY (1, 1),
+	[Message] NVARCHAR(MAX) NULL,
+	[MessageTemplate] NVARCHAR(MAX) NULL,
+	[Level] NVARCHAR(128) NULL,
+	[TimeStamp] DATETIME NOT NULL,
+	[Exception] NVARCHAR(MAX) NULL,
+	[Properties] NVARCHAR(MAX) NULL,
+
+	CONSTRAINT [PK_Logs] PRIMARY KEY CLUSTERED
+	(
+		[Id] ASC
+	) 
+)
+GO
