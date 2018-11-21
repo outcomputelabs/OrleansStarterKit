@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Serilog;
 using Serilog.Events;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Silo
 {
@@ -20,10 +21,8 @@ namespace Silo
 
         public static async Task MainAsync()
         {
-            // configure serilog
-            Log.Logger = new LoggerConfiguration()
-                .WriteTo.Console(LogEventLevel.Information)
-                .CreateLogger();
+            // configure services
+            var provider = ConfigureServiceProvider();
 
             // configure orleans
             var builder = new SiloHostBuilder()
@@ -43,7 +42,7 @@ namespace Silo
                 })
                 .ConfigureLogging(config =>
                 {
-                    config.AddSerilog();
+                    config.AddProvider(provider.GetRequiredService<ILoggerProvider>());
                 });
 
             // start orleans
@@ -52,6 +51,21 @@ namespace Silo
                 await host.StartAsync();
                 await host.Stopped;
             }
+        }
+
+        private static IServiceProvider ConfigureServiceProvider()
+        {
+            var services = new ServiceCollection();
+            ConfigureServices(services);
+            return services.BuildServiceProvider();
+        }
+
+        private static void ConfigureServices(IServiceCollection services)
+        {
+            // configure serilog
+            services.AddLogging(config => config.AddSerilog(new LoggerConfiguration()
+                .WriteTo.Console(LogEventLevel.Information)
+                .CreateLogger()));
         }
     }
 }
