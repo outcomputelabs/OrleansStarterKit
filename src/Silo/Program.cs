@@ -65,6 +65,7 @@ namespace Silo
             // configure serilog
             services.AddLogging(config => config.AddSerilog(new LoggerConfiguration()
                 .WriteTo.Console(LogEventLevel.Information)
+                .WriteTo.MSSqlServer("Logging", "Logs", LogEventLevel.Information)
                 .CreateLogger()));
         }
     }
