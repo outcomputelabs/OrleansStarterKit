@@ -9,6 +9,7 @@ using Orleans.Configuration;
 using System;
 using System.Threading.Tasks;
 using Serilog;
+using Serilog.Events;
 
 namespace Api
 {
@@ -26,8 +27,14 @@ namespace Api
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            // configure serilog
+            var logger = new LoggerConfiguration()
+                .WriteTo.Debug(LogEventLevel.Information)
+                .WriteTo.MSSqlServer(Configuration.GetConnectionString("Logging"), "Logs", LogEventLevel.Information)
+                .CreateLogger();
+
             // configure global logging
-            services.AddLogging(config => config.AddSerilog());
+            services.AddLogging(config => config.AddSerilog(logger));
 
             // configure the orleans client
             services.AddSingleton(new ClientBuilder()
@@ -37,7 +44,7 @@ namespace Api
                     options.ClusterId = "MyCluster";
                     options.ServiceId = "MyService";
                 })
-                .ConfigureLogging(config => config.AddSerilog())
+                .ConfigureLogging(config => config.AddSerilog(logger))
                 .Build());
         }
 
