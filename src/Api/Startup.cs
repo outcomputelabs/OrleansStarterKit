@@ -6,10 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.Configuration;
+using Orleans.Hosting;
 using Serilog;
 using Serilog.Events;
 using System;
 using System.Threading.Tasks;
+using IAspNetHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace Api
 {
@@ -43,24 +45,25 @@ namespace Api
 
             // configure and add the orleans client
             services.AddSingleton(new ClientBuilder()
-                .UseLocalhostClustering()
-
-                // take cluster identifiers from app settings
+                .UseAdoNetClustering(options =>
+                {
+                    options.ConnectionString = Configuration.GetConnectionString(Configuration["Orleans:Clustering:AdoNet:ConnectionStringName"]);
+                    options.Invariant = Configuration["Orleans:Clustering:AdoNet:Invariant"];
+                })
                 .Configure<ClusterOptions>(options =>
                 {
                     options.ClusterId = Configuration["Orleans:ClusterId"];
                     options.ServiceId = Configuration["Orleans:ServiceId"];
                 })
-
-                // use serilog as the logger
-                .ConfigureLogging(config => config.AddSerilog(logger))
-
-                // done
+                .ConfigureLogging(config =>
+                {
+                    config.AddSerilog(logger);
+                })
                 .Build());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILogger<Startup> logger, IClusterClient client)
+        public void Configure(IApplicationBuilder app, IAspNetHostingEnvironment env, ILogger<Startup> logger, IClusterClient client)
         {
             if (env.IsDevelopment())
             {
