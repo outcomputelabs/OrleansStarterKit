@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Serilog;
 using Serilog.Events;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
 namespace Silo
 {
@@ -21,16 +22,21 @@ namespace Silo
 
         public static async Task MainAsync()
         {
+            // setup the configuration provider
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+
             // configure services
-            var provider = ConfigureServiceProvider();
+            var services = ConfigureServices(configuration);
 
             // configure orleans
             var builder = new SiloHostBuilder()
                 .UseLocalhostClustering()
                 .Configure<ClusterOptions>(options =>
                 {
-                    options.ClusterId = "MyCluster";
-                    options.ServiceId = "MyService";
+                    options.ClusterId = configuration["Orleans:ClusterId"];
+                    options.ServiceId = configuration["Orleans:ServiceId"];
                 })
                 .Configure<EndpointOptions>(options =>
                 {
@@ -42,7 +48,7 @@ namespace Silo
                 })
                 .ConfigureLogging(config =>
                 {
-                    config.AddProvider(provider.GetRequiredService<ILoggerProvider>());
+                    config.AddProvider(services.GetRequiredService<ILoggerProvider>());
                 });
 
             // start orleans
@@ -53,20 +59,23 @@ namespace Silo
             }
         }
 
-        private static IServiceProvider ConfigureServiceProvider()
+        private static IServiceProvider ConfigureServices(IConfiguration configuration)
         {
             var services = new ServiceCollection();
-            ConfigureServices(services);
-            return services.BuildServiceProvider();
-        }
 
-        private static void ConfigureServices(IServiceCollection services)
-        {
             // configure serilog
             services.AddLogging(config => config.AddSerilog(new LoggerConfiguration()
-                .WriteTo.Console(LogEventLevel.Information)
-                .WriteTo.MSSqlServer("Logging", "Logs", LogEventLevel.Information)
+                .WriteTo.Console(
+                    restrictedToMinimumLevel: configuration.GetValue<LogEventLevel>("Serilog:Console:RestrictedToMinimumLevel"))
+                .WriteTo.MSSqlServer(
+                    connectionString: configuration.GetConnectionString("Logging"),
+                    schemaName: configuration.GetValue<string>("Serilog:MSSqlServer:SchemaName"),
+                    tableName: configuration.GetValue<string>("Serilog:MSSqlServer:TableName"),
+                    restrictedToMinimumLevel: configuration.GetValue<LogEventLevel>("Serilog:MSSqlServer:RestrictedToMinimumLevel"))
                 .CreateLogger()));
+
+            // all done
+            return services.BuildServiceProvider();
         }
     }
 }
