@@ -1,20 +1,30 @@
 ﻿using Grains;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Orleans;
 using Orleans.Configuration;
 using Orleans.Hosting;
-using System;
-using System.Net;
-using Orleans;
-using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 using Serilog;
 using Serilog.Events;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace Silo
 {
     public class Program
     {
+        static Program()
+        {
+            // setup the configuration provider
+            Configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+        }
+
+        private static IConfiguration Configuration { get; }
+
         public static void Main()
         {
             MainAsync().Wait();
@@ -22,21 +32,16 @@ namespace Silo
 
         public static async Task MainAsync()
         {
-            // setup the configuration provider
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build();
-
             // configure services
-            var services = ConfigureServices(configuration);
+            var services = ConfigureServices();
 
             // configure orleans
             var builder = new SiloHostBuilder()
                 .UseLocalhostClustering()
                 .Configure<ClusterOptions>(options =>
                 {
-                    options.ClusterId = configuration["Orleans:ClusterId"];
-                    options.ServiceId = configuration["Orleans:ServiceId"];
+                    options.ClusterId = Configuration["Orleans:ClusterId"];
+                    options.ServiceId = Configuration["Orleans:ServiceId"];
                 })
                 .Configure<EndpointOptions>(options =>
                 {
@@ -59,19 +64,19 @@ namespace Silo
             }
         }
 
-        private static IServiceProvider ConfigureServices(IConfiguration configuration)
+        private static IServiceProvider ConfigureServices()
         {
             var services = new ServiceCollection();
 
             // configure serilog
             services.AddLogging(config => config.AddSerilog(new LoggerConfiguration()
                 .WriteTo.Console(
-                    restrictedToMinimumLevel: configuration.GetValue<LogEventLevel>("Serilog:Console:RestrictedToMinimumLevel"))
+                    restrictedToMinimumLevel: Configuration.GetValue<LogEventLevel>("Serilog:Console:RestrictedToMinimumLevel"))
                 .WriteTo.MSSqlServer(
-                    connectionString: configuration.GetConnectionString("Logging"),
-                    schemaName: configuration.GetValue<string>("Serilog:MSSqlServer:SchemaName"),
-                    tableName: configuration.GetValue<string>("Serilog:MSSqlServer:TableName"),
-                    restrictedToMinimumLevel: configuration.GetValue<LogEventLevel>("Serilog:MSSqlServer:RestrictedToMinimumLevel"))
+                    connectionString: Configuration.GetConnectionString("Logging"),
+                    schemaName: Configuration["Serilog:MSSqlServer:SchemaName"],
+                    tableName: Configuration["Serilog:MSSqlServer:TableName"],
+                    restrictedToMinimumLevel: Configuration.GetValue<LogEventLevel>("Serilog:MSSqlServer:RestrictedToMinimumLevel"))
                 .CreateLogger()));
 
             // all done

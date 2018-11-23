@@ -6,10 +6,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.Configuration;
-using System;
-using System.Threading.Tasks;
 using Serilog;
 using Serilog.Events;
+using System;
+using System.Threading.Tasks;
 
 namespace Api
 {
@@ -29,22 +29,33 @@ namespace Api
 
             // configure serilog
             var logger = new LoggerConfiguration()
-                .WriteTo.Debug(LogEventLevel.Information)
-                .WriteTo.MSSqlServer(Configuration.GetConnectionString("Logging"), "Logs", LogEventLevel.Information)
+                .WriteTo.Console(
+                    restrictedToMinimumLevel: Configuration.GetValue<LogEventLevel>("Serilog:Console:RestrictedToMinimumLevel"))
+                .WriteTo.MSSqlServer(
+                    connectionString: Configuration.GetConnectionString("Logging"),
+                    schemaName: Configuration.GetValue<string>("Serilog:MSSqlServer:SchemaName"),
+                    tableName: Configuration.GetValue<string>("Serilog:MSSqlServer:TableName"),
+                    restrictedToMinimumLevel: Configuration.GetValue<LogEventLevel>("Serilog:MSSqlServer:RestrictedToMinimumLevel"))
                 .CreateLogger();
 
-            // configure global logging
+            // add serilog to services
             services.AddLogging(config => config.AddSerilog(logger));
 
-            // configure the orleans client
+            // configure and add the orleans client
             services.AddSingleton(new ClientBuilder()
                 .UseLocalhostClustering()
+
+                // take cluster identifiers from app settings
                 .Configure<ClusterOptions>(options =>
                 {
-                    options.ClusterId = "MyCluster";
-                    options.ServiceId = "MyService";
+                    options.ClusterId = Configuration["Orleans:ClusterId"];
+                    options.ServiceId = Configuration["Orleans:ServiceId"];
                 })
+
+                // use serilog as the logger
                 .ConfigureLogging(config => config.AddSerilog(logger))
+
+                // done
                 .Build());
         }
 
