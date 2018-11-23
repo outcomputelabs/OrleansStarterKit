@@ -1,5 +1,4 @@
 ﻿using Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Orleans;
 using System;
@@ -9,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace Api.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PerfTestController : ControllerBase
