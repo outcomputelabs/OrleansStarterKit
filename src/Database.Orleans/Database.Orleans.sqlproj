@@ -23,6 +23,9 @@
     <SqlServerVerification>False</SqlServerVerification>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
+    <AllowSnapshotIsolation>True</AllowSnapshotIsolation>
+    <ReadCommittedSnapshot>True</ReadCommittedSnapshot>
+    <Recovery>SIMPLE</Recovery>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -57,5 +60,18 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
+    <Folder Include="Tables" />
+    <Folder Include="Scripts" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Database.Orleans.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Tables\OrleansQuery.sql" />
+    <Build Include="Tables\OrleansMembershipVersionTable.sql" />
+    <Build Include="Tables\OrleansMembershipTable.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
   </ItemGroup>
 </Project>
