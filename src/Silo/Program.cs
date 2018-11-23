@@ -8,7 +8,6 @@ using Orleans.Hosting;
 using Serilog;
 using Serilog.Events;
 using System;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace Silo
@@ -37,16 +36,20 @@ namespace Silo
 
             // configure orleans
             var builder = new SiloHostBuilder()
-                .UseLocalhostClustering()
+                .UseAdoNetClustering(options =>
+                {
+                    options.ConnectionString = Configuration.GetConnectionString(Configuration["Orleans:Clustering:AdoNet:ConnectionStringName"]);
+                    options.Invariant = Configuration["Orleans:Clustering:AdoNet:Invariant"];
+                })
                 .Configure<ClusterOptions>(options =>
                 {
                     options.ClusterId = Configuration["Orleans:ClusterId"];
                     options.ServiceId = Configuration["Orleans:ServiceId"];
                 })
-                .Configure<EndpointOptions>(options =>
-                {
-                    options.AdvertisedIPAddress = IPAddress.Loopback;
-                })
+                .ConfigureEndpoints(
+                    Configuration.GetValue<int>("Orleans:Endpoints:SiloPort"),
+                    Configuration.GetValue<int>("Orleans:Endpoints:GatewayPort")
+                )
                 .ConfigureApplicationParts(config =>
                 {
                     config.AddApplicationPart(typeof(User).Assembly).WithReferences();
