@@ -36,11 +36,6 @@ namespace Silo
 
             // configure orleans
             var builder = new SiloHostBuilder()
-                .UseAdoNetClustering(options =>
-                {
-                    options.ConnectionString = Configuration.GetConnectionString(Configuration["Orleans:Clustering:AdoNet:ConnectionStringName"]);
-                    options.Invariant = Configuration["Orleans:Clustering:AdoNet:Invariant"];
-                })
                 .Configure<ClusterOptions>(options =>
                 {
                     options.ClusterId = Configuration["Orleans:ClusterId"];
@@ -57,6 +52,16 @@ namespace Silo
                 .ConfigureLogging(config =>
                 {
                     config.AddProvider(services.GetRequiredService<ILoggerProvider>());
+                })
+                .UseAdoNetClustering(options =>
+                {
+                    options.ConnectionString = Configuration.GetConnectionString(Configuration["Orleans:Clustering:AdoNet:ConnectionStringName"]);
+                    options.Invariant = Configuration["Orleans:Clustering:AdoNet:Invariant"];
+                })
+                .UseAdoNetReminderService(options =>
+                {
+                    options.ConnectionString = Configuration.GetConnectionString(Configuration["Orleans:Reminders:AdoNet:ConnectionStringName"]);
+                    options.Invariant = Configuration["Orleans:Clustering:AdoNet:Invariant"];
                 });
 
             // start orleans

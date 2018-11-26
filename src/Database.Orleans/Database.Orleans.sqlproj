@@ -70,6 +70,7 @@
     <Build Include="Tables\OrleansQuery.sql" />
     <Build Include="Tables\OrleansMembershipVersionTable.sql" />
     <Build Include="Tables\OrleansMembershipTable.sql" />
+    <Build Include="Tables\OrleansRemindersTable.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="OrleansAdoNetContent\**" />
+    <EmbeddedResource Remove="OrleansAdoNetContent\**" />
+    <None Remove="OrleansAdoNetContent\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="appsettings.json" />
   </ItemGroup>
 
@@ -22,6 +28,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.1.1" />
     <PackageReference Include="Microsoft.Orleans.Clustering.AdoNet" Version="2.1.2" />
+    <PackageReference Include="Microsoft.Orleans.Reminders.AdoNet" Version="2.1.2" />
     <PackageReference Include="Microsoft.Orleans.Server" Version="2.1.2" />
     <PackageReference Include="Serilog" Version="2.7.1" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="2.0.2" />
