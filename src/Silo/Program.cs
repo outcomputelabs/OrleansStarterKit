@@ -34,7 +34,7 @@ namespace Silo
             // configure services
             var services = ConfigureServices();
 
-            // configure orleans
+            // configure the silo
             var host = new SiloHostBuilder()
                 .Configure<ClusterOptions>(options =>
                 {
@@ -77,7 +77,7 @@ namespace Silo
                 })
                 .Build();
 
-            // start orleans
+            // start the silo
             await host.StartAsync();
 
             // wait until gracefully stopped
