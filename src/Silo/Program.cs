@@ -35,7 +35,7 @@ namespace Silo
             var services = ConfigureServices();
 
             // configure orleans
-            var builder = new SiloHostBuilder()
+            var host = new SiloHostBuilder()
                 .Configure<ClusterOptions>(options =>
                 {
                     options.ClusterId = Configuration["Orleans:ClusterId"];
@@ -55,21 +55,27 @@ namespace Silo
                 })
                 .UseAdoNetClustering(options =>
                 {
-                    options.ConnectionString = Configuration.GetConnectionString(Configuration["Orleans:Clustering:AdoNet:ConnectionStringName"]);
-                    options.Invariant = Configuration["Orleans:Clustering:AdoNet:Invariant"];
+                    options.ConnectionString = Configuration.GetConnectionString("Orleans");
+                    options.Invariant = Configuration["Orleans:AdoNet:Invariant"];
                 })
                 .UseAdoNetReminderService(options =>
                 {
-                    options.ConnectionString = Configuration.GetConnectionString(Configuration["Orleans:Reminders:AdoNet:ConnectionStringName"]);
-                    options.Invariant = Configuration["Orleans:Clustering:AdoNet:Invariant"];
-                });
+                    options.ConnectionString = Configuration.GetConnectionString("Orleans");
+                    options.Invariant = Configuration["Orleans:AdoNet:Invariant"];
+                })
+                .AddAdoNetGrainStorage("OrleansStorage", options =>
+                {
+                    options.ConnectionString = Configuration.GetConnectionString("Orleans");
+                    options.Invariant = Configuration["Orleans:AdoNet:Invariant"];
+                    options.UseJsonFormat = true;
+                })
+                .Build();
 
             // start orleans
-            using (var host = builder.Build())
-            {
-                await host.StartAsync();
-                await host.Stopped;
-            }
+            await host.StartAsync();
+
+            // wait until gracefully stopped
+            await host.Stopped;
         }
 
         private static IServiceProvider ConfigureServices()
