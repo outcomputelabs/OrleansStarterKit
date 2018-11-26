@@ -69,6 +69,12 @@ namespace Silo
                     options.Invariant = Configuration["Orleans:AdoNet:Invariant"];
                     options.UseJsonFormat = true;
                 })
+                .AddSimpleMessageStreamProvider("SimpleMessageStreamProvider")
+                .AddAdoNetGrainStorage("PubSubStore", options =>
+                {
+                    options.ConnectionString = Configuration.GetConnectionString("Orleans");
+                    options.Invariant = Configuration["Orleans:AdoNet:Invariant"];
+                })
                 .Build();
 
             // start orleans
