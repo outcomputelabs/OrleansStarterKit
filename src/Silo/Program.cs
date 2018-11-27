@@ -1,4 +1,5 @@
 ﻿using Grains;
+using Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -75,6 +76,7 @@ namespace Silo
                     options.ConnectionString = Configuration.GetConnectionString("Orleans");
                     options.Invariant = Configuration["Orleans:AdoNet:Invariant"];
                 })
+                .EnableDirectClient()
                 .Build();
 
             // start the silo
