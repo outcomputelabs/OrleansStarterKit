@@ -75,7 +75,12 @@ namespace Api
             }
 
             app.UseHttpsRedirection();
-            app.UseMvc();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
 
             // connect to the orleans cluster
             logger.LogInformation("Connecting to the Orleans cluster...");
