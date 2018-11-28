@@ -2,7 +2,7 @@
 
 namespace Api.ViewModels
 {
-    public class Lobby
+    public class LobbyModel
     {
         public List<Channel> Channels { get; set; }
     }

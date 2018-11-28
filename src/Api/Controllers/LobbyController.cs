@@ -1,10 +1,18 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Orleans;
 
 namespace Api.Controllers
 {
     public class LobbyController : Controller
     {
+        private readonly IClusterClient _client;
+
+        public LobbyController(IClusterClient client)
+        {
+            _client = client;
+        }
+
         // GET: Lobby
         public ActionResult Index()
         {
