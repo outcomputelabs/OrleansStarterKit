@@ -15,6 +15,8 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Database.Logging", "src\Dat
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Database.Orleans", "src\Database.Orleans\Database.Orleans.sqlproj", "{1BFE8E20-A646-4DE8-ADC0-F879924CFE3E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{60BA1CC5-B68A-44E1-AC11-092DA03876D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{1BFE8E20-A646-4DE8-ADC0-F879924CFE3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BFE8E20-A646-4DE8-ADC0-F879924CFE3E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1BFE8E20-A646-4DE8-ADC0-F879924CFE3E}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{60BA1CC5-B68A-44E1-AC11-092DA03876D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60BA1CC5-B68A-44E1-AC11-092DA03876D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60BA1CC5-B68A-44E1-AC11-092DA03876D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60BA1CC5-B68A-44E1-AC11-092DA03876D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
