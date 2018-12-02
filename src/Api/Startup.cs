@@ -82,6 +82,11 @@ namespace Api
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
+            ConnectToOrleans(logger, client);
+        }
+
+        private void ConnectToOrleans(ILogger<Startup> logger, IClusterClient client)
+        {
             // connect to the orleans cluster
             logger.LogInformation("Connecting to the Orleans cluster...");
             var attempt = 1;
