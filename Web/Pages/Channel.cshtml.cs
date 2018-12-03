@@ -31,6 +31,8 @@ namespace Web.Pages
 
             #endregion
 
+            await Task.Yield();
+
             return Page();
         }
     }

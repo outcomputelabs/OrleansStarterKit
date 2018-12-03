@@ -12,6 +12,7 @@ using Serilog;
 using Serilog.Events;
 using System;
 using System.Threading.Tasks;
+using Web.Hubs;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace Web
@@ -36,6 +37,7 @@ namespace Web
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddSignalR();
 
             // configure serilog
             var logger = new LoggerConfiguration()
@@ -86,6 +88,10 @@ namespace Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<ChatHub>("/chatHub");
+            });
             app.UseMvc();
 
             ConnectToOrleans(logger, client);
