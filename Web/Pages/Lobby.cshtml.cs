@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Web.Pages.Lobby
 {
-    public class IndexModel : PageModel
+    public class LobbyModel : PageModel
     {
         private readonly IClusterClient _client;
 
@@ -23,7 +23,7 @@ namespace Web.Pages.Lobby
 
         public IList<ChannelModel> Channels { get; set; }
 
-        public IndexModel(IClusterClient client)
+        public LobbyModel(IClusterClient client)
         {
             _client = client;
         }

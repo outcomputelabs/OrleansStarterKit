@@ -43,7 +43,7 @@ namespace Web.Pages
 
             Response.Cookies.Append("FakeLogin", UserName);
 
-            return RedirectToPage("./Lobby/Index");
+            return RedirectToPage("./Lobby");
         }
     }
 }
