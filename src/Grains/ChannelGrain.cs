@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Grains
 {
-    public class Channel : Grain, IChannel
+    public class ChannelGrain : Grain, IChannelGrain
     {
         private string _name;
 

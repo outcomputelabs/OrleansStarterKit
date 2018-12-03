@@ -2,7 +2,7 @@
 
 namespace Interfaces
 {
-    public interface IChannel : IGrainWithGuidKey
+    public interface IChannelGrain : IGrainWithGuidKey
     {
     }
 }

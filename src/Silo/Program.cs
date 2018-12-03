@@ -48,7 +48,7 @@ namespace Silo
                 )
                 .ConfigureApplicationParts(config =>
                 {
-                    config.AddApplicationPart(typeof(User).Assembly).WithReferences();
+                    config.AddApplicationPart(typeof(UserGrain).Assembly).WithReferences();
                 })
                 .ConfigureLogging(config =>
                 {

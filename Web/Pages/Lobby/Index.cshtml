@@ -1,0 +1,44 @@
+﻿@page
+@model Web.Pages.Lobby.IndexModel
+@{
+    ViewData["Title"] = "Lobby";
+}
+
+<h2>Lobby</h2>
+
+<p>You are logged in as: @Model.FakeLogin</p>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Channels[0].Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Channels[0].Name)
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Channels)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    <a asp-page="./Join" asp-route-id="@item.Name">Join</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
