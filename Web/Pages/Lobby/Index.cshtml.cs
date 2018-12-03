@@ -1,5 +1,5 @@
 ﻿using Interfaces;
-using Interfaces.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Orleans;
 using System;
@@ -15,27 +15,40 @@ namespace Web.Pages.Lobby
 
         public string FakeLogin { get; set; }
 
-        public IList<Channel> Channels { get; set; }
+        public class ChannelModel
+        {
+            public Guid Id { get; set; }
+            public string Name { get; set; }
+        }
+
+        public IList<ChannelModel> Channels { get; set; }
 
         public IndexModel(IClusterClient client)
         {
             _client = client;
         }
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
-            if (Request.Cookies.TryGetValue("FakeLogin", out var cookie))
+            if (Request.Cookies.TryGetValue("FakeLogin", out var cookie) && !string.IsNullOrWhiteSpace(cookie))
             {
                 FakeLogin = cookie;
             }
             else
             {
-                RedirectToPage("/FakeLogin");
+                return RedirectToPage("/FakeLogin");
             }
 
             Channels = (await _client.GetGrain<ILobbyGrain>(Guid.Empty).GetChannels())
                 .OrderBy(c => c.Name)
+                .Select(c => new ChannelModel
+                {
+                    Id = c.Id,
+                    Name = c.Name
+                })
                 .ToList();
+
+            return Page();
         }
     }
 }

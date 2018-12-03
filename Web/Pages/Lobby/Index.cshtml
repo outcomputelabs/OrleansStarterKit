@@ -11,12 +11,9 @@
 <p>
     <a asp-page="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table table-hover">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Channels[0].Id)
-            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Channels[0].Name)
             </th>
@@ -30,13 +27,10 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    <a asp-page="./Join" asp-route-id="@item.Name">Join</a>
+                    <a asp-page="/Channel" asp-route-id="@item.Id" class="btn btn-default">Join</a>
                 </td>
             </tr>
         }
