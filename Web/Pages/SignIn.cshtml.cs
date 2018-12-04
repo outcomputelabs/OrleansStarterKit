@@ -12,9 +12,10 @@ namespace Web.Pages
     {
         [Required]
         [StringLength(100)]
-        [Display(Name = "User Name")]
+        [Display(Name = "Handle")]
+        [RegularExpression("[a-z]{1}[a-z0-9]{0,99}")]
         [BindProperty]
-        public string UserName { get; set; }
+        public string Handle { get; set; }
 
         public void OnGet()
         {
@@ -29,7 +30,7 @@ namespace Web.Pages
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, UserName)
+                new Claim(ClaimTypes.Name, Handle)
             };
             var identity = new ClaimsIdentity(claims, "login");
             var principal = new ClaimsPrincipal(identity);
