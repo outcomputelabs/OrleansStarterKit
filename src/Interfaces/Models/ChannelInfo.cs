@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Orleans.Concurrency;
+using System;
 
 namespace Interfaces.Models
 {
-    public class Channel
+    [Immutable]
+    public class ChannelInfo
     {
-        public Channel(Guid id, string name)
+        public ChannelInfo(Guid id, string name)
         {
             Id = id;
             Name = name;

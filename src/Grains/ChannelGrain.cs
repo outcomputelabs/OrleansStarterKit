@@ -1,13 +1,14 @@
 ﻿using Interfaces;
 using Orleans;
-using System.Threading.Tasks;
 
 namespace Grains
 {
-    public class ChannelGrain : Grain, IChannelGrain
+    public class ChannelGrain : Grain<ChannelGrainState>, IChannelGrain
     {
-        private string _name;
 
+    }
 
+    public class ChannelGrainState
+    {
     }
 }

@@ -14,19 +14,19 @@ namespace Grains
         public LobbyGrain()
         {
             // add fake data
-            _channels.Add(new Channel(Guid.NewGuid(), "Channel 1"));
-            _channels.Add(new Channel(Guid.NewGuid(), "Channel 2"));
-            _channels.Add(new Channel(Guid.NewGuid(), "Channel 3"));
+            _channels.Add(new ChannelInfo(Guid.NewGuid(), "Channel 1"));
+            _channels.Add(new ChannelInfo(Guid.NewGuid(), "Channel 2"));
+            _channels.Add(new ChannelInfo(Guid.NewGuid(), "Channel 3"));
         }
 
-        public Task<ImmutableList<Channel>> GetChannels()
+        public Task<ImmutableList<ChannelInfo>> GetChannels()
         {
             return Task.FromResult(_channels.ToImmutableList());
         }
 
         public Task CreateChannel(string name)
         {
-            _channels.Add(new Channel(Guid.NewGuid(), name));
+            _channels.Add(new ChannelInfo(Guid.NewGuid(), name));
             return Task.CompletedTask;
         }
 

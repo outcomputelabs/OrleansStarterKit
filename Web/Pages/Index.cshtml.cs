@@ -7,7 +7,7 @@ namespace Web.Pages
     {
         public ActionResult OnGet()
         {
-            return Redirect("/FakeLogin");
+            return RedirectToPage("SignIn");
         }
     }
 }

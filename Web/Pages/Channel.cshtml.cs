@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Orleans;
+using System;
 using System.Threading.Tasks;
 
 namespace Web.Pages
@@ -9,30 +12,15 @@ namespace Web.Pages
     {
         private readonly IClusterClient _client;
 
-        public string FakeLogin { get; set; }
+        public string ChannelName { get; set; }
 
         public ChannelModel(IClusterClient client)
         {
             _client = client;
         }
 
-        public async Task<IActionResult> OnGetAsync()
+        public IActionResult OnGet()
         {
-            #region Fake Login
-
-            if (Request.Cookies.TryGetValue("FakeLogin", out var cookie) && !string.IsNullOrWhiteSpace(cookie))
-            {
-                FakeLogin = cookie;
-            }
-            else
-            {
-                return RedirectToPage("/FakeLogin");
-            }
-
-            #endregion
-
-            await Task.Yield();
-
             return Page();
         }
     }

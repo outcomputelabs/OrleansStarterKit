@@ -1,15 +1,42 @@
-﻿@page "{id:Guid}"
+﻿@page
 @model Web.Pages.ChannelModel
 @{
     ViewData["Title"] = "Channel";
 }
 
-<h2>Channel</h2>
+<h2>Some Channel</h2>
+
+
+<div id="messages" style="overflow-y:scroll; height:500px">
+    <ul>
+        <li>
+            <span style="font-weight:bold;color:silver">@@someuser</span>
+            <br />
+            some message
+        </li>
+    </ul>
+</div>
+
+<div class="container">
+    <br />
+    <form>
+        <div class="row">
+            <div class="col-sm-11">
+                <input type="text" id="message" class="form-control" placeholder="Type something here..." />
+            </div>
+            <div class="col-sm-1">
+                <input type="button" id="send" value="Send" class="btn btn-primary pull-right" />
+            </div>
+        </div>
+    </form>
+    <div class="row">
+
+    </div>
+</div>
 
 
 
-
-
+<!--
 <div class="container">
     <div class="row">&nbsp;</div>
     <div class="row">
@@ -33,5 +60,6 @@
         </div>
     </div>
 </div>
+    -->
 <script src="~/lib/signalr/dist/browser/signalr.js"></script>
 <script src="~/js/chat.js"></script>

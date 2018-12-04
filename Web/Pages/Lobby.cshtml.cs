@@ -1,4 +1,5 @@
 ﻿using Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Orleans;
@@ -9,11 +10,10 @@ using System.Threading.Tasks;
 
 namespace Web.Pages.Lobby
 {
+    [Authorize]
     public class LobbyModel : PageModel
     {
         private readonly IClusterClient _client;
-
-        public string FakeLogin { get; set; }
 
         public class ChannelModel
         {
@@ -30,15 +30,6 @@ namespace Web.Pages.Lobby
 
         public async Task<IActionResult> OnGetAsync()
         {
-            if (Request.Cookies.TryGetValue("FakeLogin", out var cookie) && !string.IsNullOrWhiteSpace(cookie))
-            {
-                FakeLogin = cookie;
-            }
-            else
-            {
-                return RedirectToPage("/FakeLogin");
-            }
-
             Channels = (await _client.GetGrain<ILobbyGrain>(Guid.Empty).GetChannels())
                 .OrderBy(c => c.Name)
                 .Select(c => new ChannelModel

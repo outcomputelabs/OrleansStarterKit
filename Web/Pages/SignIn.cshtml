@@ -1,13 +1,13 @@
 ﻿@page
-@model Web.Pages.FakeLoginModel
+@model Web.Pages.SignInModel
 @{
-    ViewData["Title"] = "FakeLogin";
+    ViewData["Title"] = "Sign In";
 }
 
-<h2>Fake Login</h2>
+<h2>Sign In</h2>
 
 <div class="row">
-    <div class="col-md-4">
+    <div>
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -16,16 +16,16 @@
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Login" class="btn btn-default" />
+                <input type="submit" value="Sign In" class="btn btn-primary" />
             </div>
         </form>
-        @if (String.IsNullOrWhiteSpace(Model.FakeLogin))
+        @if (User.Identity.IsAuthenticated)
         {
-            <div>You are not logged in!</div>
+            <div>You are logged in as: @Model.User.Identity.Name</div>
         }
         else
         {
-            <div>You are logged in as: @Model.FakeLogin</div>
+            <div>You are not logged in!</div>
         }
     </div>
 </div>

@@ -8,7 +8,7 @@ namespace Interfaces
 {
     public interface ILobbyGrain : IGrainWithGuidKey
     {
-        Task<ImmutableList<Channel>> GetChannels();
+        Task<ImmutableList<ChannelInfo>> GetChannels();
         Task CreateChannel(string name);
         Task RemoveChannel(Guid id);
     }
