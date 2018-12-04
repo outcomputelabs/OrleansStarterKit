@@ -1,6 +1,6 @@
 ﻿namespace Interfaces
 {
-    public interface IFeed : IFeedPublisher, IFeedSubscriber
+    public interface IFeed : IFeedPublisher, IFeedFollower
     {
     }
 }

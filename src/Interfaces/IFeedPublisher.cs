@@ -5,6 +5,6 @@ namespace Interfaces
 {
     public interface IFeedPublisher : IGrainWithStringKey
     {
-        Task SubscribeAsync(IFeedSubscriber subscriber);
+        Task FollowAsync(IFeedFollower follower);
     }
 }
