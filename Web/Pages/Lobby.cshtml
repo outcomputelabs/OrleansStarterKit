@@ -11,28 +11,41 @@
 <p>
     <a asp-page="Create">Create New</a>
 </p>
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Channels[0].Name)
-            </th>
-            <th>
-                Action
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Channels)
-        {
+
+<form method="post">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Channels[0].Name)
+                </th>
+                <th>
+                    Action
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Channels)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        <a asp-page="/Channel" asp-route-id="@item.Id" class="btn btn-default">Join</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    <input type="text" class="form-control" name="name" />
                 </td>
                 <td>
-                    <a asp-page="/Channel" asp-route-id="@item.Id" class="btn btn-default">Join</a>
+                    <input type="submit" class="btn btn-primary" value="Create" />
                 </td>
             </tr>
-        }
-    </tbody>
-</table>
+        </tfoot>
+    </table>
+</form>
