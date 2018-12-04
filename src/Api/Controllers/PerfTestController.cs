@@ -24,11 +24,11 @@ namespace Api.Controllers
         {
             // test sequential proxy generation speed
             var proxyCount = 10000;
-            var grains = new IUserGrain[proxyCount];
+            var grains = new IUser[proxyCount];
             var proxyWatch = Stopwatch.StartNew();
             for (var i = 0; i < proxyCount; ++i)
             {
-                grains[i] = _client.GetGrain<IUserGrain>(Guid.NewGuid());
+                grains[i] = _client.GetGrain<IUser>(Guid.NewGuid().ToString());
             }
             proxyWatch.Stop();
 
@@ -49,7 +49,7 @@ namespace Api.Controllers
             secondCallWatch.Stop();
 
             // test parallel activation speed
-            var parallels = Enumerable.Range(0, proxyCount).Select(x => _client.GetGrain<IUserGrain>(Guid.NewGuid())).ToArray();
+            var parallels = Enumerable.Range(0, proxyCount).Select(x => _client.GetGrain<IUser>(Guid.NewGuid().ToString())).ToArray();
             var parallelActivationWatch = Stopwatch.StartNew();
             Parallel.For(0, proxyCount, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
             {

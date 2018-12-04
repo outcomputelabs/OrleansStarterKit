@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Interfaces
 {
-    public interface IUserGrain: IGrainWithStringKey
+    public interface IUser: IGrainWithStringKey
     {
         Task Ping();
     }

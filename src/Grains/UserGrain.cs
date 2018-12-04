@@ -4,7 +4,7 @@ using Orleans;
 
 namespace Grains
 {
-    public class UserGrain : Grain, IUserGrain
+    public class UserGrain : Grain, IUser
     {
         public Task Ping()
         {
