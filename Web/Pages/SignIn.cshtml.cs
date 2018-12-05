@@ -36,7 +36,7 @@ namespace Web.Pages
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(principal);
 
-            return RedirectToPage("./Lobby");
+            return RedirectToPage("MyFeed");
         }
     }
 }

@@ -6,12 +6,12 @@ namespace Interfaces
     [Immutable]
     public class Message
     {
-        public Message(Guid id, string content, DateTime timestamp, string publisherKey)
+        public Message(Guid id, string content, DateTime timestamp, string publisherHandle)
         {
             Id = id;
             Content = content;
             Timestamp = timestamp;
-            PublisherKey = publisherKey;
+            PublisherHandle = publisherHandle;
         }
 
         public Guid Id { get; }
@@ -20,6 +20,6 @@ namespace Interfaces
 
         public DateTime Timestamp { get; }
 
-        public string PublisherKey { get; }
+        public string PublisherHandle { get; }
     }
 }

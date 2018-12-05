@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Interfaces
 {
-    public interface IFeedFollower : IGrainWithStringKey
+    public interface IFeedSubscriber : IGrainWithStringKey
     {
         Task OnMessageAsync(Message message);
     }
