@@ -1,5 +1,4 @@
 ﻿using Grains;
-using Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -48,7 +47,7 @@ namespace Silo
                 )
                 .ConfigureApplicationParts(config =>
                 {
-                    config.AddApplicationPart(typeof(UserGrain).Assembly).WithReferences();
+                    config.AddApplicationPart(typeof(Lobby).Assembly).WithReferences();
                 })
                 .ConfigureLogging(config =>
                 {

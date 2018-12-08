@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interfaces", "src\Interfaces\Interfaces.csproj", "{2258C03D-3FD6-4E5F-848B-3CBF43DAB95C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grains.Abstractions", "src\Interfaces\Grains.Abstractions.csproj", "{2258C03D-3FD6-4E5F-848B-3CBF43DAB95C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grains", "src\Grains\Grains.csproj", "{FC1C5CBD-C11A-494E-951F-9EBCB6412F22}"
 EndProject

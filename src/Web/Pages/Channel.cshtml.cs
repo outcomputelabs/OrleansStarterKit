@@ -1,10 +1,6 @@
-﻿using Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Orleans;
-using System;
-using System.Threading.Tasks;
 
 namespace Web.Pages
 {

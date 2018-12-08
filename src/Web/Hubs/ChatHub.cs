@@ -1,5 +1,4 @@
-﻿using Interfaces;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Orleans;
 using System;
@@ -19,8 +18,7 @@ namespace Web.Hubs
 
         public Task SendMessageAsync(Guid channelId, string message)
         {
-            return _client.GetGrain<ISignalRConnectionGrain>(Guid.Parse(Context.ConnectionId))
-                .SendMessageAsync(channelId, Context.User.Identity.Name, message);
+            return Task.CompletedTask;
         }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using Orleans;
-using System.Threading.Tasks;
 
-namespace Interfaces
+namespace Grains
 {
-    public interface IUser: IGrainWithStringKey
+    /// <summary>
+    /// Represents a user account in the system.
+    /// </summary>
+    public interface IUser : IGrainWithStringKey
     {
-        Task Ping();
     }
 }

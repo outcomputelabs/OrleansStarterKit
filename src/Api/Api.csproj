@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Interfaces\Interfaces.csproj" />
+    <ProjectReference Include="..\Interfaces\Grains.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>
