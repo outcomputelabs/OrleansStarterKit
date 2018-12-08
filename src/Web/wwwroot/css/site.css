@@ -35,3 +35,7 @@ body {
         display: none;
     }
 }
+
+label.control-label:after {
+    content: ":"
+}

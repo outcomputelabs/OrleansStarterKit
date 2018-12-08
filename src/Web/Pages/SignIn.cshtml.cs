@@ -12,10 +12,10 @@ namespace Web.Pages
     {
         [Required]
         [StringLength(100)]
-        [Display(Name = "Handle")]
+        [Display(Name = "User Name")]
         [RegularExpression("[a-z]{1}[a-z0-9]{0,99}")]
         [BindProperty]
-        public string Handle { get; set; }
+        public string UserName { get; set; }
 
         public void OnGet()
         {
@@ -28,15 +28,17 @@ namespace Web.Pages
                 return Page();
             }
 
+            // sign in users with whatever user name they provide
+            // this is to facilitate use of this app in a live demo scenario
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, Handle)
+                new Claim(ClaimTypes.Name, UserName)
             };
             var identity = new ClaimsIdentity(claims, "login");
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(principal);
 
-            return RedirectToPage("MyFeed");
+            return RedirectToPage("Lobby");
         }
     }
 }
