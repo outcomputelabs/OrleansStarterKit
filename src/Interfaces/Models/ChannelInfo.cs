@@ -8,16 +8,16 @@ namespace Grains.Models
     /// Useful for listing channels on a user interface.
     /// </summary>
     [Immutable]
-    public class ChannelModel : IComparable<ChannelModel>
+    public class ChannelInfo : IComparable<ChannelInfo>
     {
         /// <summary>
-        /// Creates a new instance of <see cref="ChannelModel"/>
+        /// Creates a new instance of <see cref="ChannelInfo"/>
         /// </summary>
         /// <param name="id">Unique identifier of the channel.</param>
         /// <param name="name">Name of the channel.</param>
         /// <param name="creator">User who created the channel.</param>
         /// <param name="timestamp">UTC timestamp for when the channel was created.</param>
-        public ChannelModel(Guid id, string name, string creator, DateTime timestamp)
+        public ChannelInfo(Guid id, string name, string creator, DateTime timestamp)
         {
             Id = id;
             Name = name ?? throw new ArgumentNullException(nameof(name));
@@ -49,7 +49,7 @@ namespace Grains.Models
         /// Compares two channel models with each other.
         /// </summary>
         /// <returns></returns>
-        public int CompareTo(ChannelModel other)
+        public int CompareTo(ChannelInfo other)
         {
             // two channel models are the same if
             // 1) their unique ids are the same or

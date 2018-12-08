@@ -63,7 +63,7 @@ namespace Silo
                     options.ConnectionString = Configuration.GetConnectionString("Orleans");
                     options.Invariant = Configuration["Orleans:AdoNet:Invariant"];
                 })
-                .AddAdoNetGrainStorage("OrleansStorage", options =>
+                .AddAdoNetGrainStorageAsDefault(options =>
                 {
                     options.ConnectionString = Configuration.GetConnectionString("Orleans");
                     options.Invariant = Configuration["Orleans:AdoNet:Invariant"];

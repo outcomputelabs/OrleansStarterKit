@@ -6,46 +6,11 @@
 
 <h2>Lobby</h2>
 
-<p>You are logged in as: @User.Identity.Name</p>
+<p>Welcome, @(Model.UserInfo.DisplayName). Choose a channel or create a new one!</p>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-
-<form method="post">
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Channels[0].Name)
-                </th>
-                <th>
-                    Action
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Channels)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        <a asp-page="/Channel" asp-route-id="@item.Id" class="btn btn-default">Join</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-        <tfoot>
-            <tr>
-                <td>
-                    <input type="text" class="form-control" name="name" />
-                </td>
-                <td>
-                    <input type="submit" class="btn btn-primary" value="Create" />
-                </td>
-            </tr>
-        </tfoot>
-    </table>
-</form>
+<div class="list-group">
+    @foreach (var item in Model.Channels)
+    {
+        <a asp-page="channel" asp-route-name="@item.Name" class="list-group-item">@item.Name</a>
+    }
+</div>

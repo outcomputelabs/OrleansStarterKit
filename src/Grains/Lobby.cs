@@ -1,9 +1,9 @@
 ﻿using Grains.Models;
 using Orleans;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Threading.Tasks;
-using System.Linq;
 
 namespace Grains
 {
@@ -15,7 +15,7 @@ namespace Grains
         /// <summary>
         /// The group of channels that this lobby indexes.
         /// </summary>
-        public ImmutableSortedSet<ChannelModel> Channels { get; set; } = ImmutableSortedSet<ChannelModel>.Empty;
+        public ImmutableSortedSet<ChannelInfo> Channels { get; set; } = ImmutableSortedSet<ChannelInfo>.Empty;
     }
 
     /// <summary>
@@ -23,9 +23,17 @@ namespace Grains
     /// </summary>
     public class Lobby : Grain<LobbyState>, ILobby
     {
-        public Task<IEnumerable<ChannelModel>> GetChannelsAsync()
+        public override Task OnActivateAsync()
         {
-            return Task.FromResult<IEnumerable<ChannelModel>>(State.Channels);
+            // add dummy data for now
+            State.Channels = State.Channels.Add(new ChannelInfo(Guid.NewGuid(), "orleans", "johndoe", DateTime.UtcNow));
+
+            return base.OnActivateAsync();
+        }
+
+        public Task<IEnumerable<ChannelInfo>> GetChannelsAsync()
+        {
+            return Task.FromResult<IEnumerable<ChannelInfo>>(State.Channels);
         }
     }
 }

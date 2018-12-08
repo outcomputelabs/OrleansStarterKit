@@ -1,32 +1,43 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Grains;
+using Grains.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Orleans;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Web.Pages
 {
     [Authorize]
     public class LobbyModel : PageModel
     {
+        #region Dependencies
+
         private readonly IClusterClient _client;
 
-        public IList<Grains.Models.ChannelModel> Channels { get; set; }
+        #endregion
+
+        #region ViewModel
+
+        public UserInfo UserInfo { get; set; }
+
+        public IEnumerable<ChannelInfo> Channels { get; set; }
+
+        #endregion
 
         public LobbyModel(IClusterClient client)
         {
             _client = client;
         }
 
-        public IActionResult OnGet()
+        public async Task OnGetAsync()
         {
-            /*
-            Channels = (await _client.GetGrain<ILobby>(Guid.Empty).GetChannels())
-                .OrderBy(c => c.Name)
-                .ToList();
-            */
+            // get current user information from orleans
+            UserInfo = await _client.GetGrain<IUser>(User.Identity.Name).GetInfoAsync();
 
-            return Page();
+            // get the list of channels from orleans
+            Channels = await _client.GetGrain<ILobby>(Guid.Empty).GetChannelsAsync();
         }
     }
 }

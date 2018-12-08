@@ -7,7 +7,7 @@ namespace Web.Pages
     {
         public ActionResult OnGet()
         {
-            return RedirectToPage("SignIn");
+            return RedirectToPage("signin");
         }
     }
 }

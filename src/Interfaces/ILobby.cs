@@ -13,6 +13,6 @@ namespace Grains
         /// <summary>
         /// Returns the list of channels owned by this lobby.
         /// </summary>
-        Task<IEnumerable<ChannelModel>> GetChannelsAsync();
+        Task<IEnumerable<ChannelInfo>> GetChannelsAsync();
     }
 }

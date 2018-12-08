@@ -43,7 +43,7 @@
 --
 -- 7. In the storage operations queries the columns need to be in the exact same order
 -- since the storage table operations support optionally streaming.
-CREATE TABLE OrleansStorage
+CREATE TABLE Storage
 (
     -- These are for the book keeping. Orleans calculates
     -- these hashes (see RelationalStorageProvide implementation),
@@ -87,7 +87,7 @@ CREATE TABLE OrleansStorage
 WITH(DATA_COMPRESSION = PAGE)
 GO
 
-CREATE NONCLUSTERED INDEX IX_OrleansStorage ON OrleansStorage
+CREATE NONCLUSTERED INDEX IX_Storage ON Storage
 (
 	GrainIdHash,
 	GrainTypeHash
@@ -96,5 +96,5 @@ GO
 
 -- This ensures lock escalation will not lock the whole table, which can potentially be enormous.
 -- See more information at https://www.littlekendra.com/2016/02/04/why-rowlock-hints-can-make-queries-slower-and-blocking-worse-in-sql-server/.
-ALTER TABLE OrleansStorage SET(LOCK_ESCALATION = DISABLE);
+ALTER TABLE Storage SET(LOCK_ESCALATION = DISABLE);
 GO

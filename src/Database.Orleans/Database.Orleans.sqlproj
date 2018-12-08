@@ -71,7 +71,7 @@
     <Build Include="Tables\OrleansMembershipVersionTable.sql" />
     <Build Include="Tables\OrleansMembershipTable.sql" />
     <Build Include="Tables\OrleansRemindersTable.sql" />
-    <Build Include="Tables\OrleansStorage.sql" />
+    <Build Include="Tables\Storage.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
