@@ -5,7 +5,7 @@ namespace Grains
     /// <summary>
     /// Represents a chat channel.
     /// </summary>
-    public interface IChannel : IGrainWithStringKey
+    public interface IChannel : IGrainWithGuidKey
     {
     }
 }

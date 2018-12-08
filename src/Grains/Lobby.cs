@@ -1,8 +1,6 @@
 ﻿using Grains.Models;
 using Orleans;
-using System;
 using System.Collections.Immutable;
-using System.Threading.Tasks;
 
 namespace Grains
 {
@@ -23,19 +21,5 @@ namespace Grains
     /// </summary>
     public class Lobby : Grain<LobbyState>, ILobby
     {
-        public Task<Guid> CreateChannel(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ImmutableList<ChannelModel>> GetChannels()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task RemoveChannel(Guid id)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
