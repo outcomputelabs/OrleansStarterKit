@@ -1,6 +1,9 @@
 ﻿using Grains.Models;
 using Orleans;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace Grains
 {
@@ -11,7 +14,6 @@ namespace Grains
     {
         /// <summary>
         /// The group of channels that this lobby indexes.
-        /// This immutable sorted set sacrifices insertion speed in favour of fast ordered retrieval for user interface listing.
         /// </summary>
         public ImmutableSortedSet<ChannelModel> Channels { get; set; } = ImmutableSortedSet<ChannelModel>.Empty;
     }
@@ -21,5 +23,9 @@ namespace Grains
     /// </summary>
     public class Lobby : Grain<LobbyState>, ILobby
     {
+        public Task<IEnumerable<ChannelModel>> GetChannelsAsync()
+        {
+            return Task.FromResult<IEnumerable<ChannelModel>>(State.Channels);
+        }
     }
 }

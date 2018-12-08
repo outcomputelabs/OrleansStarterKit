@@ -1,4 +1,7 @@
-﻿using Orleans;
+﻿using Grains.Models;
+using Orleans;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Grains
 {
@@ -7,5 +10,9 @@ namespace Grains
     /// </summary>
     public interface ILobby : IGrainWithGuidKey
     {
+        /// <summary>
+        /// Returns the list of channels owned by this lobby.
+        /// </summary>
+        Task<IEnumerable<ChannelModel>> GetChannelsAsync();
     }
 }
