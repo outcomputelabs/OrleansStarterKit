@@ -13,7 +13,7 @@ namespace Grains
         /// Updates details for this user.
         /// </summary>
         /// <param name="info">The information to update the user with.</param>
-        Task UpdateInfoAsync(UserInfo info);
+        Task SetInfoAsync(UserInfo info);
 
         /// <summary>
         /// Returns the current details for the his user.

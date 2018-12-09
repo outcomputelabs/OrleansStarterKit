@@ -5,13 +5,13 @@ namespace Grains
     /// <summary>
     /// Indicates that a channel already exists when attempting to create a new one.
     /// </summary>
-    public class ChannelAlreadyExistsException : ApplicationException
+    public class ChannelAlreadyCreatedException : ApplicationException
     {
         /// <summary>
-        /// Creates a new instance of <see cref="ChannelAlreadyExistsException"/>.
+        /// Creates a new instance of <see cref="ChannelAlreadyCreatedException"/>.
         /// </summary>
         /// <param name="name">The name of the existing channel.</param>
-        public ChannelAlreadyExistsException(string name)
+        public ChannelAlreadyCreatedException(string name)
         {
             Name = name;
         }

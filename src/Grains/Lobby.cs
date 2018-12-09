@@ -1,5 +1,6 @@
 ﻿using Grains.Models;
 using Orleans;
+using Orleans.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -23,12 +24,36 @@ namespace Grains
     /// </summary>
     public class Lobby : Grain<LobbyState>, ILobby
     {
-        public override Task OnActivateAsync()
+        public async Task CreateChannelAsync(ChannelInfo info)
         {
-            // add dummy data for now
-            State.Channels = State.Channels.Add(new ChannelInfo(Guid.NewGuid(), "orleans", "johndoe", DateTime.UtcNow));
+            // validate new channel properties
+            if (info == null) throw new ArgumentNullException(nameof(info));
+            if (string.IsNullOrWhiteSpace(info.Name)) throw new ArgumentNullException(nameof(info.Name));
+            if (info.Name != info.Name.Trim().ToLowerInvariant()) throw new InvalidChannelNameException(info.Name);
 
-            return base.OnActivateAsync();
+            // check if the channel already exists
+            if (State.Channels.Contains(info)) throw new ChannelAlreadyCreatedException(info.Name);
+
+            // all good so lets get to work
+            try
+            {
+                // attempt to initialize the new channel
+                await GrainFactory.GetGrain<IChannel>(info.Name).SetInfoAsync(info);
+
+                // that worked so add it the index
+                State.Channels = State.Channels.Add(info);
+
+                // done
+                await WriteStateAsync();
+            }
+            catch
+            {
+                // something went wrong so reset the state before faulting
+                await ReadStateAsync();
+
+                // fault the request regardless
+                throw;
+            }
         }
 
         public Task<IEnumerable<ChannelInfo>> GetChannelsAsync()

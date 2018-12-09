@@ -13,22 +13,15 @@ namespace Grains.Models
         /// <summary>
         /// Creates a new instance of <see cref="ChannelInfo"/>
         /// </summary>
-        /// <param name="id">Unique identifier of the channel.</param>
         /// <param name="name">Name of the channel.</param>
-        /// <param name="creator">User who created the channel.</param>
+        /// <param name="createdBy">User who created the channel.</param>
         /// <param name="timestamp">UTC timestamp for when the channel was created.</param>
-        public ChannelInfo(Guid id, string name, string creator, DateTime timestamp)
+        public ChannelInfo(string name, string createdBy, DateTime timestamp)
         {
-            Id = id;
             Name = name ?? throw new ArgumentNullException(nameof(name));
-            Creator = creator ?? throw new ArgumentNullException(nameof(creator));
+            CreatedBy = createdBy ?? throw new ArgumentNullException(nameof(createdBy));
             Timestamp = timestamp;
         }
-
-        /// <summary>
-        /// Unique identifier of the channel.
-        /// </summary>
-        public Guid Id { get; }
 
         /// <summary>
         /// Name of the channel.
@@ -38,7 +31,7 @@ namespace Grains.Models
         /// <summary>
         /// User who created the channel.
         /// </summary>
-        public string Creator { get; }
+        public string CreatedBy { get; }
 
         /// <summary>
         /// UTC timestamp for when the channel was created.
@@ -46,23 +39,13 @@ namespace Grains.Models
         public DateTime Timestamp { get; }
 
         /// <summary>
-        /// Compares two channel models with each other.
+        /// Compares two channels with each other.
         /// </summary>
         /// <returns></returns>
         public int CompareTo(ChannelInfo other)
         {
-            // two channel models are the same if
-            // 1) their unique ids are the same or
-            // 2) their names are the same
-            // otherwise they will sort by name
-            if (Id == other.Id)
-            {
-                return 0;
-            }
-            else
-            {
-                return string.Compare(Name, other.Name, true);
-            }
+            // two channel are the same if their names are the same
+            return string.Compare(Name, other.Name);
         }
     }
 }
