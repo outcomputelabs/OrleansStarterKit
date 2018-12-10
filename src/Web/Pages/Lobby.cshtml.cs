@@ -52,13 +52,13 @@ namespace Web.Pages
         public async Task<IActionResult> OnPostAsync()
         {
             // get current user information from orleans
-            UserInfo = await _client.GetGrain<IUser>(User.Identity.Name).GetInfoAsync();
+            UserInfo = await _client.GetGrain<IUser>(User.Identity.Name.ToLowerInvariant()).GetInfoAsync();
 
             // validate input
             if (!ModelState.IsValid) return Page();
 
             // attempt to create the new channel
-            await _client.GetGrain<ILobby>(Guid.Empty).CreateChannelAsync(new ChannelInfo(NewChannelName, User.Identity.Name, DateTime.UtcNow));
+            await _client.GetGrain<ILobby>(Guid.Empty).CreateChannelAsync(new ChannelInfo(NewChannelName, DateTime.UtcNow));
 
             // done
             return RedirectToPage("/Channel", new

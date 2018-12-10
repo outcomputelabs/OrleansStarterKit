@@ -14,12 +14,10 @@ namespace Grains.Models
         /// Creates a new instance of <see cref="ChannelInfo"/>
         /// </summary>
         /// <param name="name">Name of the channel.</param>
-        /// <param name="createdBy">User who created the channel.</param>
         /// <param name="timestamp">UTC timestamp for when the channel was created.</param>
-        public ChannelInfo(string name, string createdBy, DateTime timestamp)
+        public ChannelInfo(string name, DateTime timestamp)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
-            CreatedBy = createdBy ?? throw new ArgumentNullException(nameof(createdBy));
             Timestamp = timestamp;
         }
 
@@ -27,11 +25,6 @@ namespace Grains.Models
         /// Name of the channel.
         /// </summary>
         public string Name { get; }
-
-        /// <summary>
-        /// User who created the channel.
-        /// </summary>
-        public string CreatedBy { get; }
 
         /// <summary>
         /// UTC timestamp for when the channel was created.
