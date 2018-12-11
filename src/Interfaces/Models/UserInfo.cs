@@ -4,23 +4,23 @@ using System;
 namespace Grains.Models
 {
     [Immutable]
-    public class UserInfo : IComparable<UserInfo>
+    public class UserInfo : IComparable<UserInfo>, IEquatable<UserInfo>
     {
         /// <summary>
         /// Creates a new instance of <see cref="UserInfo"/>.
         /// </summary>
-        /// <param name="userName">The user name (handle) of the user.</param>
+        /// <param name="handle">The handle (user name) of the user.</param>
         /// <param name="displayName">The display name of the user.</param>
-        public UserInfo(string userName, string displayName)
+        public UserInfo(string handle, string displayName)
         {
-            UserName = userName ?? throw new ArgumentNullException(nameof(userName));
+            Handle = handle ?? throw new ArgumentNullException(nameof(handle));
             DisplayName = displayName ?? throw new ArgumentNullException(nameof(displayName));
         }
 
         /// <summary>
         /// The user name (handle) of the user.
         /// </summary>
-        public string UserName { get; }
+        public string Handle { get; }
 
         /// <summary>
         /// The display name of the user.
@@ -30,14 +30,21 @@ namespace Grains.Models
         /// <summary>
         /// Compares two <see cref="UserInfo"/> objects.
         /// </summary>
-        /// <returns></returns>
         public int CompareTo(UserInfo other)
         {
-            // two user infos are the same if their username is the same
+            // two user infos are the same if their handle is the same
             // the comparison is case-insensitive
-            return string.Compare(UserName, other.UserName, true);
+            return string.Compare(Handle, other.Handle, StringComparison.InvariantCultureIgnoreCase);
+        }
 
-            throw new NotImplementedException();
+        /// <summary>
+        /// Compares two <see cref="UserInfo"/> for equality.
+        /// </summary>
+        public bool Equals(UserInfo other)
+        {
+            // two user infos are the same if their handle is the same
+            // the comparison is case-insensitive
+            return string.Equals(Handle, other.Handle, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }

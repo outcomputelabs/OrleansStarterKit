@@ -39,7 +39,7 @@ namespace Grains
             // safety check
             // username must be same as grain key
             // different casing is allowed for display purposes
-            if (info.UserName.ToLowerInvariant() != _key) throw new InconsistentUserNameException(nameof(info.UserName));
+            if (info.Handle.ToLowerInvariant() != _key) throw new InconsistentUserNameException(nameof(info.Handle));
 
             // all good so keep the new info
             State.UserInfo = info;
