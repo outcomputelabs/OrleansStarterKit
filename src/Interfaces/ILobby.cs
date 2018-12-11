@@ -1,6 +1,6 @@
 ﻿using Grains.Models;
 using Orleans;
-using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Threading.Tasks;
 
 namespace Grains
@@ -19,6 +19,6 @@ namespace Grains
         /// <summary>
         /// Returns user information for display.
         /// </summary>
-        Task<IEnumerable<UserInfo>> GetUserInfoListAsync();
+        Task<ImmutableList<UserInfo>> GetUserInfoListAsync();
     }
 }

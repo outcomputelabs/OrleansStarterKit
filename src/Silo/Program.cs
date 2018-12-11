@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Orleans;
 using Orleans.Configuration;
 using Orleans.Hosting;
@@ -68,6 +69,7 @@ namespace Silo
                     options.ConnectionString = Configuration.GetConnectionString("Orleans");
                     options.Invariant = Configuration["Orleans:AdoNet:Invariant"];
                     options.UseJsonFormat = true;
+                    options.TypeNameHandling = TypeNameHandling.None;
                 })
                 .AddSimpleMessageStreamProvider("SimpleMessageStreamProvider")
                 .AddAdoNetGrainStorage("PubSubStore", options =>
