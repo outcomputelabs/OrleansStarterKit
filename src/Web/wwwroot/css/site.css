@@ -37,5 +37,9 @@ body {
 }
 
 label.control-label:after {
-    content: ":"
+    content: ":";
+}
+
+div.lobby span.text-strong {
+    font-weight: bold;
 }

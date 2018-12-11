@@ -6,29 +6,20 @@
 
 <h2>Lobby</h2>
 
-<p>Welcome, @(Model.UserInfo.DisplayName). Choose a channel or create a new one!</p>
+<p>Welcome, @(Model.CurrentUser.DisplayName). Why not follow these interesting people?</p>
 
-<div class="row">
-    <div class="col-md-12">
-        <div class="list-group">
-            @foreach (var item in Model.Channels)
-            {
-                <a asp-page="channel" asp-route-name="@item.Name" class="list-group-item">@item.Name</a>
-            }
+<div class="lobby">
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="list-group">
+                @foreach (var item in Model.Users)
+                {
+                    <li class="list-group-item">
+                        <span class="text-strong">@item.DisplayName</span>
+                        <span class="text-muted">@@@item.UserName</span>
+                    </li>
+                }
+            </ul>
         </div>
     </div>
-    <form method="post">
-        <div class="col-md-10">
-            <input asp-for="NewChannelName" class="form-control" placeholder="Enter a new channel name here..." />
-            <span asp-validation-for="NewChannelName" class="text-danger"></span>
-            <br />
-        </div>
-        <div class="col-md-2">
-            <input type="submit" value="Create" class="btn-primary form-control" />
-        </div>
-    </form>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
