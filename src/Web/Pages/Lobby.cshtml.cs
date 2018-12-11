@@ -22,12 +22,12 @@ namespace Web.Pages
 
         #region ViewModel
 
-        public UserInfo CurrentUser { get; set; }
+        public AccountInfo CurrentUser { get; set; }
 
         /// <summary>
         /// User information to display for selection.
         /// </summary>
-        public IEnumerable<UserInfo> Users { get; set; }
+        public IEnumerable<AccountInfo> Users { get; set; }
 
         [Required]
         [StringLength(100)]
@@ -46,7 +46,7 @@ namespace Web.Pages
         public async Task OnGetAsync()
         {
             // get current user information from orleans
-            CurrentUser = await _client.GetGrain<IUser>(User.Identity.Name.ToLowerInvariant()).GetInfoAsync();
+            CurrentUser = await _client.GetGrain<IAccount>(User.Identity.Name.ToLowerInvariant()).GetInfoAsync();
 
             // get the lobby user information
             Users = await _client.GetGrain<ILobby>(Guid.Empty).GetUserInfoListAsync();

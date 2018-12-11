@@ -14,11 +14,11 @@ namespace Grains
         /// Adds or updates user information with this lobby.
         /// </summary>
         /// <param name="info">The user information to list.</param>
-        Task SetUserInfoAsync(UserInfo info);
+        Task SetUserInfoAsync(AccountInfo info);
 
         /// <summary>
         /// Returns user information for display.
         /// </summary>
-        Task<ImmutableList<UserInfo>> GetUserInfoListAsync();
+        Task<ImmutableList<AccountInfo>> GetUserInfoListAsync();
     }
 }

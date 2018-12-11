@@ -8,11 +8,11 @@ namespace Grains
 {
     public class UserState
     {
-        public UserInfo UserInfo { get; set; }
+        public AccountInfo UserInfo { get; set; }
     }
 
     [Reentrant]
-    public class User : Grain<UserState>, IUser
+    public class Account : Grain<UserState>, IAccount
     {
         private string _key;
 
@@ -20,34 +20,34 @@ namespace Grains
         {
             // only allow trimmed lower case grain keys
             _key = this.GetPrimaryKeyString();
-            if (string.IsNullOrWhiteSpace(_key)) throw new InvalidUserGrainKeyException(_key);
-            if (_key != _key.Trim().ToLowerInvariant()) throw new InvalidUserGrainKeyException(_key);
+            if (string.IsNullOrWhiteSpace(_key)) throw new InvalidGrainKeyException(_key);
+            if (_key != _key.Trim().ToLowerInvariant()) throw new InvalidGrainKeyException(_key);
 
             return base.OnActivateAsync();
         }
 
-        public Task<UserInfo> GetInfoAsync()
+        public Task<AccountInfo> GetInfoAsync()
         {
             return Task.FromResult(State.UserInfo);
         }
 
-        public async Task SetInfoAsync(UserInfo info)
+        public async Task SetInfoAsync(AccountInfo info)
         {
             // validate
             if (info == null) throw new ArgumentNullException(nameof(info));
 
-            // safety check
-            // username must be same as grain key
+            // call consistency check
+            // the handle must be the same as the grain key
             // different casing is allowed for display purposes
-            if (info.Handle.ToLowerInvariant() != _key) throw new InconsistentUserNameException(nameof(info.Handle));
+            if (info.Handle.ToLowerInvariant() != _key) throw new InvalidHandleException(nameof(info.Handle));
 
             // all good so keep the new info
             State.UserInfo = info;
 
-            // persist the info before attempting to register with the lobby
+            // persist the new account info before attempting to register with the lobby
             await WriteStateAsync();
 
-            // also register the new user info with the lobby
+            // register the new account with the lobby
             await GrainFactory.GetGrain<ILobby>(Guid.Empty).SetUserInfoAsync(info);
         }
     }

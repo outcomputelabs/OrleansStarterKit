@@ -62,7 +62,7 @@ namespace Web.Pages
             await HttpContext.SignInAsync(principal, new AuthenticationProperties { IsPersistent = true });
 
             // also save this user information to orleans
-            await _client.GetGrain<IUser>(Handle.ToLowerInvariant()).SetInfoAsync(new UserInfo(Handle, DisplayName));
+            await _client.GetGrain<IAccount>(Handle.ToLowerInvariant()).SetInfoAsync(new AccountInfo(Handle, DisplayName));
 
             return RedirectToPage("/lobby");
         }

@@ -3,15 +3,15 @@
 namespace Grains
 {
     /// <summary>
-    /// Thrown when an invalid key is used to activate an <see cref="IUser"/> grain.
+    /// Thrown when an invalid key is used to activate a grain.
     /// </summary>
-    public class InvalidUserGrainKeyException : ApplicationException
+    public class InvalidGrainKeyException : ApplicationException
     {
         /// <summary>
-        /// Creates a new instance of <see cref="InvalidUserGrainKeyException"/>
+        /// Creates a new instance of <see cref="InvalidGrainKeyException"/>
         /// </summary>
         /// <param name="key">The invalid key.</param>
-        public InvalidUserGrainKeyException(string key)
+        public InvalidGrainKeyException(string key)
         {
             Key = key;
         }

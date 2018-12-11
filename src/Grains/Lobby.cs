@@ -15,7 +15,7 @@ namespace Grains
         /// <summary>
         /// The list of users that this channel indexes.
         /// </summary>
-        public SortedSet<UserInfo> Users { get; set; }
+        public SortedSet<AccountInfo> Users { get; set; }
     }
 
     /// <inheritdoc />
@@ -26,19 +26,19 @@ namespace Grains
         public override Task OnActivateAsync()
         {
             // initialize empty state
-            if (State.Users == null) State.Users = new SortedSet<UserInfo>();
+            if (State.Users == null) State.Users = new SortedSet<AccountInfo>();
 
             return base.OnActivateAsync();
         }
 
         /// <inheritdoc />
-        public Task<ImmutableList<UserInfo>> GetUserInfoListAsync()
+        public Task<ImmutableList<AccountInfo>> GetUserInfoListAsync()
         {
             return Task.FromResult(State.Users.ToImmutableList());
         }
 
         /// <inheritdoc />
-        public Task SetUserInfoAsync(UserInfo info)
+        public Task SetUserInfoAsync(AccountInfo info)
         {
             // add or update any existing listing information
             // if there are casing differences in the handle
