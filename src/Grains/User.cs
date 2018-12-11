@@ -31,7 +31,7 @@ namespace Grains
             return Task.FromResult(State.UserInfo);
         }
 
-        public Task SetInfoAsync(UserInfo info)
+        public async Task SetInfoAsync(UserInfo info)
         {
             // validate
             if (info == null) throw new ArgumentNullException(nameof(info));
@@ -44,7 +44,11 @@ namespace Grains
             // all good so keep the new info
             State.UserInfo = info;
 
-            return WriteStateAsync();
+            // persist the info before attempting to register with the lobby
+            await WriteStateAsync();
+
+            // also register the new user info with the lobby
+            await GrainFactory.GetGrain<ILobby>(Guid.Empty).SetUserInfoAsync(info);
         }
     }
 }

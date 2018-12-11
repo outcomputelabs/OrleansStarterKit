@@ -17,6 +17,11 @@ namespace Grains
         /// The group of channels that this lobby indexes.
         /// </summary>
         public ImmutableSortedSet<ChannelInfo> Channels { get; set; } = ImmutableSortedSet<ChannelInfo>.Empty;
+
+        /// <summary>
+        /// The list of users that this channel indexes.
+        /// </summary>
+        public ImmutableSortedSet<UserInfo> Users { get; set; } = ImmutableSortedSet<UserInfo>.Empty;
     }
 
     /// <summary>
@@ -59,6 +64,15 @@ namespace Grains
         public Task<IEnumerable<ChannelInfo>> GetChannelsAsync()
         {
             return Task.FromResult<IEnumerable<ChannelInfo>>(State.Channels);
+        }
+
+        public Task SetUserInfoAsync(UserInfo info)
+        {
+            // add or update any existing listing information
+            // if there are casing differences in the handle
+            // then the new handle wins
+            State.Users = State.Users.Remove(info).Add(info);
+            return WriteStateAsync();
         }
     }
 }
