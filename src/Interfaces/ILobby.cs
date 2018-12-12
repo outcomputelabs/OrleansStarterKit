@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 namespace Grains
 {
     /// <summary>
-    /// Represents a list of users to follow.
+    /// Represents a list of accounts in the system.
     /// </summary>
     public interface ILobby : IGrainWithGuidKey
     {
         /// <summary>
-        /// Adds or updates user information with this lobby.
+        /// Adds or updates account information on this lobby.
         /// </summary>
-        /// <param name="info">The user information to list.</param>
-        Task SetUserInfoAsync(AccountInfo info);
+        /// <param name="info">The account information to list.</param>
+        Task SetAccountInfoAsync(AccountInfo info);
 
         /// <summary>
-        /// Returns user information for display.
+        /// Returns account information to display.
         /// </summary>
-        Task<ImmutableList<AccountInfo>> GetUserInfoListAsync();
+        Task<ImmutableList<AccountInfo>> GetAccountInfoListAsync();
     }
 }

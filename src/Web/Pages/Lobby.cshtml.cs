@@ -45,11 +45,11 @@ namespace Web.Pages
 
         public async Task OnGetAsync()
         {
-            // get current user information from orleans
+            // get current account information from orleans
             CurrentUser = await _client.GetGrain<IAccount>(User.Identity.Name.ToLowerInvariant()).GetInfoAsync();
 
-            // get the lobby user information
-            Users = await _client.GetGrain<ILobby>(Guid.Empty).GetUserInfoListAsync();
+            // get the lobby account information
+            Users = await _client.GetGrain<ILobby>(Guid.Empty).GetAccountInfoListAsync();
         }
     }
 }

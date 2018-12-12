@@ -26,7 +26,7 @@ namespace Web.Pages
         [Required]
         [StringLength(100)]
         [Display(Name = "Display Name")]
-        [RegularExpression(@"^\w+(\s\w+)*")]
+        [RegularExpression(@"^\w+(\s\w+)*$")]
         [BindProperty]
         [FromForm]
         public string DisplayName { get; set; }

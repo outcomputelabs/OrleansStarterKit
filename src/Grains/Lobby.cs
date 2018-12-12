@@ -32,13 +32,13 @@ namespace Grains
         }
 
         /// <inheritdoc />
-        public Task<ImmutableList<AccountInfo>> GetUserInfoListAsync()
+        public Task<ImmutableList<AccountInfo>> GetAccountInfoListAsync()
         {
             return Task.FromResult(State.Accounts.Values.ToImmutableList());
         }
 
         /// <inheritdoc />
-        public Task SetUserInfoAsync(AccountInfo info)
+        public Task SetAccountInfoAsync(AccountInfo info)
         {
             State.Accounts[info.UniformHandle] = info;
 

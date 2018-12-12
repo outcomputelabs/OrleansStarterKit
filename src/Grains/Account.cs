@@ -47,7 +47,7 @@ namespace Grains
             await WriteStateAsync();
 
             // register the new account with the lobby
-            await GrainFactory.GetGrain<ILobby>(Guid.Empty).SetUserInfoAsync(info);
+            await GrainFactory.GetGrain<ILobby>(Guid.Empty).SetAccountInfoAsync(info);
         }
     }
 }
