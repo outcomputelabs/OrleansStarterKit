@@ -28,6 +28,11 @@ namespace Grains
 
         public Task<AccountInfo> GetInfoAsync()
         {
+            if (State.UserInfo == null)
+            {
+                throw new InvalidOperationException();
+            }
+
             return Task.FromResult(State.UserInfo);
         }
 
