@@ -37,9 +37,8 @@ namespace Grains
             if (info == null) throw new ArgumentNullException(nameof(info));
 
             // call consistency check
-            // the handle must be the same as the grain key
-            // different casing is allowed for display purposes
-            if (info.Handle.ToLowerInvariant() != _key) throw new InvalidHandleException(nameof(info.Handle));
+            // the uniform handle must be the same as the grain key
+            if (info.UniformHandle != _key) throw new InvalidHandleException(nameof(info.UniformHandle));
 
             // all good so keep the new info
             State.UserInfo = info;

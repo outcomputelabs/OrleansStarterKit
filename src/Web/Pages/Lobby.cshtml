@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-md-12">
             <ul class="list-group">
-                @foreach (var item in Model.Users.Where(u => u != Model.CurrentUser).OrderBy(u => u.DisplayName))
+                @foreach (var item in Model.Users.Where(u => u.UniformHandle != Model.CurrentUser.UniformHandle).OrderBy(u => u.DisplayName))
                 {
                     <li class="list-group-item">
                         <span class="text-strong">@item.DisplayName</span>

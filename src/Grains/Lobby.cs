@@ -13,9 +13,9 @@ namespace Grains
     public class LobbyState
     {
         /// <summary>
-        /// The list of users that this channel indexes.
+        /// Ths list of accounts that this lobby tracks.
         /// </summary>
-        public SortedSet<AccountInfo> Users { get; set; }
+        public Dictionary<string, AccountInfo> Accounts;
     }
 
     /// <inheritdoc />
@@ -26,7 +26,7 @@ namespace Grains
         public override Task OnActivateAsync()
         {
             // initialize empty state
-            if (State.Users == null) State.Users = new SortedSet<AccountInfo>();
+            if (State.Accounts == null) State.Accounts = new Dictionary<string, AccountInfo>();
 
             return base.OnActivateAsync();
         }
@@ -34,17 +34,14 @@ namespace Grains
         /// <inheritdoc />
         public Task<ImmutableList<AccountInfo>> GetUserInfoListAsync()
         {
-            return Task.FromResult(State.Users.ToImmutableList());
+            return Task.FromResult(State.Accounts.Values.ToImmutableList());
         }
 
         /// <inheritdoc />
         public Task SetUserInfoAsync(AccountInfo info)
         {
-            // add or update any existing listing information
-            // if there are casing differences in the handle
-            // then the new handle wins
-            State.Users.Remove(info);
-            State.Users.Add(info);
+            State.Accounts[info.UniformHandle] = info;
+
             return WriteStateAsync();
         }
     }
