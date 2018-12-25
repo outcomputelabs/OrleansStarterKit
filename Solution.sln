@@ -17,6 +17,8 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Database.Orleans", "src\Dat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "src\Web\Web.csproj", "{981D5560-C11C-4C62-B474-ABF9E0778EEA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{6228D090-D371-43BB-B978-40B8685B3042}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{981D5560-C11C-4C62-B474-ABF9E0778EEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{981D5560-C11C-4C62-B474-ABF9E0778EEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{981D5560-C11C-4C62-B474-ABF9E0778EEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6228D090-D371-43BB-B978-40B8685B3042}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6228D090-D371-43BB-B978-40B8685B3042}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6228D090-D371-43BB-B978-40B8685B3042}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6228D090-D371-43BB-B978-40B8685B3042}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
