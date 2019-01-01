@@ -78,7 +78,7 @@ namespace Client
                     {
                         var target = match.Groups["target"].Value;
                         var content = match.Groups["content"].Value;
-                        var message = new PlayerMessage(Guid.NewGuid(), DateTime.UtcNow, player, target, content);
+                        var message = new PlayerMessage(player, target, content);
 
                         await client.GetGrain<IPlayer>(player).SendTellAsync(message);
                     }

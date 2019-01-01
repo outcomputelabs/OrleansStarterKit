@@ -1,13 +1,11 @@
 ﻿using Orleans.Concurrency;
-using System;
 
 namespace Grains.Models
 {
     [Immutable]
     public class PartyInvitation : Message
     {
-        public PartyInvitation(Guid id, DateTime timestamp, IPlayer player, IParty party)
-            : base(id, timestamp)
+        public PartyInvitation(IPlayer player, IParty party)
         {
             Player = player;
             Party = party;

@@ -6,10 +6,10 @@ namespace Grains.Models
     [Immutable]
     public class Message
     {
-        public Message(Guid id, DateTime timestamp)
+        public Message()
         {
-            Id = id;
-            Timestamp = timestamp;
+            Id = Guid.NewGuid();
+            Timestamp = DateTime.UtcNow;
         }
 
         public Guid Id { get; }

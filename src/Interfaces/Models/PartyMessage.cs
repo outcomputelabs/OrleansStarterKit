@@ -6,8 +6,7 @@ namespace Grains.Models
     [Immutable]
     public class PartyMessage : Message
     {
-        public PartyMessage(Guid id, DateTime timestamp, string from, Guid to, string content)
-            : base(id, timestamp)
+        public PartyMessage(string from, Guid to, string content)
         {
             From = from;
             To = to;
