@@ -47,8 +47,11 @@ namespace Client
                 .ConfigureLogging(builder =>
                 {
                     builder.AddConsole();
+                    builder.SetMinimumLevel(LogLevel.Warning);
                 })
                 .Build();
+
+            Console.WriteLine("Connecting...");
 
             await client.Connect(async error =>
             {
@@ -56,56 +59,67 @@ namespace Client
                 return true;
             });
 
+            Console.WriteLine("Connected.");
+
             while (true)
             {
+                Console.Write("> ");
                 var command = Console.ReadLine();
 
-                Match match;
-
-                if ((match = Regex.Match(command, @"^/player (?<player>\w+)$")).Success)
+                try
                 {
-                    player = match.Groups["player"].Value;
-                    Console.WriteLine($"Current player is now [{player}]");
-                }
-                else if ((match = Regex.Match(command, @"^/tell (?<target>\w+) (?<content>.+)")).Success)
-                {
-                    var target = match.Groups["target"].Value;
-                    var content = match.Groups["content"].Value;
-                    var message = new TellMessage(Guid.NewGuid(), player, target, content, DateTime.UtcNow);
-
-                    await client.GetGrain<IPlayer>(player).SendTellAsync(message);
-                }
-                else if ((match = Regex.Match(command, @"^/messages$")).Success)
-                {
-                    var messages = await client.GetGrain<IPlayer>(player).GetMessagesAsync();
-                    foreach (var message in messages)
+                    Match match;
+                    if ((match = Regex.Match(command, @"^/player (?<player>\w+)$")).Success)
                     {
-                        switch (message)
+                        player = match.Groups["player"].Value;
+                        Console.WriteLine($"Current player is now [{player}]");
+                    }
+                    else if ((match = Regex.Match(command, @"^/tell (?<target>\w+) (?<content>.+)")).Success)
+                    {
+                        var target = match.Groups["target"].Value;
+                        var content = match.Groups["content"].Value;
+                        var message = new TellMessage(Guid.NewGuid(), player, target, content, DateTime.UtcNow);
+
+                        await client.GetGrain<IPlayer>(player).SendTellAsync(message);
+                    }
+                    else if ((match = Regex.Match(command, @"^/messages$")).Success)
+                    {
+                        var messages = await client.GetGrain<IPlayer>(player).GetMessagesAsync();
+                        foreach (var message in messages)
                         {
-                            case TellMessage m:
-                                Console.ForegroundColor = ConsoleColor.White;
-                                Console.WriteLine($"{m.Timestamp:HH:mm} {m.From} > {m.To}: {m.Content}");
-                                Console.ResetColor();
-                                break;
+                            switch (message)
+                            {
+                                case TellMessage m:
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                    Console.WriteLine($"{m.Timestamp:HH:mm} {m.From} > {m.To}: {m.Content}");
+                                    Console.ResetColor();
+                                    break;
 
-                            case PartyMessage m:
-                                Console.ForegroundColor = ConsoleColor.Yellow;
-                                Console.WriteLine($"{m.Timestamp:HH:mm} {m.From}: {m.Content}");
-                                Console.ResetColor();
-                                break;
+                                case PartyMessage m:
+                                    Console.ForegroundColor = ConsoleColor.Yellow;
+                                    Console.WriteLine($"{m.Timestamp:HH:mm} {m.From}: {m.Content}");
+                                    Console.ResetColor();
+                                    break;
 
-                            default:
-                                throw new InvalidOperationException();
+                                default:
+                                    throw new InvalidOperationException();
+                            }
                         }
                     }
+                    else if ((match = Regex.Match(command, @"^/quit$")).Success)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid command.");
+                    }
                 }
-                else if ((match = Regex.Match(command, @"^/quit$")).Success)
+                catch (Exception error)
                 {
-                    return;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid command.");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(error.Message);
+                    Console.ResetColor();
                 }
             }
         }
