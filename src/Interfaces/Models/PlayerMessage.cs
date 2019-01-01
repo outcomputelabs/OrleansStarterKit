@@ -4,21 +4,18 @@ using System;
 namespace Grains.Models
 {
     [Immutable]
-    public class TellMessage : IMessage
+    public class PlayerMessage : Message
     {
-        public TellMessage(Guid id, string from, string to, string content, DateTime timestamp)
+        public PlayerMessage(Guid id, DateTime timestamp, string from, string to, string content)
+            : base(id, timestamp)
         {
-            Id = id;
             From = from;
             To = to;
             Content = content;
-            Timestamp = timestamp;
         }
 
-        public Guid Id { get; }
         public string From { get; }
         public string To { get; }
         public string Content { get; }
-        public DateTime Timestamp { get; }
     }
 }

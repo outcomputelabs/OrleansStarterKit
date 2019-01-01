@@ -78,7 +78,7 @@ namespace Client
                     {
                         var target = match.Groups["target"].Value;
                         var content = match.Groups["content"].Value;
-                        var message = new TellMessage(Guid.NewGuid(), player, target, content, DateTime.UtcNow);
+                        var message = new PlayerMessage(Guid.NewGuid(), DateTime.UtcNow, player, target, content);
 
                         await client.GetGrain<IPlayer>(player).SendTellAsync(message);
                     }
@@ -89,7 +89,7 @@ namespace Client
                         {
                             switch (message)
                             {
-                                case TellMessage m:
+                                case PlayerMessage m:
                                     Console.ForegroundColor = ConsoleColor.White;
                                     Console.WriteLine($"{m.Timestamp:HH:mm} {m.From} > {m.To}: {m.Content}");
                                     Console.ResetColor();
@@ -105,6 +105,12 @@ namespace Client
                                     throw new InvalidOperationException();
                             }
                         }
+                    }
+                    else if ((match = Regex.Match(command, @"^/invite (?<target>\w+)")).Success)
+                    {
+                        var target = match.Groups["target"].Value;
+
+
                     }
                     else if ((match = Regex.Match(command, @"^/quit$")).Success)
                     {

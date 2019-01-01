@@ -5,9 +5,19 @@ namespace Grains
 {
     public class Party : IParty
     {
-        public Task SetInfoAsync(string description)
+        private IPlayer _leader;
+
+        public Task CreateAsync(IPlayer leader)
         {
-            throw new NotImplementedException();
+            if (_leader == null)
+            {
+                _leader = leader;
+                return Task.CompletedTask;
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
         }
     }
 }

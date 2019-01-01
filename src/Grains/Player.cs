@@ -14,18 +14,20 @@ namespace Grains
 
         private readonly ILogger<Player> _logger;
 
-        private readonly Queue<IMessage> _messages = new Queue<IMessage>();
+        private readonly Queue<Message> _messages = new Queue<Message>();
 
         private readonly HashSet<Guid> _handled = new HashSet<Guid>();
 
         private readonly int MaxMessagesCached = 100;
+
+        private IParty _party = null;
 
         public Player(ILogger<Player> logger)
         {
             _logger = logger;
         }
 
-        public Task ReceiveTellAsync(TellMessage message)
+        public Task ReceiveTellAsync(PlayerMessage message)
         {
             // log reception
             _logger.LogInformation("{@GrainKey} receiving {@Message}", GrainKey, message);
@@ -58,7 +60,7 @@ namespace Grains
             return Task.CompletedTask;
         }
 
-        public async Task SendTellAsync(TellMessage message)
+        public async Task SendTellAsync(PlayerMessage message)
         {
             // log reception
             _logger.LogInformation("{@GrainKey} sending {@Message}", GrainKey, message);
@@ -94,9 +96,25 @@ namespace Grains
             _logger.LogInformation("{@GrainKey} sent {@Message}", GrainKey, message);
         }
 
-        public Task<ImmutableList<IMessage>> GetMessagesAsync()
+        public Task<ImmutableList<Message>> GetMessagesAsync()
         {
             return Task.FromResult(_messages.ToImmutableList());
+        }
+
+        public async Task InviteAsync(string other)
+        {
+            // create a new party as needed
+            if (_party == null)
+            {
+                // attempt to create a new party
+                var party = GrainFactory.GetGrain<IParty>(Guid.NewGuid());
+                await party.CreateAsync(this.AsReference<IPlayer>());
+
+                // keep the party if creation was successful
+                _party = party;
+            }
+
+            // create a new party invitation
         }
     }
 }

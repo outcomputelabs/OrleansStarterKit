@@ -7,8 +7,10 @@ namespace Grains
 {
     public interface IPlayer : IGrainWithStringKey
     {
-        Task SendTellAsync(TellMessage message);
-        Task ReceiveTellAsync(TellMessage message);
-        Task<ImmutableList<IMessage>> GetMessagesAsync();
+        Task SendTellAsync(PlayerMessage message);
+        Task ReceiveTellAsync(PlayerMessage message);
+        Task<ImmutableList<Message>> GetMessagesAsync();
+        Task InviteAsync(string target);
+
     }
 }
