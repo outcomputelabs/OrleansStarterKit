@@ -1,5 +1,6 @@
 ﻿using Grains.Models;
 using Orleans;
+using System.Collections.Immutable;
 using System.Threading.Tasks;
 
 namespace Grains
@@ -8,5 +9,6 @@ namespace Grains
     {
         Task SendTellAsync(TellMessage message);
         Task ReceiveTellAsync(TellMessage message);
+        Task<ImmutableList<IMessage>> GetMessagesAsync();
     }
 }

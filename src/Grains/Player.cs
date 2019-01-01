@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Grains.Models;
+﻿using Grains.Models;
 using Microsoft.Extensions.Logging;
 using Orleans;
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Threading.Tasks;
 
 namespace Grains
 {
@@ -13,11 +14,11 @@ namespace Grains
 
         private readonly ILogger<Player> _logger;
 
-        private readonly Queue<TellMessage> _received = new Queue<TellMessage>();
-        private readonly Queue<TellMessage> _sent = new Queue<TellMessage>();
+        private readonly Queue<IMessage> _messages = new Queue<IMessage>();
+
         private readonly HashSet<Guid> _handled = new HashSet<Guid>();
 
-        private const int MaxMessagesCached = 100;
+        private readonly int MaxMessagesCached = 100;
 
         public Player(ILogger<Player> logger)
         {
@@ -26,6 +27,9 @@ namespace Grains
 
         public Task ReceiveTellAsync(TellMessage message)
         {
+            // log reception
+            _logger.LogInformation("{@GrainKey} receiving {@Message}", GrainKey, message);
+
             // validate target player
             if (message.To != GrainKey)
             {
@@ -39,20 +43,26 @@ namespace Grains
             }
 
             // add the message as received
-            _received.Enqueue(message);
+            _messages.Enqueue(message);
             _handled.Add(message.Id);
 
             // clear overflowing messages from the cache
-            while (_received.Count > MaxMessagesCached)
+            while (_messages.Count > MaxMessagesCached)
             {
-                _handled.Remove(_received.Dequeue().Id);
+                _handled.Remove(_messages.Dequeue().Id);
             }
+
+            // log confirmation
+            _logger.LogInformation("{@GrainKey} received {@Message}", GrainKey, message);
 
             return Task.CompletedTask;
         }
 
         public async Task SendTellAsync(TellMessage message)
         {
+            // log reception
+            _logger.LogInformation("{@GrainKey} sending {@Message}", GrainKey, message);
+
             // validate source player
             if (message.From != GrainKey)
             {
@@ -69,16 +79,24 @@ namespace Grains
             await GrainFactory.GetGrain<IPlayer>(message.To).ReceiveTellAsync(message);
 
             // add the message as sent
-            _sent.Enqueue(message);
+            _messages.Enqueue(message);
 
             // clear overflowing messages from the cache
-            while (_sent.Count > MaxMessagesCached)
+            while (_messages.Count > MaxMessagesCached)
             {
-                _handled.Remove(_sent.Dequeue().Id);
+                _handled.Remove(_messages.Dequeue().Id);
             }
 
             // mark the message as handled
             _handled.Add(message.Id);
+
+            // log confirmation
+            _logger.LogInformation("{@GrainKey} sent {@Message}", GrainKey, message);
+        }
+
+        public Task<ImmutableList<IMessage>> GetMessagesAsync()
+        {
+            return Task.FromResult(_messages.ToImmutableList());
         }
     }
 }

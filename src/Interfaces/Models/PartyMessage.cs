@@ -4,9 +4,9 @@ using System;
 namespace Grains.Models
 {
     [Immutable]
-    public class TellMessage : IMessage
+    public class PartyMessage : IMessage
     {
-        public TellMessage(Guid id, string from, string to, string content, DateTime timestamp)
+        public PartyMessage(Guid id, string from, Guid to, string content, DateTime timestamp)
         {
             Id = id;
             From = from;
@@ -17,7 +17,7 @@ namespace Grains.Models
 
         public Guid Id { get; }
         public string From { get; }
-        public string To { get; }
+        public Guid To { get; }
         public string Content { get; }
         public DateTime Timestamp { get; }
     }
