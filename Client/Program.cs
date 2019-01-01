@@ -70,10 +70,34 @@ namespace Client
                 else if ((match = Regex.Match(command, @"^/tell (?<target>\w+) (?<content>.+)")).Success)
                 {
                     var target = match.Groups["target"].Value;
-                    var content = match.Groups["message"].Value;
+                    var content = match.Groups["content"].Value;
                     var message = new TellMessage(Guid.NewGuid(), player, target, content, DateTime.UtcNow);
 
                     await client.GetGrain<IPlayer>(player).SendTellAsync(message);
+                }
+                else if ((match = Regex.Match(command, @"^/messages$")).Success)
+                {
+                    var messages = await client.GetGrain<IPlayer>(player).GetMessagesAsync();
+                    foreach (var message in messages)
+                    {
+                        switch (message)
+                        {
+                            case TellMessage m:
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.WriteLine($"{m.Timestamp:HH:mm} {m.From} > {m.To}: {m.Content}");
+                                Console.ResetColor();
+                                break;
+
+                            case PartyMessage m:
+                                Console.ForegroundColor = ConsoleColor.Yellow;
+                                Console.WriteLine($"{m.Timestamp:HH:mm} {m.From}: {m.Content}");
+                                Console.ResetColor();
+                                break;
+
+                            default:
+                                throw new InvalidOperationException();
+                        }
+                    }
                 }
                 else if ((match = Regex.Match(command, @"^/quit$")).Success)
                 {
