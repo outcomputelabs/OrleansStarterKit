@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Grains;
+using Grains.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Orleans;
@@ -64,6 +66,14 @@ namespace Client
                 {
                     player = match.Groups["player"].Value;
                     Console.WriteLine($"Current player is now [{player}]");
+                }
+                else if ((match = Regex.Match(command, @"^/tell (?<target>\w+) (?<content>.+)")).Success)
+                {
+                    var target = match.Groups["target"].Value;
+                    var content = match.Groups["message"].Value;
+                    var message = new TellMessage(Guid.NewGuid(), player, target, content, DateTime.UtcNow);
+
+                    await client.GetGrain<IPlayer>(player).SendTellAsync(message);
                 }
                 else if ((match = Regex.Match(command, @"^/quit$")).Success)
                 {
