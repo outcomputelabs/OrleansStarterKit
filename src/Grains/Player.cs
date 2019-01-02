@@ -60,7 +60,7 @@ namespace Grains
             return Task.CompletedTask;
         }
 
-        public async Task SendTellAsync(PlayerMessage message)
+        public async Task TellAsync(PlayerMessage message)
         {
             // log reception
             _logger.LogInformation("{@GrainKey} sending {@Message}", GrainKey, message);
@@ -115,6 +115,11 @@ namespace Grains
             }
 
             // create a new party invitation
+        }
+
+        public Task ReceiveInviteAsync(PartyInvite invite)
+        {
+            throw new NotImplementedException();
         }
     }
 }

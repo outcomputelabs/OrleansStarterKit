@@ -3,9 +3,9 @@
 namespace Grains.Models
 {
     [Immutable]
-    public class PartyInvitation : Message
+    public class PartyInvite : Message
     {
-        public PartyInvitation(IPlayer player, IParty party)
+        public PartyInvite(IPlayer player, IParty party)
         {
             Player = player;
             Party = party;
