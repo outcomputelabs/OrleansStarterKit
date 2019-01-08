@@ -12,7 +12,7 @@ namespace Grains
 
         Task<ImmutableList<Message>> GetMessagesAsync();
 
-        Task InviteAsync(string target);
+        Task InviteAsync(IPlayer target);
         Task ReceiveInviteAsync(PartyInvite invite);
     }
 }

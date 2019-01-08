@@ -101,23 +101,26 @@ namespace Grains
             return Task.FromResult(_messages.ToImmutableList());
         }
 
-        public async Task InviteAsync(string other)
+        public async Task InviteAsync(IPlayer other)
         {
             // create a new party as needed
             if (_party == null)
             {
                 // attempt to create a new party
+                // this will fail on the unlikely chance that a party already exists with the same guid key
+                // in that case the client must try the request again
                 var party = GrainFactory.GetGrain<IParty>(Guid.NewGuid());
                 await party.CreateAsync(this.AsReference<IPlayer>());
 
-                // keep the party if creation was successful
+                // keep the party if creation was sucessful
                 _party = party;
             }
 
-            // create a new party invitation
+            // invite the player to the party
+            await _party.InviteAsync(this.AsReference<IPlayer>(), other);
         }
 
-        public Task ReceiveInviteAsync(PartyInvite invite)
+        public Task ReceiveInviteAsync(IPlayer from, IParty party)
         {
             throw new NotImplementedException();
         }

@@ -74,11 +74,11 @@ namespace Client
                         player = match.Groups["player"].Value;
                         Console.WriteLine($"Current player is now [{player}]");
                     }
-                    else if ((match = Regex.Match(command, @"^/tell (?<target>\w+) (?<content>.+)")).Success)
+                    else if ((match = Regex.Match(command, @"^/tell (?<other>\w+) (?<content>.+)")).Success)
                     {
-                        var target = match.Groups["target"].Value;
+                        var other = match.Groups["other"].Value;
                         var content = match.Groups["content"].Value;
-                        var message = new PlayerMessage(player, target, content);
+                        var message = new PlayerMessage(player, other, content);
 
                         await client.GetGrain<IPlayer>(player).TellAsync(message);
                     }
@@ -106,11 +106,11 @@ namespace Client
                             }
                         }
                     }
-                    else if ((match = Regex.Match(command, @"^/invite (?<target>\w+)")).Success)
+                    else if ((match = Regex.Match(command, @"^/invite (?<other>\w+)")).Success)
                     {
-                        var target = match.Groups["target"].Value;
-
-
+                        var other = match.Groups["other"].Value;
+                        await client.GetGrain<IPlayer>(player).InviteAsync(client.GetGrain<IPlayer>(other));
+                        Console.WriteLine($"Invited player [{other}] to the party.");
                     }
                     else if ((match = Regex.Match(command, @"^/quit$")).Success)
                     {
