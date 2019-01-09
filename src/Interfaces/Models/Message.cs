@@ -4,7 +4,7 @@ using System;
 namespace Grains.Models
 {
     [Immutable]
-    public class Message
+    public abstract class Message
     {
         public Message()
         {
