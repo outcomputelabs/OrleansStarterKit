@@ -1,20 +1,17 @@
 ﻿using Orleans.Concurrency;
-using System;
 
 namespace Grains.Models
 {
     [Immutable]
     public class PartyMessage : Message
     {
-        public PartyMessage(string from, Guid to, string content)
+        public PartyMessage(IPlayer from, string content)
         {
             From = from;
-            To = to;
             Content = content;
         }
 
-        public string From { get; }
-        public Guid To { get; }
+        public IPlayer From { get; }
         public string Content { get; }
     }
 }

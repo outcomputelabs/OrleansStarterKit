@@ -6,6 +6,6 @@ namespace Grains
     public interface IParty : IGrainWithGuidKey
     {
         Task CreateAsync(IPlayer leader);
-        Task InviteAsync(IPlayer from, IPlayer to);
+        Task InviteAsync(IPlayer sender, IPlayer invitee);
     }
 }

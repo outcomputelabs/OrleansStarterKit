@@ -7,8 +7,8 @@ namespace Grains
 {
     public interface IPlayer : IGrainWithStringKey
     {
+        Task TellOtherAsync(IPlayer other, PlayerMessage message);
         Task TellAsync(PlayerMessage message);
-        Task ReceiveTellAsync(PlayerMessage message);
 
         Task<ImmutableList<Message>> GetMessagesAsync();
 

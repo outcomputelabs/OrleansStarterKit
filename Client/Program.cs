@@ -80,7 +80,7 @@ namespace Client
                         var content = match.Groups["content"].Value;
                         var message = new PlayerMessage(player, other, content);
 
-                        await client.GetGrain<IPlayer>(player).TellAsync(message);
+                        await client.GetGrain<IPlayer>(player).TellOtherAsync(message);
                     }
                     else if ((match = Regex.Match(command, @"^/messages$")).Success)
                     {

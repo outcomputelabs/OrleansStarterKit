@@ -27,7 +27,7 @@ namespace Grains
             _logger = logger;
         }
 
-        public Task ReceiveTellAsync(PlayerMessage message)
+        public Task TellAsync(PlayerMessage message)
         {
             // log reception
             _logger.LogInformation("{@GrainKey} receiving {@Message}", GrainKey, message);
@@ -60,7 +60,7 @@ namespace Grains
             return Task.CompletedTask;
         }
 
-        public async Task TellAsync(PlayerMessage message)
+        public async Task TellOtherAsync(PlayerMessage message)
         {
             // log reception
             _logger.LogInformation("{@GrainKey} sending {@Message}", GrainKey, message);
@@ -78,7 +78,7 @@ namespace Grains
             }
 
             // send the message
-            await GrainFactory.GetGrain<IPlayer>(message.To).ReceiveTellAsync(message);
+            await GrainFactory.GetGrain<IPlayer>(message.To).TellAsync(message);
 
             // add the message as sent
             _messages.Enqueue(message);
