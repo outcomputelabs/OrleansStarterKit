@@ -78,38 +78,28 @@ namespace Client
                     {
                         var other = match.Groups["other"].Value;
                         var content = match.Groups["content"].Value;
-                        var message = new PlayerMessage(player, other, content);
+                        var message = new Message(client.GetGrain<IPlayer>(player), content, MessageType.Tell);
 
-                        await client.GetGrain<IPlayer>(player).TellOtherAsync(message);
+                        await client.GetGrain<IPlayer>(other).TellAsync(message);
                     }
                     else if ((match = Regex.Match(command, @"^/messages$")).Success)
                     {
                         var messages = await client.GetGrain<IPlayer>(player).GetMessagesAsync();
-                        foreach (var message in messages)
+                        foreach (var m in messages)
                         {
-                            switch (message)
-                            {
-                                case PlayerMessage m:
-                                    Console.ForegroundColor = ConsoleColor.White;
-                                    Console.WriteLine($"{m.Timestamp:HH:mm} {m.From} > {m.To}: {m.Content}");
-                                    Console.ResetColor();
-                                    break;
+                            Console.ForegroundColor =
+                                m.Type == MessageType.Tell ? ConsoleColor.White :
+                                m.Type == MessageType.Party ? ConsoleColor.Yellow :
+                                ConsoleColor.Gray;
 
-                                case PartyMessage m:
-                                    Console.ForegroundColor = ConsoleColor.Yellow;
-                                    Console.WriteLine($"{m.Timestamp:HH:mm} {m.From}: {m.Content}");
-                                    Console.ResetColor();
-                                    break;
-
-                                default:
-                                    throw new InvalidOperationException();
-                            }
+                            Console.WriteLine($"{m.Timestamp:HH:mm} {m.From}: {m.Content}");
+                            Console.ResetColor();
                         }
                     }
                     else if ((match = Regex.Match(command, @"^/invite (?<other>\w+)")).Success)
                     {
                         var other = match.Groups["other"].Value;
-                        await client.GetGrain<IPlayer>(player).InviteAsync(client.GetGrain<IPlayer>(other));
+                        //await client.GetGrain<IPlayer>(player).InviteAsync(client.GetGrain<IPlayer>(other));
                         Console.WriteLine($"Invited player [{other}] to the party.");
                     }
                     else if ((match = Regex.Match(command, @"^/quit$")).Success)

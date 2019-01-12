@@ -27,102 +27,22 @@ namespace Grains
             _logger = logger;
         }
 
-        public Task TellAsync(PlayerMessage message)
+        public Task HelloWorldAsync()
         {
-            // log reception
-            _logger.LogInformation("{@GrainKey} receiving {@Message}", GrainKey, message);
-
-            // validate target player
-            if (message.To != GrainKey)
-            {
-                throw new InvalidOperationException();
-            }
-
-            // skip repeated requests
-            if (_handled.Contains(message.Id))
-            {
-                return Task.CompletedTask;
-            }
-
-            // add the message as received
-            _messages.Enqueue(message);
-            _handled.Add(message.Id);
-
-            // clear overflowing messages from the cache
-            while (_messages.Count > MaxMessagesCached)
-            {
-                _handled.Remove(_messages.Dequeue().Id);
-            }
-
-            // log confirmation
-            _logger.LogInformation("{@GrainKey} received {@Message}", GrainKey, message);
-
+            _logger.LogInformation("{@GrainKey} says hello world!", GrainKey);
             return Task.CompletedTask;
         }
 
-        public async Task TellOtherAsync(PlayerMessage message)
+        public Task TellAsync(Message message)
         {
-            // log reception
-            _logger.LogInformation("{@GrainKey} sending {@Message}", GrainKey, message);
-
-            // validate source player
-            if (message.From != GrainKey)
-            {
-                throw new InvalidOperationException();
-            }
-
-            // skip repeated messages
-            if (_handled.Contains(message.Id))
-            {
-                return;
-            }
-
-            // send the message
-            await GrainFactory.GetGrain<IPlayer>(message.To).TellAsync(message);
-
-            // add the message as sent
-            _messages.Enqueue(message);
-
-            // clear overflowing messages from the cache
-            while (_messages.Count > MaxMessagesCached)
-            {
-                _handled.Remove(_messages.Dequeue().Id);
-            }
-
-            // mark the message as handled
-            _handled.Add(message.Id);
-
-            // log confirmation
-            _logger.LogInformation("{@GrainKey} sent {@Message}", GrainKey, message);
+            _logger.LogInformation("{@GrainKey} received {@Message}", message);
+            _messages.Enqueue(message, MaxMessagesCached);
+            return Task.CompletedTask;
         }
 
         public Task<ImmutableList<Message>> GetMessagesAsync()
         {
             return Task.FromResult(_messages.ToImmutableList());
-        }
-
-        public async Task InviteAsync(IPlayer other)
-        {
-            // create a new party as needed
-            if (_party == null)
-            {
-                // attempt to create a new party
-                // this will fail on the unlikely chance that a party already exists with the same guid key
-                // in that case the client must try the request again
-                var party = GrainFactory.GetGrain<IParty>(Guid.NewGuid());
-                await party.CreateAsync(this.AsReference<IPlayer>());
-
-                // keep the party if creation was sucessful
-                _party = party;
-            }
-
-            // invite the player to the party
-            await _party.InviteAsync(this.AsReference<IPlayer>(), other);
-        }
-
-        public Task ReceiveInviteAsync(IPlayer from, IParty party)
-        {
-            throw new NotImplementedException();
         }
     }
 }

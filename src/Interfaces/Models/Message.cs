@@ -4,15 +4,25 @@ using System;
 namespace Grains.Models
 {
     [Immutable]
-    public abstract class Message
+    public class Message
     {
-        public Message()
+        public Message(IPlayer from, string content, MessageType type)
         {
-            Id = Guid.NewGuid();
-            Timestamp = DateTime.UtcNow;
+            From = from;
+            Content = content;
+            Type = type;
         }
 
-        public Guid Id { get; }
-        public DateTime Timestamp { get; }
+        public IPlayer From { get; }
+        public string Content { get; }
+        public MessageType Type { get; }
+
+        public DateTime Timestamp { get; } = DateTime.UtcNow;
+    }
+
+    public enum MessageType
+    {
+        Tell,
+        Party
     }
 }

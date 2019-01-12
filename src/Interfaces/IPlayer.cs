@@ -7,12 +7,18 @@ namespace Grains
 {
     public interface IPlayer : IGrainWithStringKey
     {
-        Task TellOtherAsync(IPlayer other, PlayerMessage message);
-        Task TellAsync(PlayerMessage message);
+        /// <summary>
+        /// Hello World example.
+        /// </summary>
+        Task HelloWorldAsync();
+
+        /// <summary>
+        /// Sends a direct message to another player.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        Task TellAsync(Message message);
 
         Task<ImmutableList<Message>> GetMessagesAsync();
-
-        Task InviteAsync(IPlayer target);
-        Task ReceiveInviteAsync(PartyInvite invite);
     }
 }

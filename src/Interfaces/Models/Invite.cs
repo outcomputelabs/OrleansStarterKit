@@ -3,15 +3,15 @@
 namespace Grains.Models
 {
     [Immutable]
-    public class PartyInvite : Message
+    public class Invite
     {
-        public PartyInvite(IPlayer from, IParty party)
+        public Invite(IParty party, IPlayer from)
         {
-            From = from;
             Party = party;
+            From = from;
         }
 
-        public IPlayer From { get; }
         public IParty Party { get; }
+        public IPlayer From { get; }
     }
 }
