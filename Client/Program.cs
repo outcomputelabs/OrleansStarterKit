@@ -80,7 +80,7 @@ namespace Client
                         var content = match.Groups["content"].Value;
                         var message = new Message(client.GetGrain<IPlayer>(player), content, MessageType.Tell);
 
-                        await client.GetGrain<IPlayer>(other).TellAsync(message);
+                        await client.GetGrain<IPlayer>(other).MessageAsync(message);
                     }
                     else if ((match = Regex.Match(command, @"^/messages$")).Success)
                     {
@@ -99,6 +99,8 @@ namespace Client
                     else if ((match = Regex.Match(command, @"^/invite (?<other>\w+)")).Success)
                     {
                         var other = match.Groups["other"].Value;
+                        var result = await client.GetGrain<IPlayer>(player).InviteAsync(client.GetGrain<IPlayer>(other));
+
                         //await client.GetGrain<IPlayer>(player).InviteAsync(client.GetGrain<IPlayer>(other));
                         Console.WriteLine($"Invited player [{other}] to the party.");
                     }
