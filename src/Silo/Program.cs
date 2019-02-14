@@ -71,13 +71,21 @@ namespace Silo
                     options.UseJsonFormat = true;
                     options.TypeNameHandling = TypeNameHandling.None;
                 })
-                .AddSimpleMessageStreamProvider("SimpleMessageStreamProvider")
+                .AddSimpleMessageStreamProvider("SMS")
                 .AddAdoNetGrainStorage("PubSubStore", options =>
                 {
                     options.ConnectionString = Configuration.GetConnectionString("Orleans");
                     options.Invariant = Configuration["Orleans:AdoNet:Invariant"];
+                    options.UseJsonFormat = true;
                 })
                 .EnableDirectClient()
+                .AddStartupTask(async (provider, token) =>
+                {
+                    var factory = provider.GetService<IGrainFactory>();
+                    await factory.GetGrain<ISenderGrain>(Guid.Empty).StartAsync();
+                    await factory.GetGrain<IReceiverGrain>("A").StartAsync();
+                    await factory.GetGrain<IReceiverGrain>("B").StartAsync();
+                })
                 .Build();
 
             // start the silo
