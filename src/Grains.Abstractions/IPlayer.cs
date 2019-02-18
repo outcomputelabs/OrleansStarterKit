@@ -1,6 +1,5 @@
 ﻿using Grains.Models;
 using Orleans;
-using System;
 using System.Collections.Immutable;
 using System.Threading.Tasks;
 
@@ -22,16 +21,5 @@ namespace Grains
         /// Returns the latest received messages as cached by this player.
         /// </summary>
         Task<ImmutableList<Message>> GetMessagesAsync();
-
-        /// <summary>
-        /// Makes this player invite another player to form a party.
-        /// This player will become the initial leader of the party.
-        /// </summary>
-        Task<InviteResult> InviteAsync(IPlayer other);
-
-        /// <summary>
-        /// Invites this player to a party lead by another player.
-        /// </summary>
-        Task<InviteResult> TakeInviteAsync(Invite invite);
     }
 }

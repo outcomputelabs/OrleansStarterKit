@@ -94,14 +94,6 @@ namespace Client
                             Console.ResetColor();
                         }
                     }
-                    else if ((match = Regex.Match(command, @"^/invite (?<other>\w+)")).Success)
-                    {
-                        var other = match.Groups["other"].Value;
-                        var result = await client.GetGrain<IPlayer>(player).InviteAsync(client.GetGrain<IPlayer>(other));
-
-                        //await client.GetGrain<IPlayer>(player).InviteAsync(client.GetGrain<IPlayer>(other));
-                        Console.WriteLine($"Invited player [{other}] to the party.");
-                    }
                     else if ((match = Regex.Match(command, @"^/quit$")).Success)
                     {
                         return;

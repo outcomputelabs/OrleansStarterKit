@@ -1,5 +1,4 @@
-﻿using Grains.Models;
-using Orleans;
+﻿using Orleans;
 using System.Threading.Tasks;
 
 namespace Grains
@@ -8,9 +7,6 @@ namespace Grains
     {
         Task SetLeaderAsync(IPlayer player);
         Task<IPlayer> GetLeaderAsync();
-
-        Task<InviteResult> InviteAsync(IPlayer sender, IPlayer other);
-
         Task<bool> IsActiveAsync();
     }
 }
