@@ -19,8 +19,6 @@ namespace Grains
 
         private readonly int MaxMessagesCached = 100;
 
-        private IParty _party = null;
-
         public Player(ILogger<Player> logger)
         {
             _logger = logger;
