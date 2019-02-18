@@ -16,7 +16,7 @@ namespace Client
 {
     internal class Program
     {
-        private static string player;
+        private static string userId;
 
         private static async Task Main()
         {
@@ -24,6 +24,9 @@ namespace Client
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
+
+            // set the window title
+            Console.Title = configuration.GetValue("Console:Title", nameof(ISiloHost));
 
             // configure services
             var services = ConfigureServices(configuration);
@@ -67,34 +70,28 @@ namespace Client
                 try
                 {
                     Match match;
-                    if ((match = Regex.Match(command, @"^/player (?<player>\w+)$")).Success)
+                    if ((match = Regex.Match(command, @"^user (?<userid>\w+)$")).Success)
                     {
-                        player = match.Groups["player"].Value;
-                        Console.WriteLine($"Current player is now [{player}]");
+                        userId = match.Groups["userid"].Value;
+                        Console.WriteLine($"Current user is now [{userId}]");
                     }
-                    else if ((match = Regex.Match(command, @"^/tell (?<other>\w+) (?<content>.+)")).Success)
+                    else if ((match = Regex.Match(command, @"^tell (?<other>\w+) (?<content>.+)")).Success)
                     {
                         var other = match.Groups["other"].Value;
                         var content = match.Groups["content"].Value;
-                        var message = new Message(client.GetGrain<IPlayer>(player), content, MessageType.Tell);
+                        var message = new Message(userId, other, content);
 
-                        await client.GetGrain<IPlayer>(other).MessageAsync(message);
+                        await client.GetGrain<IChatUser>(other).MessageAsync(message);
                     }
-                    else if ((match = Regex.Match(command, @"^/messages$")).Success)
+                    else if ((match = Regex.Match(command, @"^messages$")).Success)
                     {
-                        var messages = await client.GetGrain<IPlayer>(player).GetMessagesAsync();
+                        var messages = await client.GetGrain<IChatUser>(userId).GetMessagesAsync();
                         foreach (var m in messages)
                         {
-                            Console.ForegroundColor =
-                                m.Type == MessageType.Tell ? ConsoleColor.White :
-                                m.Type == MessageType.Party ? ConsoleColor.Yellow :
-                                ConsoleColor.Gray;
-
-                            Console.WriteLine($"{m.Timestamp:HH:mm} {m.From}: {m.Content}");
-                            Console.ResetColor();
+                            Console.WriteLine($"{m.Timestamp:HH:mm} {m.FromUserId}: {m.Content}");
                         }
                     }
-                    else if ((match = Regex.Match(command, @"^/quit$")).Success)
+                    else if ((match = Regex.Match(command, @"^quit$")).Success)
                     {
                         return;
                     }

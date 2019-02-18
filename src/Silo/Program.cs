@@ -22,6 +22,9 @@ namespace Silo
                 .AddJsonFile("appsettings.json")
                 .Build();
 
+            // set the window title
+            Console.Title = configuration.GetValue("Console:Title", nameof(ISiloHost));
+
             // configure services
             var services = ConfigureServices(configuration);
 
@@ -53,7 +56,7 @@ namespace Silo
                 .ConfigureEndpoints(siloPort, gatewayPort)
                 .ConfigureApplicationParts(configure =>
                 {
-                    configure.AddApplicationPart(typeof(Player).Assembly).WithReferences();
+                    configure.AddApplicationPart(typeof(ChatUser).Assembly).WithReferences();
                 })
                 .ConfigureLogging(configure =>
                 {

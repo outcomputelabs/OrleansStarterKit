@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace Grains
 {
-    public class Player : Grain, IPlayer
+    public class ChatUser : Grain, IChatUser
     {
         private string GrainKey => this.GetPrimaryKeyString();
 
-        private readonly ILogger<Player> _logger;
+        private readonly ILogger<ChatUser> _logger;
 
         private readonly Queue<Message> _messages = new Queue<Message>();
         private readonly HashSet<Guid> _handled = new HashSet<Guid>();
 
         private readonly int MaxMessagesCached = 100;
 
-        public Player(ILogger<Player> logger)
+        public ChatUser(ILogger<ChatUser> logger)
         {
             _logger = logger;
         }

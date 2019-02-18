@@ -6,23 +6,17 @@ namespace Grains.Models
     [Immutable]
     public class Message
     {
-        public Message(IPlayer from, string content, MessageType type)
+        public Message(string fromUserId, string toUserId, string content)
         {
-            From = from;
+            FromUserId = fromUserId;
+            ToUserId = toUserId;
             Content = content;
-            Type = type;
         }
 
-        public IPlayer From { get; }
+        public Guid Id { get; } = Guid.NewGuid();
+        public string FromUserId { get; }
+        public string ToUserId { get; }
         public string Content { get; }
-        public MessageType Type { get; }
-
         public DateTime Timestamp { get; } = DateTime.UtcNow;
-    }
-
-    public enum MessageType
-    {
-        Tell,
-        Party
     }
 }
