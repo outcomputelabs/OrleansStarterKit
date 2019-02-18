@@ -25,6 +25,24 @@ namespace Silo
             // configure services
             var services = ConfigureServices(configuration);
 
+            // grab the network helper
+            var network = services.GetRequiredService<INetworkHelper>();
+
+            // test for open ports
+            var ports = network.GetAvailablePorts(2);
+
+            // get desired port configuration
+            var siloPort = configuration.GetValue("Orleans:Endpoints:SiloPort", 0);
+            if (siloPort == 0)
+            {
+                siloPort = ports[0];
+            }
+            var gatewayPort = configuration.GetValue("Orleans:Endpoints:GatewayPort", 0);
+            if (gatewayPort == 0)
+            {
+                gatewayPort = ports[1];
+            }
+
             // build the silo
             var host = new SiloHostBuilder()
                 .Configure<ClusterOptions>(options =>
@@ -32,10 +50,7 @@ namespace Silo
                     options.ClusterId = configuration["Orleans:ClusterId"];
                     options.ServiceId = configuration["Orleans:ServiceId"];
                 })
-                .ConfigureEndpoints(
-                    configuration.GetValue<int>("Orleans:Endpoints:SiloPort"),
-                    configuration.GetValue<int>("Orleans:Endpoints:GatewayPort")
-                )
+                .ConfigureEndpoints(siloPort, gatewayPort)
                 .ConfigureApplicationParts(configure =>
                 {
                     configure.AddApplicationPart(typeof(Player).Assembly).WithReferences();
@@ -92,6 +107,9 @@ namespace Silo
                     tableName: configuration["Serilog:MSSqlServer:TableName"],
                     restrictedToMinimumLevel: configuration.GetValue<LogEventLevel>("Serilog:MSSqlServer:RestrictedToMinimumLevel"))
                 .CreateLogger()));
+
+            // configure the network helper
+            services.AddSingleton<INetworkHelper, NetworkHelper>();
 
             // all done
             return services.BuildServiceProvider();
