@@ -15,67 +15,57 @@ namespace Silo
 {
     public class Program
     {
-        static Program()
+        public static async Task Main()
         {
-            // setup the configuration provider
-            Configuration = new ConfigurationBuilder()
+            // build the configuration provider
+            var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
-        }
 
-        private static IConfiguration Configuration { get; }
-
-        public static void Main()
-        {
-            MainAsync().Wait();
-        }
-
-        public static async Task MainAsync()
-        {
             // configure services
-            var services = ConfigureServices();
+            var services = ConfigureServices(configuration);
 
-            // configure the silo
+            // build the silo
             var host = new SiloHostBuilder()
                 .Configure<ClusterOptions>(options =>
                 {
-                    options.ClusterId = Configuration["Orleans:ClusterId"];
-                    options.ServiceId = Configuration["Orleans:ServiceId"];
+                    options.ClusterId = configuration["Orleans:ClusterId"];
+                    options.ServiceId = configuration["Orleans:ServiceId"];
                 })
                 .ConfigureEndpoints(
-                    Configuration.GetValue<int>("Orleans:Endpoints:SiloPort"),
-                    Configuration.GetValue<int>("Orleans:Endpoints:GatewayPort")
+                    configuration.GetValue<int>("Orleans:Endpoints:SiloPort"),
+                    configuration.GetValue<int>("Orleans:Endpoints:GatewayPort")
                 )
-                .ConfigureApplicationParts(config =>
+                .ConfigureApplicationParts(configure =>
                 {
-                    config.AddApplicationPart(typeof(Player).Assembly).WithReferences();
+                    configure.AddApplicationPart(typeof(Player).Assembly).WithReferences();
                 })
-                .ConfigureLogging(config =>
+                .ConfigureLogging(configure =>
                 {
-                    config.AddProvider(services.GetRequiredService<ILoggerProvider>());
+                    configure.AddProvider(services.GetRequiredService<ILoggerProvider>());
                 })
                 .UseAdoNetClustering(options =>
                 {
-                    options.ConnectionString = Configuration.GetConnectionString("Orleans");
-                    options.Invariant = Configuration["Orleans:AdoNet:Invariant"];
+                    options.ConnectionString = configuration.GetConnectionString("Orleans");
+                    options.Invariant = configuration["Orleans:AdoNet:Invariant"];
                 })
                 .UseAdoNetReminderService(options =>
                 {
-                    options.ConnectionString = Configuration.GetConnectionString("Orleans");
-                    options.Invariant = Configuration["Orleans:AdoNet:Invariant"];
+                    options.ConnectionString = configuration.GetConnectionString("Orleans");
+                    options.Invariant = configuration["Orleans:AdoNet:Invariant"];
                 })
                 .AddAdoNetGrainStorageAsDefault(options =>
                 {
-                    options.ConnectionString = Configuration.GetConnectionString("Orleans");
-                    options.Invariant = Configuration["Orleans:AdoNet:Invariant"];
+                    options.ConnectionString = configuration.GetConnectionString("Orleans");
+                    options.Invariant = configuration["Orleans:AdoNet:Invariant"];
                     options.UseJsonFormat = true;
                     options.TypeNameHandling = TypeNameHandling.None;
                 })
                 .AddSimpleMessageStreamProvider("SMS")
                 .AddAdoNetGrainStorage("PubSubStore", options =>
                 {
-                    options.ConnectionString = Configuration.GetConnectionString("Orleans");
-                    options.Invariant = Configuration["Orleans:AdoNet:Invariant"];
+                    options.ConnectionString = configuration.GetConnectionString("Orleans");
+                    options.Invariant = configuration["Orleans:AdoNet:Invariant"];
                     options.UseJsonFormat = true;
                 })
                 .EnableDirectClient()
@@ -95,19 +85,19 @@ namespace Silo
             await host.Stopped;
         }
 
-        private static IServiceProvider ConfigureServices()
+        private static IServiceProvider ConfigureServices(IConfiguration configuration)
         {
             var services = new ServiceCollection();
 
             // configure serilog
             services.AddLogging(config => config.AddSerilog(new LoggerConfiguration()
                 .WriteTo.Console(
-                    restrictedToMinimumLevel: Configuration.GetValue<LogEventLevel>("Serilog:Console:RestrictedToMinimumLevel"))
+                    restrictedToMinimumLevel: configuration.GetValue<LogEventLevel>("Serilog:Console:RestrictedToMinimumLevel"))
                 .WriteTo.MSSqlServer(
-                    connectionString: Configuration.GetConnectionString("Logging"),
-                    schemaName: Configuration["Serilog:MSSqlServer:SchemaName"],
-                    tableName: Configuration["Serilog:MSSqlServer:TableName"],
-                    restrictedToMinimumLevel: Configuration.GetValue<LogEventLevel>("Serilog:MSSqlServer:RestrictedToMinimumLevel"))
+                    connectionString: configuration.GetConnectionString("Orleans"),
+                    schemaName: configuration["Serilog:MSSqlServer:SchemaName"],
+                    tableName: configuration["Serilog:MSSqlServer:TableName"],
+                    restrictedToMinimumLevel: configuration.GetValue<LogEventLevel>("Serilog:MSSqlServer:RestrictedToMinimumLevel"))
                 .CreateLogger()));
 
             // all done

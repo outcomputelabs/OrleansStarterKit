@@ -6,48 +6,46 @@ using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.Configuration;
 using Orleans.Hosting;
+using Serilog;
+using Serilog.Events;
 using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Client
 {
-    class Program
+    internal class Program
     {
         private static string player;
 
-        static void Main()
+        private static async Task Main()
         {
-            MainAsync().Wait();
-        }
-
-        static async Task MainAsync()
-        {
-            var config = new ConfigurationBuilder()
+            // build the configuration provider
+            var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var services = new ServiceCollection();
-            services.AddLogging(builder => builder.AddConsole());
-            var provider = services.BuildServiceProvider();
+            // configure services
+            var services = ConfigureServices(configuration);
 
-            var logger = provider.GetRequiredService<ILogger<Program>>();
+            // grab a logger
+            var logger = services.GetRequiredService<ILogger<Program>>();
 
+            // build the client
             var client = new ClientBuilder()
                 .Configure<ClusterOptions>(options =>
                 {
-                    options.ClusterId = config.GetValue<string>("Orleans:ClusterId");
-                    options.ServiceId = config.GetValue<string>("Orleans:ServiceId");
+                    options.ClusterId = configuration.GetValue<string>("Orleans:ClusterId");
+                    options.ServiceId = configuration.GetValue<string>("Orleans:ServiceId");
                 })
                 .UseAdoNetClustering(options =>
                 {
-                    options.ConnectionString = config.GetConnectionString("Orleans");
-                    options.Invariant = config.GetValue<string>("Orleans:AdoNet:Invariant");
+                    options.ConnectionString = configuration.GetConnectionString("Orleans");
+                    options.Invariant = configuration.GetValue<string>("Orleans:AdoNet:Invariant");
                 })
                 .ConfigureLogging(builder =>
                 {
-                    builder.AddConsole();
-                    builder.SetMinimumLevel(LogLevel.Warning);
+                    builder.AddProvider(services.GetRequiredService<ILoggerProvider>());
                 })
                 .Build();
 
@@ -120,6 +118,25 @@ namespace Client
                     Console.ResetColor();
                 }
             }
+        }
+
+        private static IServiceProvider ConfigureServices(IConfiguration configuration)
+        {
+            var services = new ServiceCollection();
+
+            // configure serilog
+            services.AddLogging(config => config.AddSerilog(new LoggerConfiguration()
+                .WriteTo.Console(
+                    restrictedToMinimumLevel: configuration.GetValue<LogEventLevel>("Serilog:Console:RestrictedToMinimumLevel"))
+                .WriteTo.MSSqlServer(
+                    connectionString: configuration.GetConnectionString("Orleans"),
+                    schemaName: configuration["Serilog:MSSqlServer:SchemaName"],
+                    tableName: configuration["Serilog:MSSqlServer:TableName"],
+                    restrictedToMinimumLevel: configuration.GetValue<LogEventLevel>("Serilog:MSSqlServer:RestrictedToMinimumLevel"))
+                .CreateLogger()));
+
+            // all done
+            return services.BuildServiceProvider();
         }
     }
 }
