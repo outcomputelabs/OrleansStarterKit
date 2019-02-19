@@ -4,9 +4,9 @@ using System;
 namespace Grains.Models
 {
     [Immutable]
-    public class Message
+    public class ChatMessage
     {
-        public Message(string fromUserId, string toUserId, string content)
+        public ChatMessage(string fromUserId, string toUserId, string content)
         {
             FromUserId = fromUserId;
             ToUserId = toUserId;

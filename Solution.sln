@@ -16,6 +16,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grains.Abstractions", "src\
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Database", "src\Database\Database.sqlproj", "{70FAF3BC-1067-45D2-983D-51B7A01B3A5C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2E268E72-3A6B-4B48-8379-EE89DB97A756}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "test\UnitTests\UnitTests.csproj", "{77A17B3E-5AA8-4DC6-AC29-44496B7A4C09}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,9 +48,16 @@ Global
 		{70FAF3BC-1067-45D2-983D-51B7A01B3A5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70FAF3BC-1067-45D2-983D-51B7A01B3A5C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{70FAF3BC-1067-45D2-983D-51B7A01B3A5C}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{77A17B3E-5AA8-4DC6-AC29-44496B7A4C09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77A17B3E-5AA8-4DC6-AC29-44496B7A4C09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77A17B3E-5AA8-4DC6-AC29-44496B7A4C09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77A17B3E-5AA8-4DC6-AC29-44496B7A4C09}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{77A17B3E-5AA8-4DC6-AC29-44496B7A4C09} = {2E268E72-3A6B-4B48-8379-EE89DB97A756}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B4B3C08C-9B67-4938-A406-F66FE9CA8DF1}
