@@ -10,16 +10,7 @@ namespace UnitTests
 
         public ClusterFixture()
         {
-            Cluster = new TestCluster(new TestClusterOptions
-            {
-                ClusterId = nameof(TestCluster),
-                ServiceId = nameof(TestCluster),
-                BaseSiloPort = 11111,
-                BaseGatewayPort = 22222,
-                InitializeClientOnDeploy = true,
-                UseTestClusterMembership = true,
-            },
-            new[] { new MemoryConfigurationSource() });
+            Cluster = new TestClusterBuilder(3).Build();
             Cluster.Deploy();
         }
 
