@@ -79,7 +79,7 @@ namespace Client
                     {
                         var other = match.Groups["other"].Value;
                         var content = match.Groups["content"].Value;
-                        var message = new ChatMessage(userId, other, content);
+                        var message = new ChatMessage(Guid.NewGuid(), userId, other, content, DateTime.UtcNow);
 
                         await client.GetGrain<IChatUser>(other).MessageAsync(message);
                     }

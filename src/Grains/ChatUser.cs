@@ -10,8 +10,6 @@ namespace Grains
 {
     public class ChatUser : Grain, IChatUser
     {
-        private string GrainKey => this.GetPrimaryKeyString();
-
         private readonly ILogger<ChatUser> _logger;
 
         private readonly Queue<ChatMessage> _messages = new Queue<ChatMessage>();
@@ -24,10 +22,22 @@ namespace Grains
             _logger = logger;
         }
 
+        public override Task OnActivateAsync()
+        {
+            _grainKey = this.GetPrimaryKeyString();
+
+            return base.OnActivateAsync();
+        }
+
+        private string _grainKey;
+
         public Task MessageAsync(ChatMessage message)
         {
-            _logger.LogInformation("{@GrainKey} received {@Message}", message);
+            _logger.LogInformation("{@GrainType} {@GrainKey} received {@Message}",
+                nameof(ChatUser), _grainKey, message);
+
             _messages.Enqueue(message, MaxMessagesCached);
+
             return Task.CompletedTask;
         }
 
