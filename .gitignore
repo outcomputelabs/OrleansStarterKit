@@ -334,3 +334,4 @@ ASALocalRun/
 
 # OpenCover
 /test/UnitTests/coverage.xml
+/test/UnitTests/coverage
