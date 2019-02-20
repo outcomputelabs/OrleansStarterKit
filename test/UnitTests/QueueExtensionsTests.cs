@@ -1,4 +1,5 @@
 ﻿using Grains;
+using System;
 using System.Collections.Generic;
 using Xunit;
 
@@ -32,6 +33,13 @@ namespace UnitTests
             Assert.Equal(102, items[0]);
             Assert.Equal(103, items[1]);
             Assert.Equal(104, items[2]);
+        }
+
+        [Fact]
+        public void Queue_Enqueue_Refuses_Null()
+        {
+            // assert
+            Assert.Throws<ArgumentNullException>(() => ((Queue<int>)null).Enqueue(1, 1));
         }
     }
 }
