@@ -41,5 +41,17 @@ namespace UnitTests
             // assert
             Assert.Throws<ArgumentNullException>(() => ((Queue<int>)null).Enqueue(1, 1));
         }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void Queue_Enqueue_Refuses_Low_Capacity(int capacity)
+        {
+            // arrange
+            var queue = new Queue<int>();
+
+            // assert
+            Assert.Throws<ArgumentOutOfRangeException>(() => queue.Enqueue(1, capacity));
+        }
     }
 }
