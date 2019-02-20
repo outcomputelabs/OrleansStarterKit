@@ -331,3 +331,6 @@ ASALocalRun/
 
 # Stack dumps
 /sh.exe.stackdump
+
+# OpenCover
+/test/UnitTests/coverage.xml
