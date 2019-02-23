@@ -7,5 +7,5 @@ csmacnz.coveralls^
  --commitBranch %APPVEYOR_REPO_BRANCH%^
  --commitAuthor %APPVEYOR_REPO_COMMIT_AUTHOR%^
  --commitMessage %APPVEYOR_REPO_COMMIT_MESSAGE%^
- --jobId %APPVEYOR_BUILD_NUMBER%
+ --jobId %APPVEYOR_BUILD_NUMBER%^
  --serviceName appveyor
