@@ -26,8 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Client\Client.csproj" />
     <ProjectReference Include="..\..\src\Grains.Abstractions\Grains.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\Grains\Grains.csproj" />
+    <ProjectReference Include="..\..\src\Silo\Silo.csproj" />
   </ItemGroup>
 
 </Project>

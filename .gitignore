@@ -333,5 +333,4 @@ ASALocalRun/
 /sh.exe.stackdump
 
 # OpenCover
-/test/UnitTests/coverage.xml
-/test/UnitTests/coverage
+coverage.xml
