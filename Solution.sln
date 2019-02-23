@@ -22,6 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "test\UnitTests
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B04B17B2-F9BB-420A-9FEC-C74022F23628}"
 	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
