@@ -7,3 +7,5 @@ before_build:
 build:
   project: Solution.sln
   verbosity: minimal
+after_test:
+- cmd: ./test/UnitTests/coverage.cmd
