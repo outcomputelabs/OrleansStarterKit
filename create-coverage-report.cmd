@@ -7,4 +7,4 @@
  -filter:"+[Client]* +[Grains]* +[Grains.Abstractions]* +[Silo]* -[UnitTests]* -[Database]*"^
  -excludebyattribute:"*.GeneratedCode*"
 
-dotnet "%HOMEDRIVE%%HOMEPATH%\.nuget\packages\reportgenerator\4.0.12\tools\netcoreapp2.0\ReportGenerator.dll" -reports:coverage.xml -targetdir:.coverage
+reportgenerator -reports:coverage.xml -targetdir:.coverage
