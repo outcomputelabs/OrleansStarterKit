@@ -304,7 +304,7 @@
 				ServiceId = @ServiceId AND @ServiceId IS NOT NULL;
 		'),
 
-		/* Storage */
+		-- Storage
 		(
 			'WriteToStorageKey',
 			'-- When Orleans is running in normal, non-split state, there will
