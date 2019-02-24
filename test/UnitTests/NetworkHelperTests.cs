@@ -7,9 +7,6 @@ namespace UnitTests
 {
     public class NetworkHelperTests
     {
-        private const int DynamicPortRangeStart = 49152;
-        private const int DynamicPortRangeEnd = 65535;
-
         [Fact]
         public void NetworkHelper_Implements_Interface()
         {
@@ -45,20 +42,7 @@ namespace UnitTests
             // assert
             Assert.NotNull(ports);
             Assert.Equal(count, ports.Length);
-
-            foreach (var port in ports)
-            {
-                Assert.True(port >= DynamicPortRangeStart && port <= DynamicPortRangeEnd);
-                var listener = TcpListener.Create(port);
-                try
-                {
-                    listener.Start();
-                }
-                finally
-                {
-                    listener.Stop();
-                }
-            }
+            Assert.All(ports, p => Assert.True(p > 0));
         }
     }
 }
