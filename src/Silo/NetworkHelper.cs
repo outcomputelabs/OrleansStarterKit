@@ -10,26 +10,9 @@ namespace Silo
     public class NetworkHelper : INetworkHelper
     {
         /// <inheritdoc />
-        public int GetAvailablePort()
-        {
-            TcpListener listener = TcpListener.Create(0);
-            int port;
-            try
-            {
-                listener.Start();
-                port = (listener.LocalEndpoint as IPEndPoint).Port;
-            }
-            finally
-            {
-                listener.Stop();
-            }
-            return port;
-        }
-
-        /// <inheritdoc />
         public int[] GetAvailablePorts(int count)
         {
-            if (count < 1) throw new ArgumentOutOfRangeException(nameof(count), count, $"Count is {count} but must be greater than zero.");
+            if (count < 1) throw new ArgumentOutOfRangeException(nameof(count), count, "Count must be greater than zero.");
 
             var ports = new int[count];
             var listeners = new TcpListener[count];
