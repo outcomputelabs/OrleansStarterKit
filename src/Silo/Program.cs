@@ -9,10 +9,12 @@ using Orleans.Hosting;
 using Serilog;
 using Serilog.Events;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace Silo
 {
+    [ExcludeFromCodeCoverage]
     public class Program
     {
         public static async Task Main()

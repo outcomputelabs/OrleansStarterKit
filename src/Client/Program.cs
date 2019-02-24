@@ -9,11 +9,13 @@ using Orleans.Hosting;
 using Serilog;
 using Serilog.Events;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Client
 {
+    [ExcludeFromCodeCoverage]
     public static class Program
     {
         private static string userId;
