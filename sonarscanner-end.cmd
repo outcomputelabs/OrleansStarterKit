@@ -1,1 +1,1 @@
-@dotnet sonarscanner end
+@dotnet sonarscanner end /d:sonar.login="%SONARQUBE_TOKEN%"
