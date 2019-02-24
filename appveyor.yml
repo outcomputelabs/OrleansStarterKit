@@ -22,8 +22,7 @@ build:
   project: Solution.sln
   verbosity: minimal
 after_build:
-- cmd: >-
-    sonarscanner-end.cmd
+- cmd: ''
 before_test:
 - cmd: ''
 after_test:
@@ -31,3 +30,5 @@ after_test:
     create-coverage-report.cmd
 
     upload-coverage-to-coveralls.cmd
+
+    sonarscanner-end.cmd
