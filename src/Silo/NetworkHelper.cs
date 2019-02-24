@@ -30,7 +30,7 @@ namespace Silo
             {
                 for (var i = 0; i < count; ++i)
                 {
-                    listeners[i]?.Stop();
+                    listeners[i].Stop();
                 }
             }
             return ports;
