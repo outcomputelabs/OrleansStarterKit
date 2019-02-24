@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Client
 {
-    internal class Program
+    public static class Program
     {
         private static string userId;
 
@@ -31,15 +31,8 @@ namespace Client
             // configure services
             var services = ConfigureServices(Configuration);
 
-            // grab a logger
-            var logger = services.GetRequiredService<ILogger<Program>>();
-
             // build the client
             var client = new ClientBuilder()
-                .ConfigureHostConfiguration(action =>
-                {
-                    action.AddJsonFile("appsettings.json", false);
-                })
                 .Configure<ClusterOptions>(options =>
                 {
                     options.ClusterId = Configuration.GetValue<string>("Orleans:ClusterId");
