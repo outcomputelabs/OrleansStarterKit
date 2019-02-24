@@ -5,7 +5,7 @@
 	(
 		VALUES
 
-		/* Cluster Membership */
+		-- Cluster Membership
 		(
 			'UpdateIAmAlivetimeKey','
 			-- This is expected to never fail by Orleans, so return value
