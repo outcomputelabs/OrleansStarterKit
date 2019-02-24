@@ -2,10 +2,23 @@ version: 1.0.{build}
 image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
+environment:
+  COVERALLS_REPO_TOKEN:
+    secure: /CamEFhvQQ/bQy/XGKgxumW9H5cdcHzTLtV8WrsU3fG5J38agJTT9yBf86PX3PZ6
 before_build:
-- cmd: nuget restore
+- cmd: >-
+    nuget restore
+
+    install-tools.cmd
 build:
   project: Solution.sln
   verbosity: minimal
+after_build:
+- cmd: ''
+before_test:
+- cmd: ''
 after_test:
-- cmd: ./test/UnitTests/coverage.cmd
+- cmd: >-
+    create-coverage-report.cmd
+
+    upload-coverage-to-coveralls.cmd
