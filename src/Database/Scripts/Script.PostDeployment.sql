@@ -192,7 +192,7 @@
 			WHERE DeploymentId = @DeploymentId AND @DeploymentId IS NOT NULL;
 		'),
 
-		/* Reminders */
+		-- Reminders
 		(
 			'UpsertReminderRowKey','
 			DECLARE @Version AS INT = 0;
