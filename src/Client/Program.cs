@@ -18,18 +18,18 @@ namespace Client
     {
         private static string userId;
 
+        private static IConfiguration Configuration { get; } =
+            new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+
         private static async Task Main()
         {
-            // build the configuration provider
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build();
-
             // set the window title
-            Console.Title = configuration.GetValue("Console:Title", nameof(ISiloHost));
+            Console.Title = Configuration.GetValue("Console:Title", nameof(ISiloHost));
 
             // configure services
-            var services = ConfigureServices(configuration);
+            var services = ConfigureServices(Configuration);
 
             // grab a logger
             var logger = services.GetRequiredService<ILogger<Program>>();
@@ -42,13 +42,13 @@ namespace Client
                 })
                 .Configure<ClusterOptions>(options =>
                 {
-                    options.ClusterId = configuration.GetValue<string>("Orleans:ClusterId");
-                    options.ServiceId = configuration.GetValue<string>("Orleans:ServiceId");
+                    options.ClusterId = Configuration.GetValue<string>("Orleans:ClusterId");
+                    options.ServiceId = Configuration.GetValue<string>("Orleans:ServiceId");
                 })
                 .UseAdoNetClustering(options =>
                 {
-                    options.ConnectionString = configuration.GetConnectionString("Orleans");
-                    options.Invariant = configuration.GetValue<string>("Orleans:AdoNet:Invariant");
+                    options.ConnectionString = Configuration.GetConnectionString("Orleans");
+                    options.Invariant = Configuration.GetValue<string>("Orleans:AdoNet:Invariant");
                 })
                 .ConfigureLogging(builder =>
                 {

@@ -5,16 +5,25 @@ platform: Any CPU
 environment:
   COVERALLS_REPO_TOKEN:
     secure: /CamEFhvQQ/bQy/XGKgxumW9H5cdcHzTLtV8WrsU3fG5J38agJTT9yBf86PX3PZ6
+  SONARQUBE_PROJECT_KEY:
+    secure: qMPFRIZVSnT01pp6Mj262ADwnzI/mfgD/16qxAWp6Zw=
+  SONARQUBE_ORGANIZATION:
+    secure: Re9SMcxurCszjnzISwYsE4WaciyK7cn3lTcQQeRE4dM=
+  SONARQUBE_TOKEN:
+    secure: t3ZLgLyOuRjIL8mN2F+woMO2ISSD3N79dgSrE3DCzL6teL+jiRAUhmZDUE+kc+cq
 before_build:
 - cmd: >-
     nuget restore
 
     install-tools.cmd
+
+    sonarscanner-begin.cmd
 build:
   project: Solution.sln
   verbosity: minimal
 after_build:
-- cmd: ''
+- cmd: >-
+    sonarscanner-end.cmd
 before_test:
 - cmd: ''
 after_test:

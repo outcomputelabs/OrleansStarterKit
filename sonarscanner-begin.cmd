@@ -1,0 +1,1 @@
+@dotnet sonarscanner begin /k:"%SONARQUBE_PROJECT_KEY%" /d:sonar.organization="%SONARQUBE_ORGANIZATION" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="%SONARQUBE_TOKEN%"
