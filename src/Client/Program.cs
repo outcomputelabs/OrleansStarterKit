@@ -36,6 +36,10 @@ namespace Client
 
             // build the client
             var client = new ClientBuilder()
+                .ConfigureHostConfiguration(action =>
+                {
+                    action.AddJsonFile("appsettings.json", false);
+                })
                 .Configure<ClusterOptions>(options =>
                 {
                     options.ClusterId = configuration.GetValue<string>("Orleans:ClusterId");
