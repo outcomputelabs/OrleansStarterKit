@@ -67,28 +67,38 @@ namespace Client
                 try
                 {
                     Match match;
-                    if ((match = Regex.Match(command, @"^user (?<userid>\w+)$")).Success)
+
+                    match = Regex.Match(command, @"^user (?<userid>\w+)$");
+                    if (match.Success)
                     {
                         userId = match.Groups["userid"].Value;
                         Console.WriteLine($"Current user is now [{userId}]");
+                        continue;
                     }
-                    else if ((match = Regex.Match(command, @"^tell (?<other>\w+) (?<content>.+)")).Success)
+
+                    match = Regex.Match(command, @"^tell (?<other>\w+) (?<content>.+)");
+                    if (match.Success)
                     {
                         var other = match.Groups["other"].Value;
                         var content = match.Groups["content"].Value;
                         var message = new ChatMessage(Guid.NewGuid(), userId, other, content, DateTime.UtcNow);
-
                         await client.GetGrain<IChatUser>(other).MessageAsync(message);
+                        continue;
                     }
-                    else if ((match = Regex.Match(command, @"^messages$")).Success)
+
+                    match = Regex.Match(command, @"^messages$");
+                    if (match.Success)
                     {
                         var messages = await client.GetGrain<IChatUser>(userId).GetMessagesAsync();
                         foreach (var m in messages)
                         {
                             Console.WriteLine($"{m.Timestamp:HH:mm} {m.FromUserId}: {m.Content}");
                         }
+                        continue;
                     }
-                    else if ((match = Regex.Match(command, @"^quit$")).Success)
+
+                    match = Regex.Match(command, @"^quit$");
+                    if (match.Success)
                     {
                         return;
                     }
