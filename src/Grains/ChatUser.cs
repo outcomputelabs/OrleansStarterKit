@@ -1,7 +1,6 @@
 ﻿using Grains.Models;
 using Microsoft.Extensions.Logging;
 using Orleans;
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Threading.Tasks;
@@ -13,7 +12,6 @@ namespace Grains
         private readonly ILogger<ChatUser> _logger;
 
         private readonly Queue<ChatMessage> _messages = new Queue<ChatMessage>();
-        private readonly HashSet<Guid> _handled = new HashSet<Guid>();
 
         private readonly int MaxMessagesCached = 100;
 
