@@ -22,8 +22,7 @@ build:
   project: Solution.sln
   verbosity: minimal
 after_build:
-- cmd: >-
-    dotnet publish
+- cmd: ''
 before_test:
 - cmd: ''
 after_test:
@@ -33,6 +32,8 @@ after_test:
     upload-coverage-to-coveralls.cmd
 
     sonarscanner-end.cmd
+
+    dotnet publish
 artifacts:
 - path: /src/Database/bin/Release/Database.dacpac
   name: Database
