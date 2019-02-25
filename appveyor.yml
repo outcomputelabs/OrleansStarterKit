@@ -35,3 +35,5 @@ after_test:
 artifacts:
 - path: /src/Database/bin/Release/Database.dacpac
   name: Database
+- path: /src/Silo/bin/Release/netcoreapp2.1/publish/**/*.*
+  name: Silo
