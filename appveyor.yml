@@ -32,8 +32,6 @@ after_test:
     upload-coverage-to-coveralls.cmd
 
     sonarscanner-end.cmd
-
-    dotnet publish
 artifacts:
 - path: /src/Database/bin/Release/Database.dacpac
   name: Database
