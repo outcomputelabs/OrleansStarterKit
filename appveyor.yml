@@ -22,7 +22,8 @@ build:
   project: Solution.sln
   verbosity: minimal
 after_build:
-- cmd: ''
+- cmd: >-
+    dotnet publish
 before_test:
 - cmd: ''
 after_test:
