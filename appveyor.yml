@@ -33,9 +33,7 @@ after_test:
 
     sonarscanner-end.cmd
 
-    dotnet publish ./src/Silo -c Release
-
-    dotnet publish ./src/Client -c Release
+    publish-to-folder.cmd
 artifacts:
 - path: /src/Database/bin/Release/Database.dacpac
   name: Database
