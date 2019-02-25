@@ -14,7 +14,9 @@ environment:
 before_build:
 - cmd: >-
     nuget restore
+
     install-tools.cmd
+
     sonarscanner-begin.cmd
 build:
   project: Solution.sln
@@ -26,7 +28,9 @@ before_test:
 after_test:
 - cmd: >-
     create-coverage-report.cmd
+
     upload-coverage-to-coveralls.cmd
+
     sonarscanner-end.cmd
 artifacts:
 - path: /src/Database/bin/Release/Database.dacpac
