@@ -52,8 +52,8 @@ Current items in the todo list for this project, not necessarily in the order wr
 * Develop Sample Real-Time Chat REST API.
 * Develop Sample Real-Time Chat Web Site.
 * Develop Sample SignalR Hub.
-* Setup Performance Testing
-* Setup Orleans Dashboard
+* Setup Performance Testing.
+* Setup Orleans Dashboard.
 * Setup Azure Cloud Hosting Template.
 * Setup Azure Service Fabric Hosting Template.
 * Setup Azure Kubernetes Hosting Template.
