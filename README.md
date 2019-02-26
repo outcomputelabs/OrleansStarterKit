@@ -68,6 +68,7 @@ Current items in the todo list for this project, not necessarily in the order wr
 * Setup Azure Application Insights Telemetry Consumer.
 * Setup Azure Storage Transactions Template.
 * Setup Elastic Search Logging.
+* Develop a Step-by-Step Installation Wizard
 
 ## How To Use
 
