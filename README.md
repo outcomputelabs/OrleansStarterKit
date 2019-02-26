@@ -16,7 +16,7 @@ Its dream target is to enable developers to slice through devops efforts like bu
 * Microsoft Visual Studio Community 2017
 * .NET Core 2.1
 
-## Pre-Configured Templates
+## Baked-In
 
 * Hosting:
   * Local Only.
@@ -32,6 +32,10 @@ Its dream target is to enable developers to slice through devops efforts like bu
 
 * Streaming:
   * SMS
+
+* Logging:
+  * Serilog > Console
+  * Serilog > SQL Server Database
 
 * Deployment:
   * AppVeyor
