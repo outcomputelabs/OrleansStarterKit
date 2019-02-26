@@ -24,9 +24,6 @@ namespace Silo
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            // set the window title
-            Console.Title = configuration.GetValue("Console:Title", nameof(ISiloHost));
-
             // configure services
             var services = ConfigureServices(configuration);
 
@@ -34,19 +31,15 @@ namespace Silo
             var network = services.GetRequiredService<INetworkHelper>();
 
             // test for open ports
-            var ports = network.GetAvailablePorts(2);
+            var ports = network.GetAvailablePorts(3);
 
             // get desired port configuration
-            var siloPort = configuration.GetValue("Orleans:Endpoints:SiloPort", 0);
-            if (siloPort == 0)
-            {
-                siloPort = ports[0];
-            }
-            var gatewayPort = configuration.GetValue("Orleans:Endpoints:GatewayPort", 0);
-            if (gatewayPort == 0)
-            {
-                gatewayPort = ports[1];
-            }
+            var siloPort = configuration.GetValue("Orleans:Ports:Silo", 0).ValueIf(0, ports[0]);
+            var gatewayPort = configuration.GetValue("Orleans:Ports:Gateway", 0).ValueIf(0, ports[1]);
+            var dashboardPort = configuration.GetValue("Orleans:Ports:Dashboard", 0).ValueIf(0, ports[2]);
+
+            // set the window title
+            Console.Title = $"{ configuration.GetValue("Console:Title", nameof(ISiloHost)) } - Silo: { siloPort }, Gateway: { gatewayPort }, Dashboard: { dashboardPort }";
 
             // build the silo
             var host = new SiloHostBuilder()
@@ -87,6 +80,10 @@ namespace Silo
                     options.ConnectionString = configuration.GetConnectionString("Orleans");
                     options.Invariant = configuration["Orleans:AdoNet:Invariant"];
                     options.UseJsonFormat = true;
+                })
+                .UseDashboard(options =>
+                {
+                    options.Port = dashboardPort;
                 })
                 .EnableDirectClient()
                 .Build();
