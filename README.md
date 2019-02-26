@@ -43,7 +43,7 @@ Its dream target is to enable developers to slice through devops efforts like bu
 * Quality:
   * Testing: xUnit
   * Coverage: OpenCover
-  * Quality: SonarQube
+  * Inspection: SonarQube
 
 ## Todos
 
