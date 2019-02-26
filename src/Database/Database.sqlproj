@@ -69,7 +69,6 @@
     <Build Include="Tables\OrleansQuery.sql" />
     <Build Include="Tables\OrleansRemindersTable.sql" />
     <Build Include="Tables\Storage.sql" />
-    <Build Include="Tables\DummyTable.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
