@@ -15,9 +15,9 @@ namespace Silo
     {
         private const string EnvironmentVariablePrefix = "ORLEANS_";
 
-        public static async Task Main(string[] args)
+        public static Task Main(string[] args)
         {
-            var host = new HostBuilder()
+            return new HostBuilder()
                 .ConfigureHostConfiguration(configure =>
                 {
                     configure.AddJsonFile("hostsettings.json", true, true);
@@ -49,9 +49,8 @@ namespace Silo
                         .CreateLogger());
                 })
                 .UseHostedService<SiloHostedService>()
-                .Build();
-
-            await host.RunAsync();
+                .Build()
+                .RunAsync();
         }
     }
 }
