@@ -1,5 +1,6 @@
 ﻿using Grains;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -12,15 +13,15 @@ using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
 
 namespace Silo
 {
-    /// <summary>
-    /// Facilitates integration of an Orleans Silo Host as a <see cref="IHostedService"/> via its <see cref="ISiloHostBuilder"/>
-    /// </summary>
-    public class SiloHostedService : IHostedService
+    public class SiloHostedService : ISiloHostedService
     {
         private readonly ISiloHost _host;
+        private readonly ILogger<SiloHostedService> _logger;
 
-        public SiloHostedService(ILoggerProvider loggerProvider, INetworkHelper networkHelper, IConfiguration configuration, IHostingEnvironment environment)
+        public SiloHostedService(ILogger<SiloHostedService> logger, ILoggerProvider loggerProvider, INetworkHelper networkHelper, IConfiguration configuration, IHostingEnvironment environment)
         {
+            _logger = logger;
+
             // test for open ports
             var ports = networkHelper.GetAvailablePorts(3);
 
@@ -77,7 +78,14 @@ namespace Silo
                 .Build();
         }
 
-        public Task StartAsync(CancellationToken cancellationToken) => _host.StartAsync(cancellationToken);
+        public IClusterClient ClusterClient => _host.Services.GetService<IClusterClient>();
+
+        public async Task StartAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation($"Starting {nameof(SiloHostedService)}...");
+            await _host.StartAsync(cancellationToken);
+            _logger.LogInformation($"Started {nameof(SiloHostedService)}.");
+        }
 
         public Task StopAsync(CancellationToken cancellationToken) => _host.StopAsync(cancellationToken);
     }

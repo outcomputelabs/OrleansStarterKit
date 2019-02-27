@@ -35,6 +35,10 @@ namespace Silo
                 .ConfigureServices((hosting, services) =>
                 {
                     services.AddSingleton<INetworkHelper, NetworkHelper>();
+                    services.AddSingleton<SiloHostedService>();
+                    services.AddSingleton<ISiloHostedService>(_ => _.GetService<SiloHostedService>());
+                    services.AddSingleton<IHostedService>(_ => _.GetService<SiloHostedService>());
+                    services.AddHostedService<ApiHostedService>();
                 })
                 .ConfigureLogging((hosting, configure) =>
                 {
@@ -48,7 +52,6 @@ namespace Silo
                             restrictedToMinimumLevel: hosting.Configuration.GetValue<LogEventLevel>("Serilog:MSSqlServer:RestrictedToMinimumLevel"))
                         .CreateLogger());
                 })
-                .UseHostedService<SiloHostedService>()
                 .Build()
                 .RunAsync();
         }
