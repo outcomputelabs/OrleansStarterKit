@@ -8,8 +8,9 @@
         /// <summary>
         /// Discovers the given number of available ports.
         /// </summary>
-        /// <param name="count">The number of available ports to discover.</param>
-        /// <returns>The given number of available ports.</returns>
-        int[] GetAvailablePorts(int count);
+        /// <param name="start">The start of the port range to search for.</param>
+        /// <param name="count">The length of the port range to search for.</param>
+        /// <returns>The first available port in the given range or -1 if no port is available.</returns>
+        int GetAvailablePortFrom(int start, int count);
     }
 }

@@ -9,31 +9,35 @@ namespace Silo
     /// </summary>
     public class NetworkPortFinder : INetworkPortFinder
     {
-        /// <inheritdoc />
-        public int[] GetAvailablePorts(int count)
+        public int GetAvailablePortFrom(int start, int count)
         {
-            if (count < 1) throw new ArgumentOutOfRangeException(nameof(count), count, "Count must be greater than zero.");
+            for (int i = 0; i < count; ++i)
+            {
+                var port = start + i;
+                if (TryPort(port))
+                {
+                    return port;
+                }
+            }
+            return -1;
+        }
 
-            var ports = new int[count];
-            var listeners = new TcpListener[count];
-
+        private bool TryPort(int port)
+        {
+            var listener = TcpListener.Create(port);
             try
             {
-                for (var i = 0; i < count; ++i)
-                {
-                    listeners[i] = TcpListener.Create(0);
-                    listeners[i].Start();
-                    ports[i] = ((IPEndPoint)listeners[i].LocalEndpoint).Port;
-                }
+                listener.Start();
+                return true;
+            }
+            catch (SocketException)
+            {
+                return false;
             }
             finally
             {
-                for (var i = 0; i < count; ++i)
-                {
-                    listeners[i].Stop();
-                }
+                listener.Stop();
             }
-            return ports;
         }
     }
 }

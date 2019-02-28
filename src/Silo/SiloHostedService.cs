@@ -20,13 +20,16 @@ namespace Silo
 
         public SiloHostedService(ILoggerProvider loggerProvider, INetworkPortFinder networkHelper, IConfiguration configuration, IHostingEnvironment environment)
         {
-            // test for open ports
-            var ports = networkHelper.GetAvailablePorts(3);
-
             // get desired port configuration
-            var siloPort = configuration.GetValue("Orleans:Ports:Silo", 0).ValueIf(0, ports[0]);
-            var gatewayPort = configuration.GetValue("Orleans:Ports:Gateway", 0).ValueIf(0, ports[1]);
-            var dashboardPort = configuration.GetValue("Orleans:Ports:Dashboard", 0).ValueIf(0, ports[2]);
+            var siloPort = networkHelper.GetAvailablePortFrom(
+                configuration.GetValue<int>("Orleans:Ports:Silo:Start"),
+                configuration.GetValue<int>("Orleans:Ports:Silo:Count"));
+            var gatewayPort = networkHelper.GetAvailablePortFrom(
+                configuration.GetValue<int>("Orleans:Ports:Gateway:Start"),
+                configuration.GetValue<int>("Orleans:Ports:Gateway:Count"));
+            var dashboardPort = networkHelper.GetAvailablePortFrom(
+                configuration.GetValue<int>("Orleans:Ports:Dashboard:Start"),
+                configuration.GetValue<int>("Orleans:Ports:Dashboard:Count"));
 
             // configure the silo host
             _host = new SiloHostBuilder()
@@ -39,6 +42,7 @@ namespace Silo
                 {
                     configure.AddProvider(loggerProvider);
                 })
+                .UseLocalhostClustering()
                 .UseAdoNetClustering(options =>
                 {
                     options.ConnectionString = configuration.GetConnectionString("Orleans");
