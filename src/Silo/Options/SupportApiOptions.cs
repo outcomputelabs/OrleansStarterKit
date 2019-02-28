@@ -3,6 +3,6 @@
     public class SupportApiOptions
     {
         public string Title { get; set; }
-        public int Port { get; set; }
+        public PortRange PortRange { get; } = new PortRange();
     }
 }

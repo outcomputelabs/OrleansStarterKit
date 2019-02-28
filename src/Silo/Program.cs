@@ -43,7 +43,8 @@ namespace Silo
                     services.Configure<SupportApiOptions>(options =>
                     {
                         options.Title = hosting.Configuration.GetValue<string>("Api:Title");
-                        options.Port = hosting.Configuration.GetValue<int>("Api:Port");
+                        options.PortRange.Start = hosting.Configuration.GetValue<int>("Api:Port:Start");
+                        options.PortRange.End = hosting.Configuration.GetValue<int>("Api:Port:End");
                     });
 
                     // add the silo hosted service and the services it makes available

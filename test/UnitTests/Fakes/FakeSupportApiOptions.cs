@@ -8,8 +8,7 @@ namespace UnitTests.Fakes
     {
         public SupportApiOptions Value { get; } = new SupportApiOptions
         {
-            Title = nameof(SupportApiHostedService),
-            Port = 0
+            Title = nameof(SupportApiHostedService)
         };
     }
 }

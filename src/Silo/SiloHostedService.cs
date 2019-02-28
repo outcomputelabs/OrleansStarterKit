@@ -18,18 +18,18 @@ namespace Silo
     {
         private readonly ISiloHost _host;
 
-        public SiloHostedService(ILoggerProvider loggerProvider, INetworkPortFinder networkHelper, IConfiguration configuration, IHostingEnvironment environment)
+        public SiloHostedService(ILoggerProvider loggerProvider, INetworkPortFinder portFinder, IConfiguration configuration, IHostingEnvironment environment)
         {
             // get desired port configuration
-            SiloPort = networkHelper.GetAvailablePortFrom(
+            SiloPort = portFinder.GetAvailablePortFrom(
                 configuration.GetValue<int>("Orleans:Ports:Silo:Start"),
-                configuration.GetValue<int>("Orleans:Ports:Silo:Count"));
-            GatewayPort = networkHelper.GetAvailablePortFrom(
+                configuration.GetValue<int>("Orleans:Ports:Silo:End"));
+            GatewayPort = portFinder.GetAvailablePortFrom(
                 configuration.GetValue<int>("Orleans:Ports:Gateway:Start"),
-                configuration.GetValue<int>("Orleans:Ports:Gateway:Count"));
-            DashboardPort = networkHelper.GetAvailablePortFrom(
+                configuration.GetValue<int>("Orleans:Ports:Gateway:End"));
+            DashboardPort = portFinder.GetAvailablePortFrom(
                 configuration.GetValue<int>("Orleans:Ports:Dashboard:Start"),
-                configuration.GetValue<int>("Orleans:Ports:Dashboard:Count"));
+                configuration.GetValue<int>("Orleans:Ports:Dashboard:End"));
 
             // configure the silo host
             _host = new SiloHostBuilder()

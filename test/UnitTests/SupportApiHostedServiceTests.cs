@@ -26,9 +26,10 @@ namespace UnitTests
             var options = new FakeSupportApiOptions();
             var loggerProvider = new FakeLoggerProvider();
             var client = new FakeClusterClient();
+            var portFinder = new FakeNetworkPortFinder();
 
             // act
-            var api = new SupportApiHostedService(options, loggerProvider, client);
+            var api = new SupportApiHostedService(options, loggerProvider, client, portFinder);
 
             // assert - white box
             var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;

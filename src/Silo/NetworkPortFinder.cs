@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 
 namespace Silo
 {
@@ -9,9 +7,10 @@ namespace Silo
     /// </summary>
     public class NetworkPortFinder : INetworkPortFinder
     {
-        public int GetAvailablePortFrom(int start, int count)
+        public int GetAvailablePortFrom(int start, int end)
         {
-            for (int i = 0; i < count; ++i)
+            var length = end - start;
+            for (var i = 0; i <= length; ++i)
             {
                 var port = start + i;
                 if (TryPort(port))

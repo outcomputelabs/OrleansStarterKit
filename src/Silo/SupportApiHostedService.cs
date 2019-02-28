@@ -32,17 +32,20 @@ namespace Silo
         /// <param name="options">Options to use for building the back-end api.</param>
         /// <param name="loggerProvider">Logger provider to pass to the web host.</param>
         /// <param name="client">Orleans cluster client for the back-end api.</param>
-        public SupportApiHostedService(IOptions<SupportApiOptions> options, ILoggerProvider loggerProvider, IClusterClient client)
+        /// <param name="portFinder">Helper for discovering available ports.</param>
+        public SupportApiHostedService(IOptions<SupportApiOptions> options, ILoggerProvider loggerProvider, IClusterClient client, INetworkPortFinder portFinder)
         {
             if (options?.Value == null) throw new ArgumentNullException(nameof(options));
             if (loggerProvider == null) throw new ArgumentNullException(nameof(loggerProvider));
             if (client == null) throw new ArgumentNullException(nameof(client));
 
+            Port = portFinder.GetAvailablePortFrom(options.Value.PortRange.Start, options.Value.PortRange.End);
+
             _host = new WebHostBuilder()
 
                 .UseKestrel(op =>
                 {
-                    op.ListenAnyIP(options.Value.Port);
+                    op.ListenAnyIP(Port);
                 })
 
                 .ConfigureLogging(configure =>
@@ -92,6 +95,8 @@ namespace Silo
 
                 .Build();
         }
+
+        public int Port { get; private set; }
 
         public Task StartAsync(CancellationToken cancellationToken) => _host.StartAsync(cancellationToken);
 
