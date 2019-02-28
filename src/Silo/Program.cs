@@ -6,6 +6,7 @@ using Orleans.Hosting;
 using Serilog;
 using Serilog.Events;
 using Silo.Options;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace Silo
 
         public static Task Main(string[] args)
         {
-            return new HostBuilder()
+            var host = new HostBuilder()
                 .ConfigureHostConfiguration(configure =>
                 {
                     configure.AddJsonFile("hostsettings.json", true, true);
@@ -66,8 +67,13 @@ namespace Silo
                         .CreateLogger());
                 })
                 .UseConsoleLifetime()
-                .Build()
-                .RunAsync();
+                .Build();
+
+            // write the port configuration on the console title
+            var silo = host.Services.GetService<SiloHostedService>();
+            Console.Title = $"{nameof(Silo)}: Silo: {silo.SiloPort}, Gateway: {silo.GatewayPort}, Dashboard: {silo.DashboardPort}";
+
+            return host.RunAsync();
         }
     }
 }
