@@ -12,7 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
 
-namespace Silo.Services
+namespace Silo
 {
     public class SiloHostedService : IHostedService
     {
