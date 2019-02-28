@@ -6,10 +6,9 @@ using Orleans.Hosting;
 using Serilog;
 using Serilog.Events;
 using Silo.Options;
+using Silo.Services;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using Silo.Services;
 
 namespace Silo
 {
@@ -48,7 +47,6 @@ namespace Silo
                     });
 
                     // add the silo hosted service and the services it makes available
-                    // a factory hop is needed to resolve the cluster client
                     services.AddSingleton<SiloHostedService>();
                     services.AddSingleton<IHostedService>(_ => _.GetService<SiloHostedService>());
                     services.AddSingleton<ISiloHostedService>(_ => _.GetService<SiloHostedService>());
