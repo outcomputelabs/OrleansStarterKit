@@ -51,7 +51,7 @@ namespace Silo.Services
                 })
                 .Configure<ClusterMembershipOptions>(options =>
                 {
-                    // enable aggressive silo removal for development environments
+                    // enable aggressive dead silo removal for development environments
                     if (environment.IsDevelopment())
                     {
                         options.ExpectedClusterSize = 1;
