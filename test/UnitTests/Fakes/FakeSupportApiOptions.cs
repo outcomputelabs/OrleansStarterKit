@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
+using Silo;
 using Silo.Options;
-using Silo.Services;
 
 namespace UnitTests.Fakes
 {

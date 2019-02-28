@@ -6,7 +6,6 @@ using Orleans.Hosting;
 using Serilog;
 using Serilog.Events;
 using Silo.Options;
-using Silo.Services;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 

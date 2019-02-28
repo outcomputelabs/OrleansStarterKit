@@ -14,7 +14,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Silo.Services
+namespace Silo
 {
     /// <summary>
     /// Allows the support API to be hosted as a service in a generic host.
