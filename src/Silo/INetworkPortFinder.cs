@@ -1,9 +1,9 @@
 ﻿namespace Silo
 {
     /// <summary>
-    /// Provides helper utilities for managing the network.
+    /// Interface for services that help find available ports.
     /// </summary>
-    public interface INetworkHelper
+    public interface INetworkPortFinder
     {
         /// <summary>
         /// Discovers the given number of available ports.

@@ -11,7 +11,7 @@ namespace UnitTests
         public void NetworkHelper_Implements_Interface()
         {
             // assert
-            Assert.IsAssignableFrom<INetworkHelper>(new NetworkHelper());
+            Assert.IsAssignableFrom<INetworkPortFinder>(new NetworkPortFinder());
         }
 
         [Theory]
@@ -20,7 +20,7 @@ namespace UnitTests
         public void NetworkHelper_Refuses_Low_Count(int count)
         {
             // arrange
-            var helper = new NetworkHelper();
+            var helper = new NetworkPortFinder();
 
             // act and assert
             var error = Assert.Throws<ArgumentOutOfRangeException>(() => helper.GetAvailablePorts(count));
@@ -34,7 +34,7 @@ namespace UnitTests
         public void NetworkHelper_Returns_Available_Ports(int count)
         {
             // arrange
-            var helper = new NetworkHelper();
+            var helper = new NetworkPortFinder();
 
             // act
             var ports = helper.GetAvailablePorts(count);

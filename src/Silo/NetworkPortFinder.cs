@@ -5,9 +5,9 @@ using System.Net.Sockets;
 namespace Silo
 {
     /// <summary>
-    /// Default implementation of <see cref="INetworkHelper"/>.
+    /// Default implementation of <see cref="INetworkPortFinder"/>.
     /// </summary>
-    public class NetworkHelper : INetworkHelper
+    public class NetworkPortFinder : INetworkPortFinder
     {
         /// <inheritdoc />
         public int[] GetAvailablePorts(int count)

@@ -36,7 +36,7 @@ namespace Silo
                 .ConfigureServices((hosting, services) =>
                 {
                     // helps discover free ports
-                    services.AddSingleton<INetworkHelper, NetworkHelper>();
+                    services.AddSingleton<INetworkPortFinder, NetworkPortFinder>();
 
                     // add options for the api hosted service
                     services.Configure<SupportApiOptions>(options =>

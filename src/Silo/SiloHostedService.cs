@@ -18,7 +18,7 @@ namespace Silo
     {
         private readonly ISiloHost _host;
 
-        public SiloHostedService(ILoggerProvider loggerProvider, INetworkHelper networkHelper, IConfiguration configuration, IHostingEnvironment environment)
+        public SiloHostedService(ILoggerProvider loggerProvider, INetworkPortFinder networkHelper, IConfiguration configuration, IHostingEnvironment environment)
         {
             // test for open ports
             var ports = networkHelper.GetAvailablePorts(3);
