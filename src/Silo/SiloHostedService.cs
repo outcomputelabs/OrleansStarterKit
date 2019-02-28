@@ -21,19 +21,19 @@ namespace Silo
         public SiloHostedService(ILoggerProvider loggerProvider, INetworkPortFinder networkHelper, IConfiguration configuration, IHostingEnvironment environment)
         {
             // get desired port configuration
-            var siloPort = networkHelper.GetAvailablePortFrom(
+            SiloPort = networkHelper.GetAvailablePortFrom(
                 configuration.GetValue<int>("Orleans:Ports:Silo:Start"),
                 configuration.GetValue<int>("Orleans:Ports:Silo:Count"));
-            var gatewayPort = networkHelper.GetAvailablePortFrom(
+            GatewayPort = networkHelper.GetAvailablePortFrom(
                 configuration.GetValue<int>("Orleans:Ports:Gateway:Start"),
                 configuration.GetValue<int>("Orleans:Ports:Gateway:Count"));
-            var dashboardPort = networkHelper.GetAvailablePortFrom(
+            DashboardPort = networkHelper.GetAvailablePortFrom(
                 configuration.GetValue<int>("Orleans:Ports:Dashboard:Start"),
                 configuration.GetValue<int>("Orleans:Ports:Dashboard:Count"));
 
             // configure the silo host
             _host = new SiloHostBuilder()
-                .ConfigureEndpoints(siloPort, gatewayPort)
+                .ConfigureEndpoints(SiloPort, GatewayPort)
                 .ConfigureApplicationParts(configure =>
                 {
                     configure.AddApplicationPart(typeof(ChatUser).Assembly).WithReferences();
@@ -86,13 +86,19 @@ namespace Silo
                 })
                 .UseDashboard(options =>
                 {
-                    options.Port = dashboardPort;
+                    options.Port = DashboardPort;
                 })
                 .EnableDirectClient()
                 .Build();
         }
 
         public IClusterClient ClusterClient => _host.Services.GetService<IClusterClient>();
+
+        public int SiloPort { get; private set; }
+
+        public int GatewayPort { get; private set; }
+
+        public int DashboardPort { get; private set; }
 
         public Task StartAsync(CancellationToken cancellationToken) => _host.StartAsync(cancellationToken);
 
