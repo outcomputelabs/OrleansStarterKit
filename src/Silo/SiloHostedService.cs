@@ -53,18 +53,6 @@ namespace Silo
                     options.ClusterId = configuration["Orleans:ClusterId"];
                     options.ServiceId = configuration["Orleans:ServiceId"];
                 })
-                .Configure<ClusterMembershipOptions>(options =>
-                {
-                    // enable aggressive dead silo removal for development environments
-                    if (environment.IsDevelopment())
-                    {
-                        options.ExpectedClusterSize = 1;
-                        options.NumMissedProbesLimit = 1;
-                        options.NumVotesForDeathDeclaration = 1;
-                        options.ProbeTimeout = TimeSpan.FromSeconds(1);
-                        options.TableRefreshTimeout = TimeSpan.FromSeconds(1);
-                    }
-                })
                 .UseAdoNetReminderService(options =>
                 {
                     options.ConnectionString = configuration.GetConnectionString("Orleans");

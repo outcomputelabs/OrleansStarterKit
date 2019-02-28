@@ -26,6 +26,7 @@ namespace Silo
             var listener = TcpListener.Create(port);
             try
             {
+                listener.ExclusiveAddressUse = true;
                 listener.Start();
                 return true;
             }
