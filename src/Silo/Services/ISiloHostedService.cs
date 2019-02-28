@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Orleans;
 
-namespace Silo
+namespace Silo.Services
 {
     public interface ISiloHostedService : IHostedService
     {

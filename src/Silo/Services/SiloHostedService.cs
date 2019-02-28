@@ -7,21 +7,19 @@ using Newtonsoft.Json;
 using Orleans;
 using Orleans.Configuration;
 using Orleans.Hosting;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
 
-namespace Silo
+namespace Silo.Services
 {
     public class SiloHostedService : ISiloHostedService
     {
         private readonly ISiloHost _host;
-        private readonly ILogger<SiloHostedService> _logger;
 
-        public SiloHostedService(ILogger<SiloHostedService> logger, ILoggerProvider loggerProvider, INetworkHelper networkHelper, IConfiguration configuration, IHostingEnvironment environment)
+        public SiloHostedService(ILoggerProvider loggerProvider, INetworkHelper networkHelper, IConfiguration configuration, IHostingEnvironment environment)
         {
-            _logger = logger;
-
             // test for open ports
             var ports = networkHelper.GetAvailablePorts(3);
 
@@ -32,11 +30,6 @@ namespace Silo
 
             // configure the silo host
             _host = new SiloHostBuilder()
-                .Configure<ClusterOptions>(options =>
-                {
-                    options.ClusterId = configuration["Orleans:ClusterId"];
-                    options.ServiceId = configuration["Orleans:ServiceId"];
-                })
                 .ConfigureEndpoints(siloPort, gatewayPort)
                 .ConfigureApplicationParts(configure =>
                 {
@@ -50,6 +43,23 @@ namespace Silo
                 {
                     options.ConnectionString = configuration.GetConnectionString("Orleans");
                     options.Invariant = configuration["Orleans:AdoNet:Invariant"];
+                })
+                .Configure<ClusterOptions>(options =>
+                {
+                    options.ClusterId = configuration["Orleans:ClusterId"];
+                    options.ServiceId = configuration["Orleans:ServiceId"];
+                })
+                .Configure<ClusterMembershipOptions>(options =>
+                {
+                    // enable aggressive silo removal for development environments
+                    if (environment.IsDevelopment())
+                    {
+                        options.ExpectedClusterSize = 1;
+                        options.NumMissedProbesLimit = 1;
+                        options.NumVotesForDeathDeclaration = 1;
+                        options.ProbeTimeout = TimeSpan.FromSeconds(1);
+                        options.TableRefreshTimeout = TimeSpan.FromSeconds(1);
+                    }
                 })
                 .UseAdoNetReminderService(options =>
                 {
@@ -80,12 +90,7 @@ namespace Silo
 
         public IClusterClient ClusterClient => _host.Services.GetService<IClusterClient>();
 
-        public async Task StartAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation($"Starting {nameof(SiloHostedService)}...");
-            await _host.StartAsync(cancellationToken);
-            _logger.LogInformation($"Started {nameof(SiloHostedService)}.");
-        }
+        public Task StartAsync(CancellationToken cancellationToken) => _host.StartAsync(cancellationToken);
 
         public Task StopAsync(CancellationToken cancellationToken) => _host.StopAsync(cancellationToken);
     }

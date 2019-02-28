@@ -5,8 +5,11 @@ using Orleans;
 using Orleans.Hosting;
 using Serilog;
 using Serilog.Events;
+using Silo.Options;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using Silo.Services;
 
 namespace Silo
 {
@@ -34,11 +37,25 @@ namespace Silo
                 })
                 .ConfigureServices((hosting, services) =>
                 {
+                    // helps discover free ports
                     services.AddSingleton<INetworkHelper, NetworkHelper>();
+
+                    // add options for the api hosted service
+                    services.Configure<ApiOptions>(options =>
+                    {
+                        options.Title = hosting.Configuration.GetValue<string>("Api:Title");
+                        options.Port = hosting.Configuration.GetValue<int>("Api:Port");
+                    });
+
+                    // add the silo hosted service and the services it makes available
+                    // a factory hop is needed to resolve the cluster client
                     services.AddSingleton<SiloHostedService>();
-                    services.AddSingleton<ISiloHostedService>(_ => _.GetService<SiloHostedService>());
                     services.AddSingleton<IHostedService>(_ => _.GetService<SiloHostedService>());
-                    services.AddHostedService<ApiHostedService>();
+                    services.AddSingleton<ISiloHostedService>(_ => _.GetService<SiloHostedService>());
+                    services.AddSingleton(_ => _.GetService<SiloHostedService>().ClusterClient);
+
+                    // add the back-end api service
+                    services.AddSingleton<IHostedService, ApiHostedService>();
                 })
                 .ConfigureLogging((hosting, configure) =>
                 {
@@ -52,6 +69,7 @@ namespace Silo
                             restrictedToMinimumLevel: hosting.Configuration.GetValue<LogEventLevel>("Serilog:MSSqlServer:RestrictedToMinimumLevel"))
                         .CreateLogger());
                 })
+                .UseConsoleLifetime()
                 .Build()
                 .RunAsync();
         }

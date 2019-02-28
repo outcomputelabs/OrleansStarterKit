@@ -9,26 +9,41 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Orleans;
 using Silo.Api.V1.Controllers;
+using Silo.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Silo
+namespace Silo.Services
 {
+    /// <summary>
+    /// Facilitates integration of the back-end API's <see cref="IWebHost"/> with a parent <see cref="IHost"/>.
+    /// </summary>
     public class ApiHostedService : IHostedService
     {
+        /// <summary>
+        /// The web host for the back-end API.
+        /// </summary>
         private readonly IWebHost _host;
-        private readonly ILogger<ApiHostedService> _logger;
 
-        public ApiHostedService(ILogger<ApiHostedService> logger, IConfiguration configuration, ILoggerProvider loggerProvider, ISiloHostedService silo)
+        /// <summary>
+        /// Creates and builds the <see cref="IWebHost"/> for the back-end API as a <see cref="IHostedService"/>.
+        /// </summary>
+        /// <param name="options">Options to use for building the back-end api.</param>
+        /// <param name="loggerProvider">Logger provider to pass to the web host.</param>
+        /// <param name="client">Orleans cluster client for the back-end api.</param>
+        public ApiHostedService(IOptions<ApiOptions> options, ILoggerProvider loggerProvider, IClusterClient client)
         {
-            _logger = logger;
+            if (options?.Value == null) throw new ArgumentNullException(nameof(options));
+            if (loggerProvider == null) throw new ArgumentNullException(nameof(loggerProvider));
+            if (client == null) throw new ArgumentNullException(nameof(client));
 
             _host = new WebHostBuilder()
 
-                .UseKestrel(options =>
+                .UseKestrel(op =>
                 {
-                    options.ListenAnyIP(configuration.GetValue<int>("Api:Port", 6000));
+                    op.ListenAnyIP(options.Value.Port);
                 })
 
                 .ConfigureLogging(configure =>
@@ -43,20 +58,20 @@ namespace Silo
                         .AddApplicationPart(typeof(DummyController).Assembly)
                         .AddControllersAsServices();
 
-                    configure.AddApiVersioning(options =>
+                    configure.AddApiVersioning(op =>
                     {
-                        options.ReportApiVersions = true;
-                        options.DefaultApiVersion = new ApiVersion(1, 0);
+                        op.ReportApiVersions = true;
+                        op.DefaultApiVersion = new ApiVersion(1, 0);
                     });
 
-                    configure.AddVersionedApiExplorer(options =>
+                    configure.AddVersionedApiExplorer(op =>
                     {
-                        options.GroupNameFormat = "'v'VVV";
+                        op.GroupNameFormat = "'v'VVV";
                     });
 
                     configure.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
                     configure.AddSwaggerGen();
-                    configure.AddSingleton(silo.ClusterClient);
+                    configure.AddSingleton(client);
                 })
 
                 .Configure(app =>
@@ -65,11 +80,11 @@ namespace Silo
 
                     app.UseMvc();
                     app.UseSwagger();
-                    app.UseSwaggerUI(options =>
+                    app.UseSwaggerUI(op =>
                     {
                         foreach (var description in provider.ApiVersionDescriptions)
                         {
-                            options.SwaggerEndpoint(
+                            op.SwaggerEndpoint(
                                 $"/swagger/{description.GroupName}/swagger.json",
                                 description.GroupName.ToLowerInvariant());
                         }
@@ -79,12 +94,7 @@ namespace Silo
                 .Build();
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation($"Starting {nameof(ApiHostedService)}...");
-            await _host.StartAsync(cancellationToken);
-            _logger.LogInformation($"Started {nameof(ApiHostedService)}.");
-        }
+        public Task StartAsync(CancellationToken cancellationToken) => _host.StartAsync(cancellationToken);
 
         public Task StopAsync(CancellationToken cancellationToken) => _host.StopAsync(cancellationToken);
     }
