@@ -337,3 +337,6 @@ coverage.xml
 
 # SonarQube
 /.sonarqube
+
+# Generated XML Documentation
+/src/Silo/Silo.xml
