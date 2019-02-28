@@ -53,7 +53,8 @@ namespace Silo
                     services.AddSingleton(_ => _.GetService<SiloHostedService>().ClusterClient);
 
                     // add the back-end api service
-                    services.AddSingleton<IHostedService, SupportApiHostedService>();
+                    services.AddSingleton<SupportApiHostedService>();
+                    services.AddSingleton<IHostedService>(_ => _.GetService<SupportApiHostedService>());
                 })
                 .ConfigureLogging((hosting, configure) =>
                 {
@@ -72,7 +73,8 @@ namespace Silo
 
             // write the port configuration on the console title
             var silo = host.Services.GetService<SiloHostedService>();
-            Console.Title = $"{nameof(Silo)}: Silo: {silo.SiloPort}, Gateway: {silo.GatewayPort}, Dashboard: {silo.DashboardPort}";
+            var api = host.Services.GetService<SupportApiHostedService>();
+            Console.Title = $"{nameof(Silo)}: Silo: {silo.SiloPort}, Gateway: {silo.GatewayPort}, Dashboard: {silo.DashboardPort}, Api: {api.Port}";
 
             return host.RunAsync();
         }
