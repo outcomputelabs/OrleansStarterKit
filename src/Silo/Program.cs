@@ -40,7 +40,7 @@ namespace Silo
                     services.AddSingleton<INetworkHelper, NetworkHelper>();
 
                     // add options for the api hosted service
-                    services.Configure<ApiOptions>(options =>
+                    services.Configure<SupportApiOptions>(options =>
                     {
                         options.Title = hosting.Configuration.GetValue<string>("Api:Title");
                         options.Port = hosting.Configuration.GetValue<int>("Api:Port");

@@ -1,6 +1,6 @@
 ﻿namespace Silo.Options
 {
-    public class ApiOptions
+    public class SupportApiOptions
     {
         public string Title { get; set; }
         public int Port { get; set; }

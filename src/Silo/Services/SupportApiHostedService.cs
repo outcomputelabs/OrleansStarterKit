@@ -32,7 +32,7 @@ namespace Silo.Services
         /// <param name="options">Options to use for building the back-end api.</param>
         /// <param name="loggerProvider">Logger provider to pass to the web host.</param>
         /// <param name="client">Orleans cluster client for the back-end api.</param>
-        public SupportApiHostedService(IOptions<ApiOptions> options, ILoggerProvider loggerProvider, IClusterClient client)
+        public SupportApiHostedService(IOptions<SupportApiOptions> options, ILoggerProvider loggerProvider, IClusterClient client)
         {
             if (options?.Value == null) throw new ArgumentNullException(nameof(options));
             if (loggerProvider == null) throw new ArgumentNullException(nameof(loggerProvider));

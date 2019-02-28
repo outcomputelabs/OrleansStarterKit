@@ -13,9 +13,9 @@ namespace Silo
     public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     {
         private readonly IApiVersionDescriptionProvider _provider;
-        private readonly ApiOptions _options;
+        private readonly SupportApiOptions _options;
 
-        public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider, IOptions<ApiOptions> options)
+        public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider, IOptions<SupportApiOptions> options)
         {
             _provider = provider ?? throw new ArgumentNullException(nameof(provider));
             _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
