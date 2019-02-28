@@ -14,7 +14,7 @@ using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
 
 namespace Silo.Services
 {
-    public class SiloHostedService : ISiloHostedService
+    public class SiloHostedService : IHostedService
     {
         private readonly ISiloHost _host;
 

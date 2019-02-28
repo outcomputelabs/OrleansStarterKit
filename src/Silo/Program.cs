@@ -49,7 +49,6 @@ namespace Silo
                     // add the silo hosted service and the services it makes available
                     services.AddSingleton<SiloHostedService>();
                     services.AddSingleton<IHostedService>(_ => _.GetService<SiloHostedService>());
-                    services.AddSingleton<ISiloHostedService>(_ => _.GetService<SiloHostedService>());
                     services.AddSingleton(_ => _.GetService<SiloHostedService>().ClusterClient);
 
                     // add the back-end api service
