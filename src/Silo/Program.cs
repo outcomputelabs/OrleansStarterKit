@@ -53,7 +53,7 @@ namespace Silo
                     services.AddSingleton(_ => _.GetService<SiloHostedService>().ClusterClient);
 
                     // add the back-end api service
-                    services.AddSingleton<IHostedService, ApiHostedService>();
+                    services.AddSingleton<IHostedService, SupportApiHostedService>();
                 })
                 .ConfigureLogging((hosting, configure) =>
                 {

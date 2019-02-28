@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -18,9 +17,9 @@ using System.Threading.Tasks;
 namespace Silo.Services
 {
     /// <summary>
-    /// Facilitates integration of the back-end API's <see cref="IWebHost"/> with a parent <see cref="IHost"/>.
+    /// Allows the support API to be hosted as a service in a generic host.
     /// </summary>
-    public class ApiHostedService : IHostedService
+    public class SupportApiHostedService : IHostedService
     {
         /// <summary>
         /// The web host for the back-end API.
@@ -33,7 +32,7 @@ namespace Silo.Services
         /// <param name="options">Options to use for building the back-end api.</param>
         /// <param name="loggerProvider">Logger provider to pass to the web host.</param>
         /// <param name="client">Orleans cluster client for the back-end api.</param>
-        public ApiHostedService(IOptions<ApiOptions> options, ILoggerProvider loggerProvider, IClusterClient client)
+        public SupportApiHostedService(IOptions<ApiOptions> options, ILoggerProvider loggerProvider, IClusterClient client)
         {
             if (options?.Value == null) throw new ArgumentNullException(nameof(options));
             if (loggerProvider == null) throw new ArgumentNullException(nameof(loggerProvider));
