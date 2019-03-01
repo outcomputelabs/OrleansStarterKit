@@ -11,6 +11,7 @@ using Silo;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using System;
 using System.Reflection;
 using UnitTests.Fakes;
 using Xunit;
@@ -61,6 +62,16 @@ namespace UnitTests
 
             // assert the cluster client is there
             Assert.Same(client, host.Services.GetService<IClusterClient>());
+        }
+
+        [Fact]
+        public void SupportApiHostedService_Refuses_Null_Options()
+        {
+            var error = Assert.Throws<ArgumentNullException>(() =>
+            {
+                new SupportApiHostedService(null, new FakeLoggerProvider(), new FakeClusterClient(), new FakeNetworkPortFinder());
+            });
+            Assert.Equal("options", error.ParamName);
         }
     }
 }
