@@ -42,7 +42,6 @@ namespace Silo
                 {
                     configure.AddProvider(loggerProvider);
                 })
-                .UseLocalhostClustering()
                 .UseAdoNetClustering(options =>
                 {
                     options.ConnectionString = configuration.GetConnectionString("Orleans");
@@ -52,6 +51,13 @@ namespace Silo
                 {
                     options.ClusterId = configuration["Orleans:ClusterId"];
                     options.ServiceId = configuration["Orleans:ServiceId"];
+                })
+                .Configure<ClusterMembershipOptions>(options =>
+                {
+                    if (environment.IsDevelopment())
+                    {
+                        options.ValidateInitialConnectivity = false;
+                    }
                 })
                 .UseAdoNetReminderService(options =>
                 {
@@ -74,6 +80,7 @@ namespace Silo
                 })
                 .UseDashboard(options =>
                 {
+                    options.HostSelf = true;
                     options.Port = DashboardPort;
                 })
                 .EnableDirectClient()
