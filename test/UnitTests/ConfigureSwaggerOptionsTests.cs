@@ -4,6 +4,7 @@ using Moq;
 using Silo;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System;
 using System.Collections.Generic;
 using UnitTests.Fakes;
 using Xunit;
@@ -48,6 +49,16 @@ namespace UnitTests
 
             // assert the annotation filter is there
             Assert.Contains(target.ParameterFilterDescriptors, _ => _.Type == typeof(AnnotationsParameterFilter));
+        }
+
+        [Fact]
+        public void ConfigureSwaggerOptions_Refuses_Null_Provider()
+        {
+            var error = Assert.Throws<ArgumentNullException>(() =>
+            {
+                new ConfigureSwaggerOptions(null, new FakeSupportApiOptions());
+            });
+            Assert.Equal("provider", error.ParamName);
         }
     }
 }
