@@ -6,7 +6,7 @@ namespace UnitTests.Fakes
 {
     public class FakeSupportApiOptions : IOptions<SupportApiOptions>
     {
-        public SupportApiOptions Value { get; } = new SupportApiOptions
+        public SupportApiOptions Value { get; set; } = new SupportApiOptions
         {
             Title = nameof(SupportApiHostedService)
         };

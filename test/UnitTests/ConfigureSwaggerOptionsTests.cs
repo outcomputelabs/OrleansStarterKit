@@ -60,5 +60,28 @@ namespace UnitTests
             });
             Assert.Equal("provider", error.ParamName);
         }
+
+        [Fact]
+        public void ConfigureSwaggerOptions_Refuses_Null_Options()
+        {
+            var error = Assert.Throws<ArgumentNullException>(() =>
+            {
+                new ConfigureSwaggerOptions(new FakeApiVersionDescriptionProvider(), null);
+            });
+            Assert.Equal("options", error.ParamName);
+        }
+
+        [Fact]
+        public void ConfigureSwaggerOptions_Refuses_Null_Options_Value()
+        {
+            var error = Assert.Throws<ArgumentNullException>(() =>
+            {
+                new ConfigureSwaggerOptions(new FakeApiVersionDescriptionProvider(), new FakeSupportApiOptions()
+                {
+                    Value = null
+                });
+            });
+            Assert.Equal("options", error.ParamName);
+        }
     }
 }
