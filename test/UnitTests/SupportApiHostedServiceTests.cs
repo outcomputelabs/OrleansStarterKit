@@ -106,5 +106,15 @@ namespace UnitTests
             });
             Assert.Equal("client", error.ParamName);
         }
+
+        [Fact]
+        public void SupportApiHostedService_Refuses_Null_PortFinder()
+        {
+            var error = Assert.Throws<ArgumentNullException>(() =>
+            {
+                new SupportApiHostedService(new FakeSupportApiOptions(), new FakeLoggerProvider(), new FakeClusterClient(), null);
+            });
+            Assert.Equal("portFinder", error.ParamName);
+        }
     }
 }

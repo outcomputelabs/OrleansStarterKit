@@ -38,6 +38,7 @@ namespace Silo
             if (options?.Value == null) throw new ArgumentNullException(nameof(options));
             if (loggerProvider == null) throw new ArgumentNullException(nameof(loggerProvider));
             if (client == null) throw new ArgumentNullException(nameof(client));
+            if (portFinder == null) throw new ArgumentNullException(nameof(portFinder));
 
             Port = portFinder.GetAvailablePortFrom(options.Value.PortRange.Start, options.Value.PortRange.End);
 
