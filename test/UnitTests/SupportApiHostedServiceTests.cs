@@ -73,5 +73,18 @@ namespace UnitTests
             });
             Assert.Equal("options", error.ParamName);
         }
+
+        [Fact]
+        public void SupportApiHostedService_Refuses_Null_Options_Value()
+        {
+            var error = Assert.Throws<ArgumentNullException>(() =>
+            {
+                new SupportApiHostedService(new FakeSupportApiOptions()
+                {
+                    Value = null
+                }, new FakeLoggerProvider(), new FakeClusterClient(), new FakeNetworkPortFinder());
+            });
+            Assert.Equal("options", error.ParamName);
+        }
     }
 }
