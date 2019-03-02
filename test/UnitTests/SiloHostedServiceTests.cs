@@ -32,6 +32,7 @@ namespace UnitTests
         [Fact]
         public void Has_SiloHost()
         {
+            // arrange
             var config = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string>
                 {
@@ -55,29 +56,29 @@ namespace UnitTests
             Assert.NotNull(host);
         }
 
-        /*
         [Fact]
         public void Has_Endpoints()
         {
             // arrange
-            var options = new FakeSiloHostedServiceOptions();
-            options.Value.AdoNetConnectionString = "SomeConnectionString";
-            options.Value.AdoNetInvariant = "SomeInvariant";
-            options.Value.SiloPortRange.Start = 11111;
-            options.Value.ClusterId = "SomeClusterId";
-            options.Value.ServiceId = "SomeServiceId";
-
-            var environment = new FakeHostingEnvironment
-            {
-                EnvironmentName = "SomeEnvironment"
-            };
+            var config = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    { "Orleans:Ports:Silo:Start", "11111" },
+                    { "Orleans:Ports:Silo:End", "11111" },
+                    { "Orleans:Ports:Gateway:Start", "22222" },
+                    { "Orleans:Ports:Gateway:End", "22222" },
+                    { "Orleans:ClusterId", "SomeClusterId" },
+                    { "Orleans:ServiceId", "SomeServiceId" },
+                    { "Orleans:Providers:Clustering:Provider", "Localhost" }
+                })
+                .Build();
 
             // act
             var service = new SiloHostedService(
-                options,
+                config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                environment);
+                new FakeHostingEnvironment());
 
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
@@ -85,10 +86,11 @@ namespace UnitTests
             // assert the endpoints are there
             var actual = host.Services.GetService<IOptions<EndpointOptions>>();
             Assert.NotNull(actual);
-            Assert.Equal(options.Value.SiloPortRange.Start, actual.Value.SiloPort);
-            Assert.Equal(options.Value.GatewayPortRange.Start, actual.Value.GatewayPort);
+            Assert.Equal(11111, actual.Value.SiloPort);
+            Assert.Equal(22222, actual.Value.GatewayPort);
         }
 
+        /*
         [Fact]
         public void Has_ApplicationParts()
         {
