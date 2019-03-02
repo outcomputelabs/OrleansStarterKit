@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Orleans;
 using Orleans.ApplicationParts;
 using Orleans.Configuration;
 using Orleans.Hosting;
@@ -438,6 +439,41 @@ namespace UnitTests
             var actual = host.Services.GetService<IOptions<DashboardOptions>>();
             Assert.True(actual.Value.HostSelf);
             Assert.Equal(options.Value.DashboardPortRange.Start, actual.Value.Port);
+        }
+
+        [Fact]
+        public void Has_DirectClient()
+        {
+            // arrange
+            var options = new FakeSiloHostedServiceOptions();
+            options.Value.AdoNetConnectionString = "SomeConnectionString";
+            options.Value.AdoNetInvariant = "SomeInvariant";
+            options.Value.SiloPortRange.Start = 11111;
+            options.Value.ClusterId = "SomeClusterId";
+            options.Value.ServiceId = "SomeServiceId";
+
+            var environment = new FakeHostingEnvironment
+            {
+                EnvironmentName = "SomeEnvironment"
+            };
+
+            // act
+            var service = new SiloHostedService(
+                options,
+                new FakeLoggerProvider(),
+                new FakeNetworkPortFinder(),
+                environment);
+
+            // white box
+            var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
+
+            // assert the cluster client is there
+            var client = host.Services.GetService<IClusterClient>();
+            Assert.NotNull(client);
+
+            // assert the grain factory is there
+            var factory = host.Services.GetService<IGrainFactory>();
+            Assert.NotNull(factory);
         }
     }
 }
