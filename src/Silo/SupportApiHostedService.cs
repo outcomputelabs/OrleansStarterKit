@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -21,26 +22,18 @@ namespace Silo
     /// </summary>
     public class SupportApiHostedService : IHostedService
     {
-        /// <summary>
-        /// The web host for the back-end API.
-        /// </summary>
         private readonly IWebHost _host;
 
-        /// <summary>
-        /// Creates and builds the <see cref="IWebHost"/> for the back-end API as a <see cref="IHostedService"/>.
-        /// </summary>
-        /// <param name="options">Options to use for building the back-end api.</param>
-        /// <param name="loggerProvider">Logger provider to pass to the web host.</param>
-        /// <param name="client">Orleans cluster client for the back-end api.</param>
-        /// <param name="portFinder">Helper for discovering available ports.</param>
-        public SupportApiHostedService(IOptions<SupportApiOptions> options, ILoggerProvider loggerProvider, IClusterClient client, INetworkPortFinder portFinder)
+        public SupportApiHostedService(IConfiguration configuration, ILoggerProvider loggerProvider, IClusterClient client, INetworkPortFinder portFinder)
         {
-            if (options?.Value == null) throw new ArgumentNullException(nameof(options));
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
             if (loggerProvider == null) throw new ArgumentNullException(nameof(loggerProvider));
             if (client == null) throw new ArgumentNullException(nameof(client));
             if (portFinder == null) throw new ArgumentNullException(nameof(portFinder));
 
-            Port = portFinder.GetAvailablePortFrom(options.Value.PortRange.Start, options.Value.PortRange.End);
+            Port = portFinder.GetAvailablePortFrom(
+                configuration.GetValue<int>("Api:Port:Start"),
+                configuration.GetValue<int>("Api:Port:End"));
 
             _host = new WebHostBuilder()
                 .UseKestrel(op =>
@@ -67,6 +60,11 @@ namespace Silo
                     configure.AddVersionedApiExplorer(op =>
                     {
                         op.GroupNameFormat = "'v'VVV";
+                    });
+
+                    configure.Configure<SupportApiOptions>(_ =>
+                    {
+                        _.Title = configuration.GetValue<string>("Api:Title");
                     });
 
                     configure.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();

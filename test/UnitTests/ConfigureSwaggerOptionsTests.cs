@@ -25,7 +25,6 @@ namespace UnitTests
                     new ApiVersionDescription(new ApiVersion(1, 0), group, false)
                 });
             var options = new FakeSupportApiOptions();
-            options.Value.Title = "ABC";
 
             // act
             var config = new ConfigureSwaggerOptions(provider.Object, options);
@@ -67,19 +66,6 @@ namespace UnitTests
             var error = Assert.Throws<ArgumentNullException>(() =>
             {
                 new ConfigureSwaggerOptions(new FakeApiVersionDescriptionProvider(), null);
-            });
-            Assert.Equal("options", error.ParamName);
-        }
-
-        [Fact]
-        public void ConfigureSwaggerOptions_Refuses_Null_Options_Value()
-        {
-            var error = Assert.Throws<ArgumentNullException>(() =>
-            {
-                new ConfigureSwaggerOptions(new FakeApiVersionDescriptionProvider(), new FakeSupportApiOptions()
-                {
-                    Value = null
-                });
             });
             Assert.Equal("options", error.ParamName);
         }

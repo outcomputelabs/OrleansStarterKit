@@ -5,7 +5,6 @@ using Orleans;
 using Orleans.Hosting;
 using Serilog;
 using Serilog.Events;
-using Silo.Options;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
@@ -43,14 +42,6 @@ namespace Silo
                     services.AddSingleton<SiloHostedService>();
                     services.AddSingleton<IHostedService>(_ => _.GetService<SiloHostedService>());
                     services.AddSingleton(_ => _.GetService<SiloHostedService>().ClusterClient);
-
-                    // add options for the api hosted service
-                    services.Configure<SupportApiOptions>(options =>
-                    {
-                        options.Title = hosting.Configuration.GetValue<string>("Api:Title");
-                        options.PortRange.Start = hosting.Configuration.GetValue<int>("Api:Port:Start");
-                        options.PortRange.End = hosting.Configuration.GetValue<int>("Api:Port:End");
-                    });
 
                     // add the back-end api service
                     services.AddSingleton<SupportApiHostedService>();
