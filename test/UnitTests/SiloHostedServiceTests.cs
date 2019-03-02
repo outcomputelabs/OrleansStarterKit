@@ -260,29 +260,32 @@ namespace UnitTests
             Assert.True(actual.Value.ValidateInitialConnectivity);
         }
 
-        /*
         [Fact]
         public void Has_ClusterMembershipOptions_And_ValidateInitialConnectivity_On_Development()
         {
             // arrange
-            var options = new FakeSiloHostedServiceOptions();
-            options.Value.AdoNetConnectionString = "SomeConnectionString";
-            options.Value.AdoNetInvariant = "SomeInvariant";
-            options.Value.SiloPortRange.Start = 11111;
-            options.Value.ClusterId = "SomeClusterId";
-            options.Value.ServiceId = "SomeServiceId";
-
-            var environment = new FakeHostingEnvironment
-            {
-                EnvironmentName = EnvironmentName.Development
-            };
+            var config = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    { "Orleans:Ports:Silo:Start", "11111" },
+                    { "Orleans:Ports:Silo:End", "11111" },
+                    { "Orleans:Ports:Gateway:Start", "22222" },
+                    { "Orleans:Ports:Gateway:End", "22222" },
+                    { "Orleans:ClusterId", "SomeClusterId" },
+                    { "Orleans:ServiceId", "SomeServiceId" },
+                    { "Orleans:Providers:Clustering:Provider", "Localhost" }
+                })
+                .Build();
 
             // act
             var service = new SiloHostedService(
-                options,
+                config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                environment);
+                new FakeHostingEnvironment()
+                {
+                    EnvironmentName = EnvironmentName.Development
+                });
 
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
@@ -293,6 +296,7 @@ namespace UnitTests
             Assert.False(actual.Value.ValidateInitialConnectivity);
         }
 
+        /*
         [Fact]
         public void Has_AdoNetReminderTableOptions()
         {
