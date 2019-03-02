@@ -35,5 +35,20 @@ namespace UnitTests
             // assert
             Assert.Equal(replace, actual);
         }
+
+        [Fact]
+        public void ValueIf_Skips_Replacement()
+        {
+            // arrange
+            var value = 1;
+            var compare = 2;
+            var replace = 3;
+
+            // act
+            var actual = value.ValueIf(compare, replace);
+
+            // assert
+            Assert.Equal(value, actual);
+        }
     }
 }
