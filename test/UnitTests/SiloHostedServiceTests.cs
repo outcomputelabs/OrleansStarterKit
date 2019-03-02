@@ -602,35 +602,34 @@ namespace UnitTests
             Assert.Equal("environment", error.ParamName);
         }
 
-        /*
         [Fact]
         public async Task Starts_And_Stops()
         {
             // arrange
-            var options = new FakeSiloHostedServiceOptions();
-            options.Value.AdoNetConnectionString = "SomeConnectionString";
-            options.Value.AdoNetInvariant = "System.Data.SqlClient";
-            options.Value.SiloPortRange.Start = 11111;
-            options.Value.ClusterId = "SomeClusterId";
-            options.Value.ServiceId = "SomeServiceId";
-
-            var environment = new FakeHostingEnvironment
-            {
-                EnvironmentName = "SomeEnvironment"
-            };
+            var config = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    { "Orleans:Ports:Silo:Start", "11111" },
+                    { "Orleans:Ports:Silo:End", "11111" },
+                    { "Orleans:ClusterId", "SomeClusterId" },
+                    { "Orleans:ServiceId", "SomeServiceId" },
+                    { "Orleans:Providers:Clustering:Provider", "Localhost" }
+                })
+                .Build();
 
             // act
             var service = new SiloHostedService(
-                options,
+                config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                environment);
+                new FakeHostingEnvironment());
 
             // assert
             await service.StartAsync(new CancellationToken());
             await service.StopAsync(new CancellationToken());
         }
 
+        /*
         [Fact]
         public void Refuses_Invalid_ClusteringProvider()
         {
