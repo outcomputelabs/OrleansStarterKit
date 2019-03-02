@@ -12,7 +12,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
-using System.Linq;
 
 namespace Silo
 {
