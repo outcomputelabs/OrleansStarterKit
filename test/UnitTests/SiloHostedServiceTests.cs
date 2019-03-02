@@ -7,7 +7,11 @@ using Orleans.ApplicationParts;
 using Orleans.Configuration;
 using Orleans.Hosting;
 using Orleans.Providers;
+using Orleans.Providers.Streams.SimpleMessageStream;
+using Orleans.Runtime;
+using Orleans.Streams;
 using Silo;
+using System.Linq;
 using System.Reflection;
 using UnitTests.Fakes;
 using Xunit;
@@ -335,6 +339,38 @@ namespace UnitTests
             Assert.Equal(options.Value.AdoNetInvariant, actual.Invariant);
             Assert.True(actual.UseJsonFormat);
             Assert.Equal(TypeNameHandling.None, actual.TypeNameHandling);
+        }
+
+        [Fact]
+        public void Has_SimpleMessageStreamProvider()
+        {
+            // arrange
+            var options = new FakeSiloHostedServiceOptions();
+            options.Value.AdoNetConnectionString = "SomeConnectionString";
+            options.Value.AdoNetInvariant = "SomeInvariant";
+            options.Value.SiloPortRange.Start = 11111;
+            options.Value.ClusterId = "SomeClusterId";
+            options.Value.ServiceId = "SomeServiceId";
+
+            var environment = new FakeHostingEnvironment
+            {
+                EnvironmentName = "SomeEnvironment"
+            };
+
+            // act
+            var service = new SiloHostedService(
+                options,
+                new FakeLoggerProvider(),
+                new FakeNetworkPortFinder(),
+                environment);
+
+            // white box
+            var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
+
+            // assert the silo clustering options are there
+            var actual = host.Services.GetServices<IKeyedService<string, IStreamProvider>>().SingleOrDefault(_ => _.Key == "SMS");
+            Assert.NotNull(actual);
+            Assert.IsType<SimpleMessageStreamProvider>(actual.GetService(host.Services));
         }
     }
 }
