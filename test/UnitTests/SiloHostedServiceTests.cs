@@ -545,9 +545,8 @@ namespace UnitTests
             Assert.NotNull(service.ClusterClient);
         }
 
-        /*
         [Fact]
-        public void Refuses_Null_Options()
+        public void Refuses_Null_Configuration()
         {
             var error = Assert.Throws<ArgumentNullException>(() =>
             {
@@ -557,9 +556,10 @@ namespace UnitTests
                     new FakeNetworkPortFinder(),
                     new FakeHostingEnvironment());
             });
-            Assert.Equal("options", error.ParamName);
+            Assert.Equal("configuration", error.ParamName);
         }
 
+        /*
         [Fact]
         public void Refuses_Null_Options_Value()
         {
