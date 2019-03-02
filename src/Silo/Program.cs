@@ -42,19 +42,58 @@ namespace Silo
                     // add options for the silo hosted service
                     services.Configure<SiloHostedServiceOptions>(_ =>
                     {
-                        _.ClusteringProvider = SiloHostedServiceClusteringProvider.AdoNet;
-                        _.DefaultStorageProvider = SiloHostedServiceStorageProvider.AdoNet;
-                        _.PubSubStorageProvider = SiloHostedServiceStorageProvider.AdoNet;
-                        _.ReminderProvider = SiloHostedServiceReminderProvider.AdoNet;
-
+                        // configure general settings
                         _.SiloPortRange.Start = hosting.Configuration.GetValue<int>("Orleans:Ports:Silo:Start");
                         _.SiloPortRange.End = hosting.Configuration.GetValue<int>("Orleans:Ports:Silo:End");
                         _.GatewayPortRange.Start = hosting.Configuration.GetValue<int>("Orleans:Ports:Gateway:Start");
                         _.GatewayPortRange.End = hosting.Configuration.GetValue<int>("Orleans:Ports:Gateway:End");
                         _.DashboardPortRange.Start = hosting.Configuration.GetValue<int>("Orleans:Ports:Dashboard:Start");
                         _.DashboardPortRange.End = hosting.Configuration.GetValue<int>("Orleans:Ports:Dashboard:End");
-                        _.AdoNetConnectionString = hosting.Configuration.GetConnectionString("Orleans");
-                        _.AdoNetInvariant = hosting.Configuration.GetValue<string>("Orleans:AdoNet:Invariant");
+
+                        
+                        
+                        // configure the clustering provider
+                        _.ClusteringProvider = hosting.Configuration.GetValue<SiloHostedServiceClusteringProvider>(
+                            "Orleans:Providers:Clustering:Provider");
+
+                        // configure the adonet clustering provider
+                        _.AdoNetClusteringConnectionString = hosting.Configuration.GetConnectionString(hosting.Configuration.GetValue<string>(
+                            "Orleans:Providers:Clustering:AdoNet:ConnectionStringName"));
+                        _.AdoNetClusteringInvariant = hosting.Configuration.GetValue<string>(
+                            "Orleans:Providers:Clustering:AdoNet:Invariant");
+
+                        
+                        
+                        // configure the default storage provider
+                        _.DefaultStorageProvider = hosting.Configuration.GetValue<SiloHostedServiceStorageProvider>(
+                            "Orleans:Providers:Storage:Default:Provider");
+
+                        // configure the adonet default storage provider
+                        _.AdoNetDefaultStorageConnectionString = hosting.Configuration.GetConnectionString(hosting.Configuration.GetValue<string>(
+                            "Orleans:Providers:Storage:Default:AdoNet:ConnectionStringName"));
+                        _.AdoNetDefaultStorageInvariant = hosting.Configuration.GetValue<string>(
+                            "Orleans:Providers:Storage:Default:AdoNet:Invariant");
+
+
+
+                        // configure the pubsub storage provider
+                        _.PubSubStorageProvider = hosting.Configuration.GetValue<SiloHostedServiceStorageProvider>(
+                            "Orleans:Providers:Storage:PubSub:Provider");
+
+                        // configure the adonet pubsub storage provider
+                        _.AdoNetPubSubStorageConnectionString = hosting.Configuration.GetConnectionString(hosting.Configuration.GetValue<string>(
+                            "Orleans:Providers:Storage:PubSub:AdoNet:ConnectionStringName"));
+                        _.AdoNetPubSubStorageInvariant = hosting.Configuration.GetValue<string>(
+                            "Orleans:Providers:Storage:PubSub:AdoNet:Invariant");
+
+
+
+
+                        _.ReminderProvider = SiloHostedServiceReminderProvider.AdoNet;
+
+
+
+
                         _.ClusterId = hosting.Configuration.GetValue<string>("Orleans:ClusterId");
                         _.ServiceId = hosting.Configuration.GetValue<string>("Orleans:ServiceId");
                     });

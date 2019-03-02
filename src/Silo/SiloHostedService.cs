@@ -79,8 +79,8 @@ namespace Silo
                 case SiloHostedServiceClusteringProvider.AdoNet:
                     builder.UseAdoNetClustering(_ =>
                     {
-                        _.ConnectionString = options.Value.AdoNetConnectionString;
-                        _.Invariant = options.Value.AdoNetInvariant;
+                        _.ConnectionString = options.Value.AdoNetClusteringConnectionString;
+                        _.Invariant = options.Value.AdoNetClusteringInvariant;
                     });
                     break;
 
