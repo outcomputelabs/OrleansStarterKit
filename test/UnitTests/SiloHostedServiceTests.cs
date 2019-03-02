@@ -156,30 +156,32 @@ namespace UnitTests
             Assert.Contains(loggerProvider, actual);
         }
 
-        /*
         [Fact]
         public void Has_AdoNetClustering()
         {
             // arrange
-            var options = new FakeSiloHostedServiceOptions();
-            options.Value.AdoNetConnectionString = "SomeConnectionString";
-            options.Value.AdoNetInvariant = "SomeInvariant";
-            options.Value.SiloPortRange.Start = 11111;
-            options.Value.ClusterId = "SomeClusterId";
-            options.Value.ServiceId = "SomeServiceId";
-            options.Value.ClusteringProvider = SiloHostedServiceClusteringProvider.AdoNet;
-
-            var environment = new FakeHostingEnvironment
-            {
-                EnvironmentName = "SomeEnvironment"
-            };
+            var config = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    { "Orleans:Ports:Silo:Start", "11111" },
+                    { "Orleans:Ports:Silo:End", "11111" },
+                    { "Orleans:Ports:Gateway:Start", "22222" },
+                    { "Orleans:Ports:Gateway:End", "22222" },
+                    { "Orleans:ClusterId", "SomeClusterId" },
+                    { "Orleans:ServiceId", "SomeServiceId" },
+                    { "Orleans:Providers:Clustering:Provider", "AdoNet" },
+                    { "Orleans:Providers:Clustering:AdoNet:ConnectionStringName", "SomeConnectionStringName" },
+                    { "Orleans:Providers:Clustering:AdoNet:Invariant", "SomeInvariant" },
+                    { "ConnectionStrings:SomeConnectionStringName", "SomeConnectionString" }
+                })
+                .Build();
 
             // act
             var service = new SiloHostedService(
-                options,
+                config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                environment);
+                new FakeHostingEnvironment());
 
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
@@ -187,10 +189,11 @@ namespace UnitTests
             // assert the ado net clustering options are there
             var actual = host.Services.GetService<IOptions<AdoNetClusteringSiloOptions>>();
             Assert.NotNull(actual);
-            Assert.Equal(options.Value.AdoNetConnectionString, actual.Value.ConnectionString);
-            Assert.Equal(options.Value.AdoNetInvariant, actual.Value.Invariant);
+            Assert.Equal("SomeConnectionString", actual.Value.ConnectionString);
+            Assert.Equal("SomeInvariant", actual.Value.Invariant);
         }
 
+        /*
         [Fact]
         public void Has_ClusteringOptions()
         {
