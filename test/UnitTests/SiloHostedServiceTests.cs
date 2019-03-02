@@ -237,7 +237,7 @@ namespace UnitTests
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
 
-            // assert the silo clustering options are there
+            // assert the cluster membership options are there
             var actual = host.Services.GetService<IOptions<ClusterMembershipOptions>>();
             Assert.NotNull(actual);
             Assert.True(actual.Value.ValidateInitialConnectivity);
@@ -269,7 +269,7 @@ namespace UnitTests
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
 
-            // assert the silo clustering options are there
+            // assert the cluster membership options are there
             var actual = host.Services.GetService<IOptions<ClusterMembershipOptions>>();
             Assert.NotNull(actual);
             Assert.False(actual.Value.ValidateInitialConnectivity);
@@ -301,7 +301,7 @@ namespace UnitTests
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
 
-            // assert the silo clustering options are there
+            // assert the reminder table options are there
             var actual = host.Services.GetService<IOptions<AdoNetReminderTableOptions>>();
             Assert.Equal(options.Value.AdoNetConnectionString, actual.Value.ConnectionString);
             Assert.Equal(options.Value.AdoNetInvariant, actual.Value.Invariant);
@@ -333,7 +333,7 @@ namespace UnitTests
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
 
-            // assert the silo clustering options are there as default
+            // assert the grain storage options are there
             var actual = host.Services.GetService<IOptionsSnapshot<AdoNetGrainStorageOptions>>().Get(ProviderConstants.DEFAULT_STORAGE_PROVIDER_NAME);
             Assert.Equal(options.Value.AdoNetConnectionString, actual.ConnectionString);
             Assert.Equal(options.Value.AdoNetInvariant, actual.Invariant);
@@ -367,7 +367,7 @@ namespace UnitTests
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
 
-            // assert the silo clustering options are there
+            // assert the stream provider is there
             var actual = host.Services.GetServices<IKeyedService<string, IStreamProvider>>().SingleOrDefault(_ => _.Key == "SMS");
             Assert.NotNull(actual);
             Assert.IsType<SimpleMessageStreamProvider>(actual.GetService(host.Services));
