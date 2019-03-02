@@ -13,9 +13,12 @@ using Orleans.Runtime;
 using Orleans.Streams;
 using OrleansDashboard;
 using Silo;
+using Silo.Options;
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using UnitTests.Fakes;
 using Xunit;
 
@@ -158,6 +161,7 @@ namespace UnitTests
             options.Value.SiloPortRange.Start = 11111;
             options.Value.ClusterId = "SomeClusterId";
             options.Value.ServiceId = "SomeServiceId";
+            options.Value.ClusteringProvider = SiloHostedServiceClusteringProvider.AdoNet;
 
             var environment = new FakeHostingEnvironment
             {
@@ -288,6 +292,7 @@ namespace UnitTests
             options.Value.SiloPortRange.Start = 11111;
             options.Value.ClusterId = "SomeClusterId";
             options.Value.ServiceId = "SomeServiceId";
+            options.Value.ReminderProvider = SiloHostedServiceReminderProvider.AdoNet;
 
             var environment = new FakeHostingEnvironment
             {
@@ -320,6 +325,7 @@ namespace UnitTests
             options.Value.SiloPortRange.Start = 11111;
             options.Value.ClusterId = "SomeClusterId";
             options.Value.ServiceId = "SomeServiceId";
+            options.Value.DefaultStorageProvider = SiloHostedServiceStorageProvider.AdoNet;
 
             var environment = new FakeHostingEnvironment
             {
@@ -387,6 +393,7 @@ namespace UnitTests
             options.Value.DashboardPortRange.Start = 33333;
             options.Value.ClusterId = "SomeClusterId";
             options.Value.ServiceId = "SomeServiceId";
+            options.Value.PubSubStorageProvider = SiloHostedServiceStorageProvider.AdoNet;
 
             var environment = new FakeHostingEnvironment
             {
@@ -575,6 +582,34 @@ namespace UnitTests
                     null);
             });
             Assert.Equal("environment", error.ParamName);
+        }
+
+        [Fact]
+        public async Task Starts_And_Stops()
+        {
+            // arrange
+            var options = new FakeSiloHostedServiceOptions();
+            options.Value.AdoNetConnectionString = "SomeConnectionString";
+            options.Value.AdoNetInvariant = "System.Data.SqlClient";
+            options.Value.SiloPortRange.Start = 11111;
+            options.Value.ClusterId = "SomeClusterId";
+            options.Value.ServiceId = "SomeServiceId";
+
+            var environment = new FakeHostingEnvironment
+            {
+                EnvironmentName = "SomeEnvironment"
+            };
+
+            // act
+            var service = new SiloHostedService(
+                options,
+                new FakeLoggerProvider(),
+                new FakeNetworkPortFinder(),
+                environment);
+
+            // assert
+            await service.StartAsync(new CancellationToken());
+            await service.StopAsync(new CancellationToken());
         }
     }
 }

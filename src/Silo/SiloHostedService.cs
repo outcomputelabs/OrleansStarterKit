@@ -17,6 +17,9 @@ namespace Silo
 {
     public class SiloHostedService : IHostedService
     {
+        private const string PubSubStorageProviderName = "PubSubStore";
+        private const string SimpleMessageStreamProviderName = "SMS";
+
         private readonly ISiloHost _host;
 
         public SiloHostedService(IOptions<SiloHostedServiceOptions> options, ILoggerProvider loggerProvider, INetworkPortFinder portFinder, IHostingEnvironment environment)
@@ -33,7 +36,10 @@ namespace Silo
             DashboardPort = portFinder.GetAvailablePortFrom(options.Value.DashboardPortRange.Start, options.Value.DashboardPortRange.End);
 
             // configure the silo host
-            _host = new SiloHostBuilder()
+            var builder = new SiloHostBuilder();
+
+            // configure shared options
+            builder
                 .ConfigureEndpoints(SiloPort, GatewayPort)
                 .ConfigureApplicationParts(_ =>
                 {
@@ -42,11 +48,6 @@ namespace Silo
                 .ConfigureLogging(_ =>
                 {
                     _.AddProvider(loggerProvider);
-                })
-                .UseAdoNetClustering(_ =>
-                {
-                    _.ConnectionString = options.Value.AdoNetConnectionString;
-                    _.Invariant = options.Value.AdoNetInvariant;
                 })
                 .Configure<ClusterOptions>(_ =>
                 {
@@ -60,32 +61,95 @@ namespace Silo
                         _.ValidateInitialConnectivity = false;
                     }
                 })
-                .UseAdoNetReminderService(_ =>
-                {
-                    _.ConnectionString = options.Value.AdoNetConnectionString;
-                    _.Invariant = options.Value.AdoNetInvariant;
-                })
-                .AddAdoNetGrainStorageAsDefault(_ =>
-                {
-                    _.ConnectionString = options.Value.AdoNetConnectionString;
-                    _.Invariant = options.Value.AdoNetInvariant;
-                    _.UseJsonFormat = true;
-                    _.TypeNameHandling = TypeNameHandling.None;
-                })
-                .AddSimpleMessageStreamProvider("SMS")
-                .AddAdoNetGrainStorage("PubSubStore", _ =>
-                {
-                    _.ConnectionString = options.Value.AdoNetConnectionString;
-                    _.Invariant = options.Value.AdoNetInvariant;
-                    _.UseJsonFormat = true;
-                })
+                .AddSimpleMessageStreamProvider(SimpleMessageStreamProviderName)
                 .UseDashboard(_ =>
                 {
                     _.HostSelf = true;
                     _.Port = DashboardPort;
                 })
-                .EnableDirectClient()
-                .Build();
+                .EnableDirectClient();
+
+            // configure the clustering provider
+            switch (options.Value.ClusteringProvider)
+            {
+                case SiloHostedServiceClusteringProvider.Localhost:
+                    builder.UseLocalhostClustering(SiloPort, GatewayPort, null, options.Value.ServiceId, options.Value.ClusterId);
+                    break;
+
+                case SiloHostedServiceClusteringProvider.AdoNet:
+                    builder.UseAdoNetClustering(_ =>
+                    {
+                        _.ConnectionString = options.Value.AdoNetConnectionString;
+                        _.Invariant = options.Value.AdoNetInvariant;
+                    });
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(options.Value.ClusteringProvider));
+            }
+
+            // configure the reminder service
+            switch (options.Value.ReminderProvider)
+            {
+                case SiloHostedServiceReminderProvider.InMemory:
+                    builder.UseInMemoryReminderService();
+                    break;
+
+                case SiloHostedServiceReminderProvider.AdoNet:
+                    builder.UseAdoNetReminderService(_ =>
+                    {
+                        _.ConnectionString = options.Value.AdoNetConnectionString;
+                        _.Invariant = options.Value.AdoNetInvariant;
+                    });
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(options.Value.ReminderProvider));
+            }
+
+            // configure the default storage provider
+            switch (options.Value.DefaultStorageProvider)
+            {
+                case SiloHostedServiceStorageProvider.InMemory:
+                    builder.AddMemoryGrainStorageAsDefault();
+                    break;
+
+                case SiloHostedServiceStorageProvider.AdoNet:
+                    builder.AddAdoNetGrainStorageAsDefault(_ =>
+                    {
+                        _.ConnectionString = options.Value.AdoNetConnectionString;
+                        _.Invariant = options.Value.AdoNetInvariant;
+                        _.UseJsonFormat = true;
+                        _.TypeNameHandling = TypeNameHandling.None;
+                    });
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(options.Value.DefaultStorageProvider));
+            }
+
+            // configure the storage provider for pubsub
+            switch (options.Value.PubSubStorageProvider)
+            {
+                case SiloHostedServiceStorageProvider.InMemory:
+                    builder.AddMemoryGrainStorage(PubSubStorageProviderName);
+                    break;
+
+                case SiloHostedServiceStorageProvider.AdoNet:
+                    builder.AddAdoNetGrainStorage(PubSubStorageProviderName, _ =>
+                    {
+                        _.ConnectionString = options.Value.AdoNetConnectionString;
+                        _.Invariant = options.Value.AdoNetInvariant;
+                        _.UseJsonFormat = true;
+                    });
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(options.Value.PubSubStorageProvider));
+            }
+
+            // done
+            _host = builder.Build();
         }
 
         public IClusterClient ClusterClient => _host.Services.GetService<IClusterClient>();

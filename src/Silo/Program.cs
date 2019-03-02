@@ -42,6 +42,11 @@ namespace Silo
                     // add options for the silo hosted service
                     services.Configure<SiloHostedServiceOptions>(_ =>
                     {
+                        _.ClusteringProvider = SiloHostedServiceClusteringProvider.AdoNet;
+                        _.DefaultStorageProvider = SiloHostedServiceStorageProvider.AdoNet;
+                        _.PubSubStorageProvider = SiloHostedServiceStorageProvider.AdoNet;
+                        _.ReminderProvider = SiloHostedServiceReminderProvider.AdoNet;
+
                         _.SiloPortRange.Start = hosting.Configuration.GetValue<int>("Orleans:Ports:Silo:Start");
                         _.SiloPortRange.End = hosting.Configuration.GetValue<int>("Orleans:Ports:Silo:End");
                         _.GatewayPortRange.Start = hosting.Configuration.GetValue<int>("Orleans:Ports:Gateway:Start");
