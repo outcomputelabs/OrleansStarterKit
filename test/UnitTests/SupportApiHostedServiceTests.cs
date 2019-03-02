@@ -23,56 +23,6 @@ namespace UnitTests
     public class SupportApiHostedServiceTests
     {
         [Fact]
-        public async Task SupportApiHostedService_Builds_Starts_Stops()
-        {
-            // arrange
-            var options = new FakeSupportApiOptions();
-            var loggerProvider = new FakeLoggerProvider();
-            var client = new FakeClusterClient();
-            var portFinder = new FakeNetworkPortFinder();
-
-            // act
-            var api = new SupportApiHostedService(options, loggerProvider, client, portFinder);
-
-            // assert - white box
-            var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
-            Assert.NotNull(host);
-
-            // assert kestrel is there
-            Assert.NotNull(host.Services.GetService<IOptions<KestrelServerOptions>>());
-
-            // assert mvc is there
-            Assert.NotNull(host.Services.GetService<IOptions<MvcOptions>>());
-
-            // assert api versioning is there
-            Assert.NotNull(host.Services.GetService<IOptions<ApiVersioningOptions>>());
-
-            // assert the api explorer is there
-            Assert.NotNull(host.Services.GetService<IOptions<ApiExplorerOptions>>());
-
-            // assert the swagger generator is there
-            Assert.NotNull(host.Services.GetService<IOptions<SwaggerGenOptions>>());
-
-            // assert swagger is there
-            Assert.NotNull(host.Services.GetService<IOptions<SwaggerOptions>>());
-
-            // assert swagger ui is there
-            Assert.NotNull(host.Services.GetService<IOptions<SwaggerUIOptions>>());
-
-            // assert logger provider is there
-            Assert.Same(loggerProvider, host.Services.GetService<ILoggerProvider>());
-
-            // assert the cluster client is there
-            Assert.Same(client, host.Services.GetService<IClusterClient>());
-
-            // assert the service starts
-            await api.StartAsync(new CancellationToken());
-
-            // assert the api stops
-            await api.StopAsync(new CancellationToken());
-        }
-
-        [Fact]
         public void UsesKestrel()
         {
             // act
@@ -88,6 +38,176 @@ namespace UnitTests
 
             // assert kestrel is there
             Assert.NotNull(host.Services.GetService<IOptions<KestrelServerOptions>>());
+        }
+
+        [Fact]
+        public void Uses_Mvc()
+        {
+            // act
+            var api = new SupportApiHostedService(
+                new FakeSupportApiOptions(),
+                new FakeLoggerProvider(),
+                new FakeClusterClient(),
+                new FakeNetworkPortFinder());
+
+            // assert - white box
+            var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
+            Assert.NotNull(host);
+
+            // assert mvc is there
+            Assert.NotNull(host.Services.GetService<IOptions<MvcOptions>>());
+        }
+
+        [Fact]
+        public void Uses_ApiVersioning()
+        {
+            // act
+            var api = new SupportApiHostedService(
+                new FakeSupportApiOptions(),
+                new FakeLoggerProvider(),
+                new FakeClusterClient(),
+                new FakeNetworkPortFinder());
+
+            // assert - white box
+            var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
+            Assert.NotNull(host);
+
+            // assert api versioning is there
+            Assert.NotNull(host.Services.GetService<IOptions<ApiVersioningOptions>>());
+        }
+
+        [Fact]
+        public void Uses_ApiExplorer()
+        {
+            // act
+            var api = new SupportApiHostedService(
+                new FakeSupportApiOptions(),
+                new FakeLoggerProvider(),
+                new FakeClusterClient(),
+                new FakeNetworkPortFinder());
+
+            // assert - white box
+            var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
+            Assert.NotNull(host);
+
+            // assert the api explorer is there
+            Assert.NotNull(host.Services.GetService<IOptions<ApiExplorerOptions>>());
+        }
+
+        [Fact]
+        public void Uses_SwaggerGenerator()
+        {
+            // act
+            var api = new SupportApiHostedService(
+                new FakeSupportApiOptions(),
+                new FakeLoggerProvider(),
+                new FakeClusterClient(),
+                new FakeNetworkPortFinder());
+
+            // assert - white box
+            var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
+            Assert.NotNull(host);
+
+            // assert the swagger generator is there
+            Assert.NotNull(host.Services.GetService<IOptions<SwaggerGenOptions>>());
+        }
+
+        [Fact]
+        public void Uses_Swagger()
+        {
+            // act
+            var api = new SupportApiHostedService(
+                new FakeSupportApiOptions(),
+                new FakeLoggerProvider(),
+                new FakeClusterClient(),
+                new FakeNetworkPortFinder());
+
+            // assert - white box
+            var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
+            Assert.NotNull(host);
+
+            // assert swagger is there
+            Assert.NotNull(host.Services.GetService<IOptions<SwaggerOptions>>());
+        }
+
+        [Fact]
+        public void Uses_SwaggerUI()
+        {
+            // act
+            var api = new SupportApiHostedService(
+                new FakeSupportApiOptions(),
+                new FakeLoggerProvider(),
+                new FakeClusterClient(),
+                new FakeNetworkPortFinder());
+
+            // assert - white box
+            var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
+            Assert.NotNull(host);
+
+            // assert swagger ui is there
+            Assert.NotNull(host.Services.GetService<IOptions<SwaggerUIOptions>>());
+        }
+
+        [Fact]
+        public void Uses_LoggerProvider()
+        {
+            // act
+            var loggerProvider = new FakeLoggerProvider();
+            var api = new SupportApiHostedService(
+                new FakeSupportApiOptions(),
+                loggerProvider,
+                new FakeClusterClient(),
+                new FakeNetworkPortFinder());
+
+            // assert - white box
+            var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
+            Assert.NotNull(host);
+
+            // assert logger provider is there
+            Assert.Same(loggerProvider, host.Services.GetService<ILoggerProvider>());
+        }
+
+        [Fact]
+        public void Uses_ClusterClient()
+        {
+            // act
+            var client = new FakeClusterClient();
+            var api = new SupportApiHostedService(
+                new FakeSupportApiOptions(),
+                new FakeLoggerProvider(),
+                client,
+                new FakeNetworkPortFinder());
+
+            // assert - white box
+            var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
+            Assert.NotNull(host);
+
+            // assert the cluster client is there
+            Assert.Same(client, host.Services.GetService<IClusterClient>());
+        }
+
+        [Fact]
+        public async Task Starts_And_Stops()
+        {
+            // act
+            var api = new SupportApiHostedService(
+                new FakeSupportApiOptions(),
+                new FakeLoggerProvider(),
+                new FakeClusterClient(),
+                new FakeNetworkPortFinder());
+
+            // assert - white box
+            var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
+            Assert.NotNull(host);
+
+            // assert the service starts
+            await api.StartAsync(new CancellationToken());
+
+            // assert the api stops
+            await api.StopAsync(new CancellationToken());
+
+            // if it did not crash yet we are good
+            Assert.True(true);
         }
 
         [Fact]
