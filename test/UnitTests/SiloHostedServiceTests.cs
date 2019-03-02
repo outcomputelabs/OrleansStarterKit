@@ -611,5 +611,73 @@ namespace UnitTests
             await service.StartAsync(new CancellationToken());
             await service.StopAsync(new CancellationToken());
         }
+
+        [Fact]
+        public void Refuses_Invalid_ClusteringProvider()
+        {
+            var options = new FakeSiloHostedServiceOptions();
+            options.Value.ClusteringProvider = SiloHostedServiceClusteringProvider.None;
+
+            var error = Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                new SiloHostedService(
+                    options,
+                    new FakeLoggerProvider(),
+                    new FakeNetworkPortFinder(),
+                    new FakeHostingEnvironment());
+            });
+            Assert.Equal(nameof(options.Value.ClusteringProvider), error.ParamName);
+        }
+
+        [Fact]
+        public void Refuses_Invalid_ReminderProvider()
+        {
+            var options = new FakeSiloHostedServiceOptions();
+            options.Value.ReminderProvider = SiloHostedServiceReminderProvider.None;
+
+            var error = Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                new SiloHostedService(
+                    options,
+                    new FakeLoggerProvider(),
+                    new FakeNetworkPortFinder(),
+                    new FakeHostingEnvironment());
+            });
+            Assert.Equal(nameof(options.Value.ReminderProvider), error.ParamName);
+        }
+
+        [Fact]
+        public void Refuses_Invalid_DefaultStorageProvider()
+        {
+            var options = new FakeSiloHostedServiceOptions();
+            options.Value.DefaultStorageProvider = SiloHostedServiceStorageProvider.None;
+
+            var error = Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                new SiloHostedService(
+                    options,
+                    new FakeLoggerProvider(),
+                    new FakeNetworkPortFinder(),
+                    new FakeHostingEnvironment());
+            });
+            Assert.Equal(nameof(options.Value.DefaultStorageProvider), error.ParamName);
+        }
+
+        [Fact]
+        public void Refuses_Invalid_PubSubStorageProvider()
+        {
+            var options = new FakeSiloHostedServiceOptions();
+            options.Value.PubSubStorageProvider = SiloHostedServiceStorageProvider.None;
+
+            var error = Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                new SiloHostedService(
+                    options,
+                    new FakeLoggerProvider(),
+                    new FakeNetworkPortFinder(),
+                    new FakeHostingEnvironment());
+            });
+            Assert.Equal(nameof(options.Value.PubSubStorageProvider), error.ParamName);
+        }
     }
 }
