@@ -5,6 +5,6 @@ namespace UnitTests.Fakes
 {
     public class FakeSiloHostedServiceOptions : IOptions<SiloHostedServiceOptions>
     {
-        public SiloHostedServiceOptions Value { get; } = new SiloHostedServiceOptions();
+        public SiloHostedServiceOptions Value { get; set; } = new SiloHostedServiceOptions();
     }
 }

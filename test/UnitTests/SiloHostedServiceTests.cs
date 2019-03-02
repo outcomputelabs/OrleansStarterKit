@@ -13,6 +13,7 @@ using Orleans.Runtime;
 using Orleans.Streams;
 using OrleansDashboard;
 using Silo;
+using System;
 using System.Linq;
 using System.Reflection;
 using UnitTests.Fakes;
@@ -501,6 +502,65 @@ namespace UnitTests
 
             // assert
             Assert.NotNull(service.ClusterClient);
+        }
+
+        [Fact]
+        public void Refuses_Null_Options()
+        {
+            var error = Assert.Throws<ArgumentNullException>(() =>
+            {
+                new SiloHostedService(
+                    null,
+                    new FakeLoggerProvider(),
+                    new FakeNetworkPortFinder(),
+                    new FakeHostingEnvironment());
+            });
+            Assert.Equal("options", error.ParamName);
+        }
+
+        [Fact]
+        public void Refuses_Null_Options_Value()
+        {
+            var error = Assert.Throws<ArgumentNullException>(() =>
+            {
+                new SiloHostedService(
+                    new FakeSiloHostedServiceOptions()
+                    {
+                        Value = null
+                    },
+                    new FakeLoggerProvider(),
+                    new FakeNetworkPortFinder(),
+                    new FakeHostingEnvironment());
+            });
+            Assert.Equal("options", error.ParamName);
+        }
+
+        [Fact]
+        public void Refuses_Null_LoggerProvider()
+        {
+            var error = Assert.Throws<ArgumentNullException>(() =>
+            {
+                new SiloHostedService(
+                    new FakeSiloHostedServiceOptions(),
+                    null,
+                    new FakeNetworkPortFinder(),
+                    new FakeHostingEnvironment());
+            });
+            Assert.Equal("loggerProvider", error.ParamName);
+        }
+
+        [Fact]
+        public void Refuses_Null_PortFinder()
+        {
+            var error = Assert.Throws<ArgumentNullException>(() =>
+            {
+                new SiloHostedService(
+                    new FakeSiloHostedServiceOptions(),
+                    new FakeLoggerProvider(),
+                    null,
+                    new FakeHostingEnvironment());
+            });
+            Assert.Equal("portFinder", error.ParamName);
         }
     }
 }
