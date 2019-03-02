@@ -93,6 +93,9 @@ namespace Silo
                         _.Invariant = configuration.GetValue<string>("Orleans:Providers:Clustering:AdoNet:Invariant");
                     });
                     break;
+
+                default:
+                    break;
             }
 
             // configure the reminder service
@@ -108,6 +111,9 @@ namespace Silo
                         _.ConnectionString = configuration.GetConnectionString(configuration.GetValue<string>("Orleans:Providers:Reminders:AdoNet:ConnectionStringName"));
                         _.Invariant = configuration.GetValue<string>("Orleans:Providers:Reminders:AdoNet:Invariant");
                     });
+                    break;
+
+                default:
                     break;
             }
 
