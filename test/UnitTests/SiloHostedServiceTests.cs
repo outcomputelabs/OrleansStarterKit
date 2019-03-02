@@ -333,42 +333,48 @@ namespace UnitTests
             Assert.Equal("SomeInvariant", actual.Value.Invariant);
         }
 
-        /*
         [Fact]
         public void Has_AdoNetGrainStorageOptions_As_Default()
         {
             // arrange
-            var options = new FakeSiloHostedServiceOptions();
-            options.Value.AdoNetConnectionString = "SomeConnectionString";
-            options.Value.AdoNetInvariant = "SomeInvariant";
-            options.Value.SiloPortRange.Start = 11111;
-            options.Value.ClusterId = "SomeClusterId";
-            options.Value.ServiceId = "SomeServiceId";
-            options.Value.DefaultStorageProvider = SiloHostedServiceStorageProvider.AdoNet;
-
-            var environment = new FakeHostingEnvironment
-            {
-                EnvironmentName = "SomeEnvironment"
-            };
+            var config = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    { "Orleans:Ports:Silo:Start", "11111" },
+                    { "Orleans:Ports:Silo:End", "11111" },
+                    { "Orleans:Ports:Gateway:Start", "22222" },
+                    { "Orleans:Ports:Gateway:End", "22222" },
+                    { "Orleans:ClusterId", "SomeClusterId" },
+                    { "Orleans:ServiceId", "SomeServiceId" },
+                    { "Orleans:Providers:Clustering:Provider", "Localhost" },
+                    { "Orleans:Providers:Storage:Default:Provider", "AdoNet" },
+                    { "Orleans:Providers:Storage:Default:AdoNet:ConnectionStringName", "SomeConnectionStringName" },
+                    { "Orleans:Providers:Storage:Default:AdoNet:Invariant", "SomeInvariant" },
+                    { "Orleans:Providers:Storage:Default:AdoNet:UseJsonFormat", "true" },
+                    { "Orleans:Providers:Storage:Default:AdoNet:TypeNameHandling", "None" },
+                    { "ConnectionStrings:SomeConnectionStringName", "SomeConnectionString" },
+                })
+                .Build();
 
             // act
             var service = new SiloHostedService(
-                options,
+                config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                environment);
+                new FakeHostingEnvironment());
 
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
 
             // assert the grain storage options are there
             var actual = host.Services.GetService<IOptionsSnapshot<AdoNetGrainStorageOptions>>().Get(ProviderConstants.DEFAULT_STORAGE_PROVIDER_NAME);
-            Assert.Equal(options.Value.AdoNetConnectionString, actual.ConnectionString);
-            Assert.Equal(options.Value.AdoNetInvariant, actual.Invariant);
+            Assert.Equal("SomeConnectionString", actual.ConnectionString);
+            Assert.Equal("SomeInvariant", actual.Invariant);
             Assert.True(actual.UseJsonFormat);
             Assert.Equal(TypeNameHandling.None, actual.TypeNameHandling);
         }
 
+        /*
         [Fact]
         public void Has_SimpleMessageStreamProvider()
         {
