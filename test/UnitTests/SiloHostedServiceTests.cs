@@ -446,29 +446,31 @@ namespace UnitTests
             Assert.True(actual.UseJsonFormat);
         }
 
-        /*
         [Fact]
         public void Has_DashboardOptions()
         {
             // arrange
-            var options = new FakeSiloHostedServiceOptions();
-            options.Value.AdoNetConnectionString = "SomeConnectionString";
-            options.Value.AdoNetInvariant = "SomeInvariant";
-            options.Value.SiloPortRange.Start = 11111;
-            options.Value.ClusterId = "SomeClusterId";
-            options.Value.ServiceId = "SomeServiceId";
-
-            var environment = new FakeHostingEnvironment
-            {
-                EnvironmentName = "SomeEnvironment"
-            };
+            var config = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    { "Orleans:Ports:Silo:Start", "11111" },
+                    { "Orleans:Ports:Silo:End", "11111" },
+                    { "Orleans:Ports:Gateway:Start", "22222" },
+                    { "Orleans:Ports:Gateway:End", "22222" },
+                    { "Orleans:Ports:Dashboard:Start", "33333" },
+                    { "Orleans:Ports:Dashboard:End", "33333" },
+                    { "Orleans:ClusterId", "SomeClusterId" },
+                    { "Orleans:ServiceId", "SomeServiceId" },
+                    { "Orleans:Providers:Clustering:Provider", "Localhost" }
+                })
+                .Build();
 
             // act
             var service = new SiloHostedService(
-                options,
+                config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                environment);
+                new FakeHostingEnvironment());
 
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
@@ -476,9 +478,10 @@ namespace UnitTests
             // assert the dashboard options are there
             var actual = host.Services.GetService<IOptions<DashboardOptions>>();
             Assert.True(actual.Value.HostSelf);
-            Assert.Equal(options.Value.DashboardPortRange.Start, actual.Value.Port);
+            Assert.Equal(33333, actual.Value.Port);
         }
 
+        /*
         [Fact]
         public void Has_DirectClient()
         {
