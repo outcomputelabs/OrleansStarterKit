@@ -1,4 +1,6 @@
 ﻿using Silo;
+using System.Net;
+using System.Net.Sockets;
 using Xunit;
 
 namespace UnitTests
@@ -6,9 +8,23 @@ namespace UnitTests
     public class NetworkPortFinderTests
     {
         [Fact]
-        public void NetworkHelper_Implements_Interface()
+        public void GetAvailablePortFrom_Returns_Open_Port()
         {
-            Assert.IsAssignableFrom<INetworkPortFinder>(new NetworkPortFinder());
+            // arrange
+            var finder = new NetworkPortFinder();
+
+            // find an open port
+            var listener = TcpListener.Create(0);
+            listener.ExclusiveAddressUse = true;
+            listener.Start();
+            var port = ((IPEndPoint)listener.LocalEndpoint).Port;
+            listener.Stop();
+
+            // act
+            var available = finder.GetAvailablePortFrom(port, port + 10);
+
+            // assert
+            Assert.Equal(port, available);
         }
     }
 }
