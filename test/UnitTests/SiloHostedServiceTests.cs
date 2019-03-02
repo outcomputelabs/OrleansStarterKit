@@ -69,7 +69,10 @@ namespace UnitTests
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
 
             // assert the endpoints are there
-            Assert.NotNull(host.Services.GetService<IOptions<EndpointOptions>>());
+            var actual = host.Services.GetService<IOptions<EndpointOptions>>();
+            Assert.NotNull(actual);
+            Assert.Equal(options.Value.SiloPortRange.Start, actual.Value.SiloPort);
+            Assert.Equal(options.Value.GatewayPortRange.Start, actual.Value.GatewayPort);
         }
 
         [Fact]
