@@ -13,6 +13,8 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using UnitTests.Fakes;
 using Xunit;
 
@@ -21,7 +23,7 @@ namespace UnitTests
     public class SupportApiHostedServiceTests
     {
         [Fact]
-        public void SupportApiHostedService_Starts_And_Stops()
+        public async Task SupportApiHostedService_Builds_Starts_Stops()
         {
             // arrange
             var options = new FakeSupportApiOptions();
@@ -62,6 +64,12 @@ namespace UnitTests
 
             // assert the cluster client is there
             Assert.Same(client, host.Services.GetService<IClusterClient>());
+
+            // assert the service starts
+            await api.StartAsync(new CancellationToken());
+
+            // assert the api stops
+            await api.StopAsync(new CancellationToken());
         }
 
         [Fact]
