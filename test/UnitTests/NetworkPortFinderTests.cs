@@ -26,5 +26,27 @@ namespace UnitTests
             // assert
             Assert.Equal(port, available);
         }
+
+        [Fact]
+        public void GetAvailablePortFrom_Skips_Taken_Port()
+        {
+            // arrange
+            var finder = new NetworkPortFinder();
+
+            // find an open port
+            var listener = TcpListener.Create(0);
+            listener.ExclusiveAddressUse = true;
+            listener.Start();
+            var port = ((IPEndPoint)listener.LocalEndpoint).Port;
+
+            // act
+            var available = finder.GetAvailablePortFrom(port, port + 10);
+
+            // assert
+            Assert.Equal(port + 1, available);
+
+            // clean up
+            listener.Stop();
+        }
     }
 }
