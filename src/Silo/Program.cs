@@ -39,6 +39,26 @@ namespace Silo
                     // helps discover free ports
                     services.AddSingleton<INetworkPortFinder, NetworkPortFinder>();
 
+                    // add options for the silo hosted service
+                    services.Configure<SiloHostedServiceOptions>(_ =>
+                    {
+                        _.SiloPortRange.Start = hosting.Configuration.GetValue<int>("Orleans:Ports:Silo:Start");
+                        _.SiloPortRange.End = hosting.Configuration.GetValue<int>("Orleans:Ports:Silo:End");
+                        _.GatewayPortRange.Start = hosting.Configuration.GetValue<int>("Orleans:Ports:Gateway:Start");
+                        _.GatewayPortRange.End = hosting.Configuration.GetValue<int>("Orleans:Ports:Gateway:End");
+                        _.DashboardPortRange.Start = hosting.Configuration.GetValue<int>("Orleans:Ports:Dashboard:Start");
+                        _.DashboardPortRange.End = hosting.Configuration.GetValue<int>("Orleans:Ports:Dashboard:End");
+                        _.AdoNetConnectionString = hosting.Configuration.GetConnectionString("Orleans");
+                        _.AdoNetInvariant = hosting.Configuration.GetValue<string>("Orleans:AdoNet:Invariant");
+                        _.ClusterId = hosting.Configuration.GetValue<string>("Orleans:ClusterId");
+                        _.ServiceId = hosting.Configuration.GetValue<string>("Orleans:ServiceId");
+                    });
+
+                    // add the silo hosted service and the services it makes available
+                    services.AddSingleton<SiloHostedService>();
+                    services.AddSingleton<IHostedService>(_ => _.GetService<SiloHostedService>());
+                    services.AddSingleton(_ => _.GetService<SiloHostedService>().ClusterClient);
+
                     // add options for the api hosted service
                     services.Configure<SupportApiOptions>(options =>
                     {
@@ -46,11 +66,6 @@ namespace Silo
                         options.PortRange.Start = hosting.Configuration.GetValue<int>("Api:Port:Start");
                         options.PortRange.End = hosting.Configuration.GetValue<int>("Api:Port:End");
                     });
-
-                    // add the silo hosted service and the services it makes available
-                    services.AddSingleton<SiloHostedService>();
-                    services.AddSingleton<IHostedService>(_ => _.GetService<SiloHostedService>());
-                    services.AddSingleton(_ => _.GetService<SiloHostedService>().ClusterClient);
 
                     // add the back-end api service
                     services.AddSingleton<SupportApiHostedService>();

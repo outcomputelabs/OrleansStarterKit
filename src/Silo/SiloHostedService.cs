@@ -1,12 +1,13 @@
 ﻿using Grains;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Orleans;
 using Orleans.Configuration;
 using Orleans.Hosting;
+using Silo.Options;
 using System.Threading;
 using System.Threading.Tasks;
 using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
@@ -17,70 +18,64 @@ namespace Silo
     {
         private readonly ISiloHost _host;
 
-        public SiloHostedService(ILoggerProvider loggerProvider, INetworkPortFinder portFinder, IConfiguration configuration, IHostingEnvironment environment)
+        public SiloHostedService(IOptions<SiloHostedServiceOptions> options, ILoggerProvider loggerProvider, INetworkPortFinder portFinder, IHostingEnvironment environment)
         {
             // get desired port configuration
-            SiloPort = portFinder.GetAvailablePortFrom(
-                configuration.GetValue<int>("Orleans:Ports:Silo:Start"),
-                configuration.GetValue<int>("Orleans:Ports:Silo:End"));
-            GatewayPort = portFinder.GetAvailablePortFrom(
-                configuration.GetValue<int>("Orleans:Ports:Gateway:Start"),
-                configuration.GetValue<int>("Orleans:Ports:Gateway:End"));
-            DashboardPort = portFinder.GetAvailablePortFrom(
-                configuration.GetValue<int>("Orleans:Ports:Dashboard:Start"),
-                configuration.GetValue<int>("Orleans:Ports:Dashboard:End"));
+            SiloPort = portFinder.GetAvailablePortFrom(options.Value.SiloPortRange.Start, options.Value.SiloPortRange.End);
+            GatewayPort = portFinder.GetAvailablePortFrom(options.Value.GatewayPortRange.Start, options.Value.GatewayPortRange.End);
+            DashboardPort = portFinder.GetAvailablePortFrom(options.Value.DashboardPortRange.Start, options.Value.DashboardPortRange.End);
 
             // configure the silo host
             _host = new SiloHostBuilder()
                 .ConfigureEndpoints(SiloPort, GatewayPort)
-                .ConfigureApplicationParts(configure =>
+                .ConfigureApplicationParts(_ =>
                 {
-                    configure.AddApplicationPart(typeof(ChatUser).Assembly).WithReferences();
+                    _.AddApplicationPart(typeof(ChatUser).Assembly).WithReferences();
                 })
-                .ConfigureLogging(configure =>
+                .ConfigureLogging(_ =>
                 {
-                    configure.AddProvider(loggerProvider);
+                    _.AddProvider(loggerProvider);
                 })
-                .UseAdoNetClustering(options =>
+                .UseAdoNetClustering(_ =>
                 {
-                    options.ConnectionString = configuration.GetConnectionString("Orleans");
-                    options.Invariant = configuration["Orleans:AdoNet:Invariant"];
+                    _.ConnectionString = options.Value.AdoNetConnectionString;
+                    _.Invariant = options.Value.AdoNetInvariant;
                 })
-                .Configure<ClusterOptions>(options =>
+                .Configure<ClusterOptions>(_ =>
                 {
-                    options.ClusterId = configuration["Orleans:ClusterId"];
-                    options.ServiceId = configuration["Orleans:ServiceId"];
+                    _.ClusterId = options.Value.ClusterId;
+                    _.ServiceId = options.Value.ServiceId;
                 })
-                .Configure<ClusterMembershipOptions>(options =>
+                .Configure<ClusterMembershipOptions>(_ =>
                 {
                     if (environment.IsDevelopment())
                     {
-                        options.ValidateInitialConnectivity = false;
+                        _.ValidateInitialConnectivity = false;
                     }
                 })
-                .UseAdoNetReminderService(options =>
+                .UseAdoNetReminderService(_ =>
                 {
-                    options.ConnectionString = configuration.GetConnectionString("Orleans");
-                    options.Invariant = configuration["Orleans:AdoNet:Invariant"];
+                    _.ConnectionString = options.Value.AdoNetConnectionString;
+                    _.Invariant = options.Value.AdoNetInvariant;
                 })
-                .AddAdoNetGrainStorageAsDefault(options =>
+                .AddAdoNetGrainStorageAsDefault(_ =>
                 {
-                    options.ConnectionString = configuration.GetConnectionString("Orleans");
-                    options.Invariant = configuration["Orleans:AdoNet:Invariant"];
-                    options.UseJsonFormat = true;
-                    options.TypeNameHandling = TypeNameHandling.None;
+                    _.ConnectionString = options.Value.AdoNetConnectionString;
+                    _.Invariant = options.Value.AdoNetInvariant;
+                    _.UseJsonFormat = true;
+                    _.TypeNameHandling = TypeNameHandling.None;
                 })
                 .AddSimpleMessageStreamProvider("SMS")
-                .AddAdoNetGrainStorage("PubSubStore", options =>
+                .AddAdoNetGrainStorage("PubSubStore", _ =>
                 {
-                    options.ConnectionString = configuration.GetConnectionString("Orleans");
-                    options.Invariant = configuration["Orleans:AdoNet:Invariant"];
-                    options.UseJsonFormat = true;
+                    _.ConnectionString = options.Value.AdoNetConnectionString;
+                    _.Invariant = options.Value.AdoNetInvariant;
+                    _.UseJsonFormat = true;
                 })
-                .UseDashboard(options =>
+                .UseDashboard(_ =>
                 {
-                    options.HostSelf = true;
-                    options.Port = DashboardPort;
+                    _.HostSelf = true;
+                    _.Port = DashboardPort;
                 })
                 .EnableDirectClient()
                 .Build();
