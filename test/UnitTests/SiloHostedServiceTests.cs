@@ -559,23 +559,6 @@ namespace UnitTests
             Assert.Equal("configuration", error.ParamName);
         }
 
-        /*
-        [Fact]
-        public void Refuses_Null_Options_Value()
-        {
-            var error = Assert.Throws<ArgumentNullException>(() =>
-            {
-                new SiloHostedService(
-                    new FakeSiloHostedServiceOptions()
-                    {
-                        Value = null
-                    },
-                    new FakeLoggerProvider(),
-                    new FakeNetworkPortFinder(),
-                    new FakeHostingEnvironment());
-            });
-            Assert.Equal("options", error.ParamName);
-        }
 
         [Fact]
         public void Refuses_Null_LoggerProvider()
@@ -583,7 +566,7 @@ namespace UnitTests
             var error = Assert.Throws<ArgumentNullException>(() =>
             {
                 new SiloHostedService(
-                    new FakeSiloHostedServiceOptions(),
+                    new Mock<IConfiguration>().Object,
                     null,
                     new FakeNetworkPortFinder(),
                     new FakeHostingEnvironment());
@@ -591,6 +574,7 @@ namespace UnitTests
             Assert.Equal("loggerProvider", error.ParamName);
         }
 
+        /*
         [Fact]
         public void Refuses_Null_PortFinder()
         {
