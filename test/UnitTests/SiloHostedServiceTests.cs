@@ -574,14 +574,13 @@ namespace UnitTests
             Assert.Equal("loggerProvider", error.ParamName);
         }
 
-        /*
         [Fact]
         public void Refuses_Null_PortFinder()
         {
             var error = Assert.Throws<ArgumentNullException>(() =>
             {
                 new SiloHostedService(
-                    new FakeSiloHostedServiceOptions(),
+                    new Mock<IConfiguration>().Object,
                     new FakeLoggerProvider(),
                     null,
                     new FakeHostingEnvironment());
@@ -589,6 +588,7 @@ namespace UnitTests
             Assert.Equal("portFinder", error.ParamName);
         }
 
+        /*
         [Fact]
         public void Refuses_Null_Environment()
         {
