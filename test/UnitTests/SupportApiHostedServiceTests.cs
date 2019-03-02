@@ -23,7 +23,7 @@ namespace UnitTests
     public class SupportApiHostedServiceTests
     {
         [Fact]
-        public void UsesKestrel()
+        public void Uses_Kestrel()
         {
             // act
             var api = new SupportApiHostedService(
