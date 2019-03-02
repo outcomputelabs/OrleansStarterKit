@@ -43,17 +43,14 @@ namespace Silo
             Port = portFinder.GetAvailablePortFrom(options.Value.PortRange.Start, options.Value.PortRange.End);
 
             _host = new WebHostBuilder()
-
                 .UseKestrel(op =>
                 {
                     op.ListenAnyIP(Port);
                 })
-
                 .ConfigureLogging(configure =>
                 {
                     configure.AddProvider(loggerProvider);
                 })
-
                 .ConfigureServices(configure =>
                 {
                     configure.AddMvc()
@@ -76,7 +73,6 @@ namespace Silo
                     configure.AddSwaggerGen();
                     configure.AddSingleton(client);
                 })
-
                 .Configure(app =>
                 {
                     var provider = app.ApplicationServices.GetService<IApiVersionDescriptionProvider>();
@@ -93,7 +89,6 @@ namespace Silo
                         }
                     });
                 })
-
                 .Build();
         }
 

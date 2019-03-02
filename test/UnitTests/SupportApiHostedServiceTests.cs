@@ -73,6 +73,24 @@ namespace UnitTests
         }
 
         [Fact]
+        public void UsesKestrel()
+        {
+            // act
+            var api = new SupportApiHostedService(
+                new FakeSupportApiOptions(),
+                new FakeLoggerProvider(),
+                new FakeClusterClient(),
+                new FakeNetworkPortFinder());
+
+            // assert - white box
+            var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
+            Assert.NotNull(host);
+
+            // assert kestrel is there
+            Assert.NotNull(host.Services.GetService<IOptions<KestrelServerOptions>>());
+        }
+
+        [Fact]
         public void SupportApiHostedService_Refuses_Null_Options()
         {
             var error = Assert.Throws<ArgumentNullException>(() =>
