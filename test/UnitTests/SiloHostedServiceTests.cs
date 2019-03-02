@@ -588,14 +588,13 @@ namespace UnitTests
             Assert.Equal("portFinder", error.ParamName);
         }
 
-        /*
         [Fact]
         public void Refuses_Null_Environment()
         {
             var error = Assert.Throws<ArgumentNullException>(() =>
             {
                 new SiloHostedService(
-                    new FakeSiloHostedServiceOptions(),
+                    new Mock<IConfiguration>().Object,
                     new FakeLoggerProvider(),
                     new FakeNetworkPortFinder(),
                     null);
@@ -603,6 +602,7 @@ namespace UnitTests
             Assert.Equal("environment", error.ParamName);
         }
 
+        /*
         [Fact]
         public async Task Starts_And_Stops()
         {
