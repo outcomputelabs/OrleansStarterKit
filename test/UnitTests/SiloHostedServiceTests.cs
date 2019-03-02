@@ -562,5 +562,19 @@ namespace UnitTests
             });
             Assert.Equal("portFinder", error.ParamName);
         }
+
+        [Fact]
+        public void Refuses_Null_Environment()
+        {
+            var error = Assert.Throws<ArgumentNullException>(() =>
+            {
+                new SiloHostedService(
+                    new FakeSiloHostedServiceOptions(),
+                    new FakeLoggerProvider(),
+                    new FakeNetworkPortFinder(),
+                    null);
+            });
+            Assert.Equal("environment", error.ParamName);
+        }
     }
 }
