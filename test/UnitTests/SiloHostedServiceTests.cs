@@ -2,9 +2,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Orleans.ApplicationParts;
 using Orleans.Configuration;
 using Orleans.Hosting;
+using Orleans.Providers;
 using Silo;
 using System.Reflection;
 using UnitTests.Fakes;
@@ -299,6 +301,40 @@ namespace UnitTests
             var actual = host.Services.GetService<IOptions<AdoNetReminderTableOptions>>();
             Assert.Equal(options.Value.AdoNetConnectionString, actual.Value.ConnectionString);
             Assert.Equal(options.Value.AdoNetInvariant, actual.Value.Invariant);
+        }
+
+        [Fact]
+        public void Has_AdoNetGrainStorageOptions_As_Default()
+        {
+            // arrange
+            var options = new FakeSiloHostedServiceOptions();
+            options.Value.AdoNetConnectionString = "SomeConnectionString";
+            options.Value.AdoNetInvariant = "SomeInvariant";
+            options.Value.SiloPortRange.Start = 11111;
+            options.Value.ClusterId = "SomeClusterId";
+            options.Value.ServiceId = "SomeServiceId";
+
+            var environment = new FakeHostingEnvironment
+            {
+                EnvironmentName = "SomeEnvironment"
+            };
+
+            // act
+            var service = new SiloHostedService(
+                options,
+                new FakeLoggerProvider(),
+                new FakeNetworkPortFinder(),
+                environment);
+
+            // white box
+            var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
+
+            // assert the silo clustering options are there as default
+            var actual = host.Services.GetService<IOptionsSnapshot<AdoNetGrainStorageOptions>>().Get(ProviderConstants.DEFAULT_STORAGE_PROVIDER_NAME);
+            Assert.Equal(options.Value.AdoNetConnectionString, actual.ConnectionString);
+            Assert.Equal(options.Value.AdoNetInvariant, actual.Invariant);
+            Assert.True(actual.UseJsonFormat);
+            Assert.Equal(TypeNameHandling.None, actual.TypeNameHandling);
         }
     }
 }
