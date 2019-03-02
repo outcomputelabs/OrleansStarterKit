@@ -1,4 +1,5 @@
 ﻿using Grains;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -22,18 +23,26 @@ namespace Silo
 
         private readonly ISiloHost _host;
 
-        public SiloHostedService(IOptions<SiloHostedServiceOptions> options, ILoggerProvider loggerProvider, INetworkPortFinder portFinder, IHostingEnvironment environment)
+        public SiloHostedService(IConfiguration configuration, ILoggerProvider loggerProvider, INetworkPortFinder portFinder, IHostingEnvironment environment)
         {
             // validate
-            if (options?.Value == null) throw new ArgumentNullException(nameof(options));
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
             if (loggerProvider == null) throw new ArgumentNullException(nameof(loggerProvider));
             if (portFinder == null) throw new ArgumentNullException(nameof(portFinder));
             if (environment == null) throw new ArgumentNullException(nameof(environment));
 
             // get desired port configuration
-            SiloPort = portFinder.GetAvailablePortFrom(options.Value.SiloPortRange.Start, options.Value.SiloPortRange.End);
-            GatewayPort = portFinder.GetAvailablePortFrom(options.Value.GatewayPortRange.Start, options.Value.GatewayPortRange.End);
-            DashboardPort = portFinder.GetAvailablePortFrom(options.Value.DashboardPortRange.Start, options.Value.DashboardPortRange.End);
+            SiloPort = portFinder.GetAvailablePortFrom(
+                configuration.GetValue<int>("Orleans:Ports:Silo:Start"),
+                configuration.GetValue<int>("Orleans:Ports:Silo:End"));
+
+            GatewayPort = portFinder.GetAvailablePortFrom(
+                configuration.GetValue<int>("Orleans:Ports:Gateway:Start"),
+                configuration.GetValue<int>("Orleans:Ports:Gateway:End"));
+
+            DashboardPort = portFinder.GetAvailablePortFrom(
+                configuration.GetValue<int>("Orleans:Ports:Dashboard:Start"),
+                configuration.GetValue<int>("Orleans:Ports:Dashboard:End"));
 
             // configure the silo host
             var builder = new SiloHostBuilder();
@@ -51,8 +60,8 @@ namespace Silo
                 })
                 .Configure<ClusterOptions>(_ =>
                 {
-                    _.ClusterId = options.Value.ClusterId;
-                    _.ServiceId = options.Value.ServiceId;
+                    _.ClusterId = configuration.GetValue<string>("Orleans:ClusterId");
+                    _.ServiceId = configuration.GetValue<string>("Orleans:ServiceId");
                 })
                 .Configure<ClusterMembershipOptions>(_ =>
                 {
@@ -70,26 +79,25 @@ namespace Silo
                 .EnableDirectClient();
 
             // configure the clustering provider
-            switch (options.Value.ClusteringProvider)
+            switch (configuration.GetValue<SiloHostedServiceClusteringProvider>("Orleans:Providers:Clustering:Provider"))
             {
                 case SiloHostedServiceClusteringProvider.Localhost:
-                    builder.UseLocalhostClustering(SiloPort, GatewayPort, null, options.Value.ServiceId, options.Value.ClusterId);
+                    builder.UseLocalhostClustering(SiloPort, GatewayPort, null,
+                        configuration.GetValue<string>("Orleans:ServiceId"),
+                        configuration.GetValue<string>("Orleans:ClusterId"));
                     break;
 
                 case SiloHostedServiceClusteringProvider.AdoNet:
                     builder.UseAdoNetClustering(_ =>
                     {
-                        _.ConnectionString = options.Value.AdoNetClusteringConnectionString;
-                        _.Invariant = options.Value.AdoNetClusteringInvariant;
+                        _.ConnectionString = configuration.GetConnectionString(configuration.GetValue<string>("Orleans:Providers:Clustering:AdoNet:ConnectionStringName"));
+                        _.Invariant = configuration.GetValue<string>("Orleans:Providers:Clustering:AdoNet:Invariant");
                     });
                     break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(options.Value.ClusteringProvider));
             }
 
             // configure the reminder service
-            switch (options.Value.ReminderProvider)
+            switch (configuration.GetValue<SiloHostedServiceReminderProvider>("Orleans:Providers:Reminders:Provider"))
             {
                 case SiloHostedServiceReminderProvider.InMemory:
                     builder.UseInMemoryReminderService();
@@ -98,17 +106,14 @@ namespace Silo
                 case SiloHostedServiceReminderProvider.AdoNet:
                     builder.UseAdoNetReminderService(_ =>
                     {
-                        _.ConnectionString = options.Value.AdoNetConnectionString;
-                        _.Invariant = options.Value.AdoNetInvariant;
+                        _.ConnectionString = configuration.GetConnectionString(configuration.GetValue<string>("Orleans:Providers:Reminders:AdoNet:ConnectionStringName"));
+                        _.Invariant = configuration.GetValue<string>("Orleans:Providers:Reminders:AdoNet:Invariant");
                     });
                     break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(options.Value.ReminderProvider));
             }
 
             // configure the default storage provider
-            switch (options.Value.DefaultStorageProvider)
+            switch (configuration.GetValue<SiloHostedServiceStorageProvider>("Orleans:Providers:Storage:Default:Provider"))
             {
                 case SiloHostedServiceStorageProvider.InMemory:
                     builder.AddMemoryGrainStorageAsDefault();
@@ -117,19 +122,16 @@ namespace Silo
                 case SiloHostedServiceStorageProvider.AdoNet:
                     builder.AddAdoNetGrainStorageAsDefault(_ =>
                     {
-                        _.ConnectionString = options.Value.AdoNetConnectionString;
-                        _.Invariant = options.Value.AdoNetInvariant;
-                        _.UseJsonFormat = true;
-                        _.TypeNameHandling = TypeNameHandling.None;
+                        _.ConnectionString = configuration.GetConnectionString(configuration.GetValue<string>("Orleans:Providers:Storage:Default:AdoNet:ConnectionStringName"));
+                        _.Invariant = configuration.GetValue<string>("Orleans:Providers:Storage:Default:AdoNet:Invariant");
+                        _.UseJsonFormat = configuration.GetValue<bool>("Orleans:Providers:Storage:Default:AdoNet:UseJsonFormat");
+                        _.TypeNameHandling = configuration.GetValue<TypeNameHandling>("Orleans:Providers:Storage:Default:AdoNet:TypeNameHandling");
                     });
                     break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(options.Value.DefaultStorageProvider));
             }
 
             // configure the storage provider for pubsub
-            switch (options.Value.PubSubStorageProvider)
+            switch (configuration.GetValue<SiloHostedServiceStorageProvider>("Orleans:Providers:Storage:PubSub:Provider"))
             {
                 case SiloHostedServiceStorageProvider.InMemory:
                     builder.AddMemoryGrainStorage(PubSubStorageProviderName);
@@ -138,14 +140,11 @@ namespace Silo
                 case SiloHostedServiceStorageProvider.AdoNet:
                     builder.AddAdoNetGrainStorage(PubSubStorageProviderName, _ =>
                     {
-                        _.ConnectionString = options.Value.AdoNetConnectionString;
-                        _.Invariant = options.Value.AdoNetInvariant;
-                        _.UseJsonFormat = true;
+                        _.ConnectionString = configuration.GetConnectionString(configuration.GetValue<string>("Orleans:Providers:Storage:PubSub:AdoNet:ConnectionStringName"));
+                        _.Invariant = configuration.GetValue<string>("Orleans:Providers:Storage:PubSub:AdoNet:Invariant");
+                        _.UseJsonFormat = configuration.GetValue<bool>("Orleans:Providers:Storage:PubSub:AdoNet:UseJsonFormat"); ;
                     });
                     break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(options.Value.PubSubStorageProvider));
             }
 
             // done
