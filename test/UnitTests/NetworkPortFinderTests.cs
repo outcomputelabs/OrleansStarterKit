@@ -48,5 +48,27 @@ namespace UnitTests
             // clean up
             listener.Stop();
         }
+
+        [Fact]
+        public void GetAvailablePortFrom_Signals_Unavailable_Port()
+        {
+            // arrange
+            var finder = new NetworkPortFinder();
+
+            // find an open port
+            var listener = TcpListener.Create(0);
+            listener.ExclusiveAddressUse = true;
+            listener.Start();
+            var port = ((IPEndPoint)listener.LocalEndpoint).Port;
+
+            // act
+            var available = finder.GetAvailablePortFrom(port, 1);
+
+            // assert
+            Assert.Equal(-1, available);
+
+            // clean up
+            listener.Stop();
+        }
     }
 }
