@@ -475,5 +475,32 @@ namespace UnitTests
             var factory = host.Services.GetService<IGrainFactory>();
             Assert.NotNull(factory);
         }
+
+        [Fact]
+        public void Exposes_ClusterClient()
+        {
+            // arrange
+            var options = new FakeSiloHostedServiceOptions();
+            options.Value.AdoNetConnectionString = "SomeConnectionString";
+            options.Value.AdoNetInvariant = "SomeInvariant";
+            options.Value.SiloPortRange.Start = 11111;
+            options.Value.ClusterId = "SomeClusterId";
+            options.Value.ServiceId = "SomeServiceId";
+
+            var environment = new FakeHostingEnvironment
+            {
+                EnvironmentName = "SomeEnvironment"
+            };
+
+            // act
+            var service = new SiloHostedService(
+                options,
+                new FakeLoggerProvider(),
+                new FakeNetworkPortFinder(),
+                environment);
+
+            // assert
+            Assert.NotNull(service.ClusterClient);
+        }
     }
 }
