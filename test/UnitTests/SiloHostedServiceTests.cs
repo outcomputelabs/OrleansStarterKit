@@ -10,6 +10,7 @@ using Orleans.Providers;
 using Orleans.Providers.Streams.SimpleMessageStream;
 using Orleans.Runtime;
 using Orleans.Streams;
+using OrleansDashboard;
 using Silo;
 using System.Linq;
 using System.Reflection;
@@ -381,6 +382,7 @@ namespace UnitTests
             options.Value.AdoNetConnectionString = "SomeConnectionString";
             options.Value.AdoNetInvariant = "SomeInvariant";
             options.Value.SiloPortRange.Start = 11111;
+            options.Value.DashboardPortRange.Start = 33333;
             options.Value.ClusterId = "SomeClusterId";
             options.Value.ServiceId = "SomeServiceId";
 
@@ -404,6 +406,38 @@ namespace UnitTests
             Assert.Equal(options.Value.AdoNetConnectionString, actual.ConnectionString);
             Assert.Equal(options.Value.AdoNetInvariant, actual.Invariant);
             Assert.True(actual.UseJsonFormat);
+        }
+
+        [Fact]
+        public void Has_DashboardOptions()
+        {
+            // arrange
+            var options = new FakeSiloHostedServiceOptions();
+            options.Value.AdoNetConnectionString = "SomeConnectionString";
+            options.Value.AdoNetInvariant = "SomeInvariant";
+            options.Value.SiloPortRange.Start = 11111;
+            options.Value.ClusterId = "SomeClusterId";
+            options.Value.ServiceId = "SomeServiceId";
+
+            var environment = new FakeHostingEnvironment
+            {
+                EnvironmentName = "SomeEnvironment"
+            };
+
+            // act
+            var service = new SiloHostedService(
+                options,
+                new FakeLoggerProvider(),
+                new FakeNetworkPortFinder(),
+                environment);
+
+            // white box
+            var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
+
+            // assert the dashboard options are there
+            var actual = host.Services.GetService<IOptions<DashboardOptions>>();
+            Assert.True(actual.Value.HostSelf);
+            Assert.Equal(options.Value.DashboardPortRange.Start, actual.Value.Port);
         }
     }
 }
