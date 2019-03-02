@@ -8,6 +8,7 @@ using Orleans;
 using Orleans.Configuration;
 using Orleans.Hosting;
 using Silo.Options;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
@@ -20,6 +21,12 @@ namespace Silo
 
         public SiloHostedService(IOptions<SiloHostedServiceOptions> options, ILoggerProvider loggerProvider, INetworkPortFinder portFinder, IHostingEnvironment environment)
         {
+            // validate
+            if (options?.Value == null) throw new ArgumentNullException(nameof(options));
+            if (loggerProvider == null) throw new ArgumentNullException(nameof(loggerProvider));
+            if (portFinder == null) throw new ArgumentNullException(nameof(portFinder));
+            if (environment == null) throw new ArgumentNullException(nameof(environment));
+
             // get desired port configuration
             SiloPort = portFinder.GetAvailablePortFrom(options.Value.SiloPortRange.Start, options.Value.SiloPortRange.End);
             GatewayPort = portFinder.GetAvailablePortFrom(options.Value.GatewayPortRange.Start, options.Value.GatewayPortRange.End);
