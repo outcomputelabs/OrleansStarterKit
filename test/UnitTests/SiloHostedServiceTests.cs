@@ -171,5 +171,38 @@ namespace UnitTests
             Assert.Equal(options.Value.AdoNetConnectionString, actual.Value.ConnectionString);
             Assert.Equal(options.Value.AdoNetInvariant, actual.Value.Invariant);
         }
+
+        [Fact]
+        public void Has_ClusteringOptions()
+        {
+            // arrange
+            var options = new FakeSiloHostedServiceOptions();
+            options.Value.AdoNetConnectionString = "SomeConnectionString";
+            options.Value.AdoNetInvariant = "SomeInvariant";
+            options.Value.SiloPortRange.Start = 11111;
+            options.Value.ClusterId = "SomeClusterId";
+            options.Value.ServiceId = "SomeServiceId";
+
+            var environment = new FakeHostingEnvironment
+            {
+                EnvironmentName = "SomeEnvironment"
+            };
+
+            // act
+            var service = new SiloHostedService(
+                options,
+                new FakeLoggerProvider(),
+                new FakeNetworkPortFinder(),
+                environment);
+
+            // white box
+            var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
+
+            // assert the silo clustering options are there
+            var actual = host.Services.GetService<IOptions<ClusterOptions>>();
+            Assert.NotNull(actual);
+            Assert.Equal(options.Value.ClusterId, actual.Value.ClusterId);
+            Assert.Equal(options.Value.ServiceId, actual.Value.ServiceId);
+        }
     }
 }
