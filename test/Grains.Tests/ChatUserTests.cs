@@ -1,11 +1,10 @@
-﻿using Grains;
-using Grains.Models;
+﻿using Grains.Models;
 using Orleans.TestingHost;
 using System;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace UnitTests
+namespace Grains.Tests
 {
     [Collection(nameof(ClusterCollection))]
     public class ChatUserTests

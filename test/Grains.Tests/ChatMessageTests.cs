@@ -2,7 +2,7 @@
 using System;
 using Xunit;
 
-namespace UnitTests
+namespace Grains.Tests
 {
     public class ChatMessageTests
     {

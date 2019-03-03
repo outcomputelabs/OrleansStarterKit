@@ -1,11 +1,10 @@
-﻿using Grains;
-using Orleans;
+﻿using Orleans;
 using Orleans.Configuration;
 using Orleans.Hosting;
 using Orleans.TestingHost;
 using System;
 
-namespace UnitTests
+namespace Grains.Tests
 {
     public class ClusterFixture : IDisposable
     {
