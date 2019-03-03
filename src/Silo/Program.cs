@@ -6,6 +6,7 @@ using Orleans.Hosting;
 using Serilog;
 using Serilog.Events;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Silo
@@ -14,7 +15,31 @@ namespace Silo
     {
         private const string EnvironmentVariablePrefix = "ORLEANS_";
 
-        public static Task Main(string[] args)
+        /// <summary>
+        /// For unit testing - allows test code to stop the program.
+        /// </summary>
+        private static CancellationToken _cancellationToken = default;
+
+        /// <summary>
+        /// For unit testing - notifies awaiters than the host has started.
+        /// </summary>
+        private static TaskCompletionSource<bool> _startedSource = new TaskCompletionSource<bool>();
+
+        /// <summary>
+        /// For unit testing - notifies awaiters than the host has started.
+        /// </summary>
+        public static Task Started { get; } = _startedSource.Task;
+
+        /// <summary>
+        /// Facilitates unit testing by allowing test code to stop execution.
+        /// </summary>
+        public static Task Main(string[] args, CancellationToken cancellationToken)
+        {
+            _cancellationToken = cancellationToken;
+            return Main(args);
+        }
+
+        public static async Task Main(string[] args)
         {
             var host = new HostBuilder()
                 .ConfigureHostConfiguration(configure =>
@@ -65,7 +90,14 @@ namespace Silo
             var api = host.Services.GetService<SupportApiHostedService>();
             Console.Title = $"{nameof(IHost)}: Silo: {silo.SiloPort}, Gateway: {silo.GatewayPort}, Dashboard: {silo.DashboardPort}, Api: {api.Port}";
 
-            return host.RunAsync();
+            // start the host now
+            await host.StartAsync(_cancellationToken);
+
+            // notify test code that the host has started
+            _startedSource.SetResult(true);
+
+            // wait for any shutdown order including from test code
+            await host.WaitForShutdownAsync(_cancellationToken);
         }
     }
 }
