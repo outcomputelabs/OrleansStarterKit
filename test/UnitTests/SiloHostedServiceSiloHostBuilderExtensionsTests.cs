@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Orleans;
 using Orleans.Hosting;
+using Orleans.Runtime;
 using Orleans.Storage;
 using Silo;
 using System;
@@ -279,6 +280,28 @@ namespace UnitTests
             var service = builder.ServiceCollection.SingleOrDefault(_ => _.ServiceType == typeof(IGrainStorage));
             Assert.NotNull(service);
             Assert.Contains("AddMemoryGrainStorage", service.ImplementationFactory.Method.Name);
+        }
+
+        [Fact]
+        public void TryAddMemoryGrainStorageForPubSub_Applies_StorageService()
+        {
+            // arrange
+            var builder = new FakeSiloHostBuilder();
+            var services = new FakeServiceCollection();
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    { "Orleans:Providers:Storage:PubSub:Provider", "InMemory" }
+                })
+                .Build();
+
+            // act
+            builder.TryAddMemoryGrainStorageForPubSub(configuration);
+
+            // assert
+            var service = builder.ServiceCollection.SingleOrDefault(_ => _.ServiceType == typeof(IKeyedService<string, IGrainStorage>));
+            Assert.NotNull(service);
+            Assert.Contains("AddSingletonKeyedService", service.ImplementationFactory.Method.Name);
         }
     }
 }
