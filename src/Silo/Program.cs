@@ -17,8 +17,6 @@ namespace Silo
 
         public static IHost Host { get; private set; }
 
-        private static TaskCompletionSource<bool> _startedSource = new TaskCompletionSource<bool>();
-
         private static CancellationToken _cancellationToken = default;
 
         public static Task MainForTesting(string[] args, CancellationToken cancellationToken)
