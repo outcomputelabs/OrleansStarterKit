@@ -4,7 +4,7 @@
  -output:coverage.xml^
  -oldStyle^
  -register:user^
- -filter:"+[Client]* +[Grains]* +[Grains.Abstractions]* +[Silo]* -[UnitTests]* -[Database]*"^
+ -filter:"+[Client*]* +[Grains*]* +[Silo*]*"^
  -excludebyattribute:"*.GeneratedCode*"
 
 @reportgenerator -reports:coverage.xml -targetdir:.coverage
