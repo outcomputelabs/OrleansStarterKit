@@ -1,7 +1,6 @@
-﻿using Silo;
-using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Silo;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -39,7 +38,7 @@ namespace UnitTests
         }
 
         [Fact]
-        public async Task Program_Runs_And_Stops_Via_Token()
+        public async Task Program_Host_Has_SiloHostedService()
         {
             // arrange
             var parameters = new List<string>
@@ -49,26 +48,26 @@ namespace UnitTests
                 "/Orleans:Providers:Storage:Default:Provider=InMemory",
                 "/Orleans:Providers:Storage:PubSub:Provider=InMemory"
             };
-            var source = new CancellationTokenSource(TimeSpan.FromMinutes(1));
 
             // act
-            var task = Program.MainForTesting(parameters.ToArray(), source.Token);
+            var task = Program.Main(parameters.ToArray());
 
             // wait for program to start
             await Program.Started;
 
-            // assert the host is there
+            // assert
             Assert.NotNull(Program.Host);
+            Assert.NotNull(Program.Host.Services.GetService<SiloHostedService>());
 
-            // order shutdown
-            source.Cancel(true);
+            // order the host to shutdown
+            await Program.Host.StopAsync();
 
             // wait for program to shutdown
             await task;
         }
 
         [Fact]
-        public async Task Program_Cancels_Start()
+        public async Task Program_Host_Has_SupportApiHostedService()
         {
             // arrange
             var parameters = new List<string>
@@ -80,10 +79,20 @@ namespace UnitTests
             };
 
             // act
-            await Assert.ThrowsAsync<OperationCanceledException>(async () =>
-            {
-                await Program.MainForTesting(parameters.ToArray(), new CancellationToken(true));
-            });
+            var task = Program.Main(parameters.ToArray());
+
+            // wait for program to start
+            await Program.Started;
+
+            // assert
+            Assert.NotNull(Program.Host);
+            Assert.NotNull(Program.Host.Services.GetService<SupportApiHostedService>());
+
+            // order the host to shutdown
+            await Program.Host.StopAsync();
+
+            // wait for program to shutdown
+            await task;
         }
     }
 }

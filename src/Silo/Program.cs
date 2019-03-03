@@ -6,7 +6,6 @@ using Orleans.Hosting;
 using Serilog;
 using Serilog.Events;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Silo
@@ -14,11 +13,6 @@ namespace Silo
     public static class Program
     {
         private const string EnvironmentVariablePrefix = "ORLEANS_";
-
-        /// <summary>
-        /// For unit testing - allows test code to stop the program.
-        /// </summary>
-        private static CancellationToken _cancellationToken = default;
 
         /// <summary>
         /// For unit testing - notifies awaiters than the host has started.
@@ -34,15 +28,6 @@ namespace Silo
         /// For unit testing - allows access to the host.
         /// </summary>
         public static IHost Host { get; private set; }
-
-        /// <summary>
-        /// Facilitates unit testing by allowing test code to stop execution.
-        /// </summary>
-        public static Task MainForTesting(string[] args, CancellationToken cancellationToken)
-        {
-            _cancellationToken = cancellationToken;
-            return Main(args);
-        }
 
         public static async Task Main(string[] args)
         {
@@ -96,15 +81,15 @@ namespace Silo
             Console.Title = $"{nameof(IHost)}: Silo: {silo.SiloPort}, Gateway: {silo.GatewayPort}, Dashboard: {silo.DashboardPort}, Api: {api.Port}";
 
             // start the host now
-            await Host.StartAsync(_cancellationToken);
+            await Host.StartAsync();
 
             // notify test code that the host has started
             _startedSource.SetResult(true);
 
             // wait for any shutdown order including from test code
-            await Host.WaitForShutdownAsync(_cancellationToken);
+            await Host.WaitForShutdownAsync();
 
-            // reset the started task for the next test
+            // reset the started flag for the next test
             _startedSource = new TaskCompletionSource<bool>();
         }
     }
