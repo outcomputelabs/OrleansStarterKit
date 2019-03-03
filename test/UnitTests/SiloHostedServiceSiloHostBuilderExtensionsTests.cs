@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using Orleans;
 using Orleans.Hosting;
+using Orleans.Storage;
 using Silo;
 using System;
 using System.Collections.Generic;
@@ -258,6 +257,28 @@ namespace UnitTests
             var service = builder.ServiceCollection.SingleOrDefault(_ => _.ServiceType == typeof(IReminderTable));
             Assert.NotNull(service);
             Assert.Contains("UseInMemoryReminderService", service.ImplementationFactory.Method.Name);
+        }
+
+        [Fact]
+        public void TryAddMemoryGrainStorageAsDefault_Applies_StorageService()
+        {
+            // arrange
+            var builder = new FakeSiloHostBuilder();
+            var services = new FakeServiceCollection();
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    { "Orleans:Providers:Storage:Default:Provider", "InMemory" }
+                })
+                .Build();
+
+            // act
+            builder.TryAddMemoryGrainStorageAsDefault(configuration);
+
+            // assert
+            var service = builder.ServiceCollection.SingleOrDefault(_ => _.ServiceType == typeof(IGrainStorage));
+            Assert.NotNull(service);
+            Assert.Contains("AddMemoryGrainStorage", service.ImplementationFactory.Method.Name);
         }
     }
 }
