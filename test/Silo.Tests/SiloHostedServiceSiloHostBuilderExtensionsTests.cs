@@ -3,14 +3,13 @@ using Orleans;
 using Orleans.Hosting;
 using Orleans.Runtime;
 using Orleans.Storage;
-using Silo;
+using Silo.Tests.Fakes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnitTests.Fakes;
 using Xunit;
 
-namespace UnitTests
+namespace Silo.Tests
 {
     public class SiloHostedServiceSiloHostBuilderExtensionsTests
     {

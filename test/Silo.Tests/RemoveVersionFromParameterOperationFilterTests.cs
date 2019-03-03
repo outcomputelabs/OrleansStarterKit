@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Moq;
-using Silo;
+using Silo.Tests.Fakes;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
-using UnitTests.Fakes;
 using Xunit;
 
-namespace UnitTests
+namespace Silo.Tests
 {
     public class RemoveVersionFromParameterOperationFilterTests
     {

@@ -1,10 +1,9 @@
-﻿using Silo;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace UnitTests
+namespace Silo.Tests
 {
     [Collection(nameof(SequentialCollection))]
     public class SiloProgramTests

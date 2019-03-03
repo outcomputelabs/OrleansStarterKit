@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace UnitTests.Fakes
+namespace Silo.Tests.Fakes
 {
     public class FakeStringLengthEqualityComparer : IEqualityComparer<string>
     {

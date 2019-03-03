@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Silo;
 using System;
 using Xunit;
 
-namespace UnitTests
+namespace Silo.Tests
 {
     public class SupportApiHostedServiceWebHostBuilderExtensionsTests
     {

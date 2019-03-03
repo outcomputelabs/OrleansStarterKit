@@ -4,7 +4,7 @@ using Orleans.Hosting;
 using System;
 using System.Collections.Generic;
 
-namespace UnitTests.Fakes
+namespace Silo.Tests.Fakes
 {
     public class FakeSiloHostBuilder : ISiloHostBuilder
     {

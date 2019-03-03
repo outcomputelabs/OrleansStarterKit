@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UnitTests.Fakes
+namespace Silo.Tests.Fakes
 {
     public class FakeDisposable : IDisposable
     {

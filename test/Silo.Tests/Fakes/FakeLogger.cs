@@ -2,7 +2,7 @@
 using System;
 using System.Diagnostics;
 
-namespace UnitTests.Fakes
+namespace Silo.Tests.Fakes
 {
     public class FakeLogger : ILogger
     {

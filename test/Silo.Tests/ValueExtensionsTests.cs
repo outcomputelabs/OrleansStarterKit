@@ -1,8 +1,7 @@
-﻿using Silo;
-using UnitTests.Fakes;
+﻿using Silo.Tests.Fakes;
 using Xunit;
 
-namespace UnitTests
+namespace Silo.Tests
 {
     public class ValueExtensionsTests
     {

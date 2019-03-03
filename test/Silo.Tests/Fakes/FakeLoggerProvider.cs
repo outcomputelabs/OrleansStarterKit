@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace UnitTests.Fakes
+namespace Silo.Tests.Fakes
 {
     public class FakeLoggerProvider : ILoggerProvider
     {

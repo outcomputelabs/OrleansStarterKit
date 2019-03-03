@@ -1,9 +1,8 @@
-﻿using Silo;
-using Swashbuckle.AspNetCore.Swagger;
+﻿using Swashbuckle.AspNetCore.Swagger;
 using System.Collections.Generic;
 using Xunit;
 
-namespace UnitTests
+namespace Silo.Tests
 {
     public class ReplaceVersionWithExactValueInPathDocumentFilterTests
     {

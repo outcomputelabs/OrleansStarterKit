@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UnitTests
+namespace Silo.Tests
 {
     public class SequentialFixture : IDisposable
     {

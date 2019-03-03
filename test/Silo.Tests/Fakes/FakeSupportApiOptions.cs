@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
-using Silo;
 using Silo.Options;
 
-namespace UnitTests.Fakes
+namespace Silo.Tests.Fakes
 {
     public class FakeSupportApiOptions : IOptions<SupportApiOptions>
     {

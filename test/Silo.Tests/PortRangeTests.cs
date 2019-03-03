@@ -1,7 +1,6 @@
-﻿using Silo;
-using Xunit;
+﻿using Xunit;
 
-namespace UnitTests
+namespace Silo.Tests
 {
     public class PortRangeTests
     {

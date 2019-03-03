@@ -9,8 +9,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using Orleans;
-using Silo;
 using Silo.Options;
+using Silo.Tests.Fakes;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
@@ -19,10 +19,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using UnitTests.Fakes;
 using Xunit;
 
-namespace UnitTests
+namespace Silo.Tests
 {
     public class SupportApiHostedServiceTests
     {

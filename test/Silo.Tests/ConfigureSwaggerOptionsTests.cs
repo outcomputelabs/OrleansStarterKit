@@ -1,15 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Moq;
-using Silo;
+using Silo.Tests.Fakes;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
-using UnitTests.Fakes;
 using Xunit;
 
-namespace UnitTests
+namespace Silo.Tests
 {
     public class ConfigureSwaggerOptionsTests
     {

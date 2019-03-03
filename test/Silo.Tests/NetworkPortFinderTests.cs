@@ -1,9 +1,8 @@
-﻿using Silo;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using Xunit;
 
-namespace UnitTests
+namespace Silo.Tests
 {
     public class NetworkPortFinderTests
     {

@@ -4,7 +4,7 @@ using Orleans.Streams;
 using System;
 using System.Threading.Tasks;
 
-namespace UnitTests.Fakes
+namespace Silo.Tests.Fakes
 {
     public class FakeClusterClient : IClusterClient
     {

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 
-namespace UnitTests
+namespace Silo.Tests
 {
     public class QueueExtensionsTests
     {

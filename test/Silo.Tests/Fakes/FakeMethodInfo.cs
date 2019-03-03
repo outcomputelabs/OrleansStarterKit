@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Reflection;
 
-namespace UnitTests.Fakes
+namespace Silo.Tests.Fakes
 {
     public class FakeMethodInfo : MethodInfo
     {

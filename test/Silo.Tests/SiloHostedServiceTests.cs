@@ -14,17 +14,16 @@ using Orleans.Providers.Streams.SimpleMessageStream;
 using Orleans.Runtime;
 using Orleans.Streams;
 using OrleansDashboard;
-using Silo;
+using Silo.Tests.Fakes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using UnitTests.Fakes;
 using Xunit;
 
-namespace UnitTests
+namespace Silo.Tests
 {
     public class SiloHostedServiceTests
     {
