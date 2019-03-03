@@ -28,7 +28,12 @@ namespace Silo
         /// <summary>
         /// For unit testing - notifies awaiters than the host has started.
         /// </summary>
-        public static Task Started { get; } = _startedSource.Task;
+        public static Task Started => _startedSource.Task;
+
+        /// <summary>
+        /// For unit testing - allows access to the host.
+        /// </summary>
+        public static IHost Host { get; private set; }
 
         /// <summary>
         /// Facilitates unit testing by allowing test code to stop execution.
@@ -41,7 +46,7 @@ namespace Silo
 
         public static async Task Main(string[] args)
         {
-            var host = new HostBuilder()
+            Host = new HostBuilder()
                 .ConfigureHostConfiguration(configure =>
                 {
                     configure.AddJsonFile("hostsettings.json", true, true);
@@ -86,18 +91,21 @@ namespace Silo
                 .Build();
 
             // write the port configuration on the console title
-            var silo = host.Services.GetService<SiloHostedService>();
-            var api = host.Services.GetService<SupportApiHostedService>();
+            var silo = Host.Services.GetService<SiloHostedService>();
+            var api = Host.Services.GetService<SupportApiHostedService>();
             Console.Title = $"{nameof(IHost)}: Silo: {silo.SiloPort}, Gateway: {silo.GatewayPort}, Dashboard: {silo.DashboardPort}, Api: {api.Port}";
 
             // start the host now
-            await host.StartAsync(_cancellationToken);
+            await Host.StartAsync(_cancellationToken);
 
             // notify test code that the host has started
             _startedSource.SetResult(true);
 
             // wait for any shutdown order including from test code
-            await host.WaitForShutdownAsync(_cancellationToken);
+            await Host.WaitForShutdownAsync(_cancellationToken);
+
+            // reset the started task for the next test
+            _startedSource = new TaskCompletionSource<bool>();
         }
     }
 }
