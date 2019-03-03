@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Silo;
+﻿using Silo;
+using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -10,9 +11,8 @@ namespace UnitTests
     public class SiloProgramTests
     {
         [Fact]
-        public async Task Program_Runs_And_Stops_Via_Host_Command()
+        public async Task Starts_And_Stops()
         {
-            // arrange
             var parameters = new List<string>
             {
                 "/Orleans:Providers:Clustering:Provider=Localhost",
@@ -21,26 +21,13 @@ namespace UnitTests
                 "/Orleans:Providers:Storage:PubSub:Provider=InMemory"
             };
 
-            // act
-            var task = Program.Main(parameters.ToArray());
-
-            // wait for program to start
-            await Program.Started;
-
-            // assert the host is there
-            Assert.NotNull(Program.Host);
-
-            // order the host to shutdown
-            await Program.Host.StopAsync();
-
-            // wait for program to shutdown
-            await task;
+            await Program.StartAsync(parameters.ToArray());
+            await Program.StopAsync();
         }
 
         [Fact]
-        public async Task Program_Host_Has_SiloHostedService()
+        public async Task Main_Starts_And_Waits_For_Stop()
         {
-            // arrange
             var parameters = new List<string>
             {
                 "/Orleans:Providers:Clustering:Provider=Localhost",
@@ -49,27 +36,15 @@ namespace UnitTests
                 "/Orleans:Providers:Storage:PubSub:Provider=InMemory"
             };
 
-            // act
-            var task = Program.Main(parameters.ToArray());
-
-            // wait for program to start
+            var main = Program.Main(parameters.ToArray());
             await Program.Started;
-
-            // assert
-            Assert.NotNull(Program.Host);
-            Assert.NotNull(Program.Host.Services.GetService<SiloHostedService>());
-
-            // order the host to shutdown
-            await Program.Host.StopAsync();
-
-            // wait for program to shutdown
-            await task;
+            await Program.StopAsync();
+            await main;
         }
 
         [Fact]
-        public async Task Program_Host_Has_SupportApiHostedService()
+        public async Task Cancels_Startup()
         {
-            // arrange
             var parameters = new List<string>
             {
                 "/Orleans:Providers:Clustering:Provider=Localhost",
@@ -78,21 +53,28 @@ namespace UnitTests
                 "/Orleans:Providers:Storage:PubSub:Provider=InMemory"
             };
 
-            // act
-            var task = Program.Main(parameters.ToArray());
+            await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+            {
+                await Program.StartAsync(parameters.ToArray(), new CancellationToken(true));
+            });
+        }
 
-            // wait for program to start
-            await Program.Started;
+        [Fact]
+        public async Task Cancels_Stop()
+        {
+            var parameters = new List<string>
+            {
+                "/Orleans:Providers:Clustering:Provider=Localhost",
+                "/Orleans:Providers:Reminders:Provider=InMemory",
+                "/Orleans:Providers:Storage:Default:Provider=InMemory",
+                "/Orleans:Providers:Storage:PubSub:Provider=InMemory"
+            };
 
-            // assert
-            Assert.NotNull(Program.Host);
-            Assert.NotNull(Program.Host.Services.GetService<SupportApiHostedService>());
-
-            // order the host to shutdown
-            await Program.Host.StopAsync();
-
-            // wait for program to shutdown
-            await task;
+            await Program.StartAsync(parameters.ToArray());
+            await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+            {
+                await Program.StopAsync(new CancellationToken(true));
+            });
         }
     }
 }

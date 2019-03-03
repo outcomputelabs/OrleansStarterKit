@@ -6,6 +6,7 @@ using Orleans.Hosting;
 using Serilog;
 using Serilog.Events;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Silo
@@ -14,24 +15,19 @@ namespace Silo
     {
         private const string EnvironmentVariablePrefix = "ORLEANS_";
 
-        /// <summary>
-        /// For unit testing - notifies awaiters than the host has started.
-        /// </summary>
+        private static IHost _host;
+
         private static TaskCompletionSource<bool> _startedSource = new TaskCompletionSource<bool>();
-
-        /// <summary>
-        /// For unit testing - notifies awaiters than the host has started.
-        /// </summary>
-        public static Task Started => _startedSource.Task;
-
-        /// <summary>
-        /// For unit testing - allows access to the host.
-        /// </summary>
-        public static IHost Host { get; private set; }
 
         public static async Task Main(string[] args)
         {
-            Host = new HostBuilder()
+            await StartAsync(args);
+            await _host.WaitForShutdownAsync();
+        }
+
+        public static async Task StartAsync(string[] args, CancellationToken cancellationToken = default)
+        {
+            _host = new HostBuilder()
                 .ConfigureHostConfiguration(configure =>
                 {
                     configure.AddJsonFile("hostsettings.json", true, true);
@@ -76,21 +72,28 @@ namespace Silo
                 .Build();
 
             // write the port configuration on the console title
-            var silo = Host.Services.GetService<SiloHostedService>();
-            var api = Host.Services.GetService<SupportApiHostedService>();
+            var silo = _host.Services.GetService<SiloHostedService>();
+            var api = _host.Services.GetService<SupportApiHostedService>();
             Console.Title = $"{nameof(Silo)}: Silo: {silo.SiloPort}, Gateway: {silo.GatewayPort}, Dashboard: {silo.DashboardPort}, Api: {api.Port}";
 
-            // start the host now
-            await Host.StartAsync();
+            await _host.StartAsync(cancellationToken);
+            _startedSource.TrySetResult(true);
+        }
 
-            // notify test code that the host has started
-            _startedSource.SetResult(true);
+        /// <summary>
+        /// Allows forcing the program to stop.
+        /// </summary>
+        public static async Task StopAsync(CancellationToken cancellationToken = default)
+        {
+            await _host.StopAsync(cancellationToken);
 
-            // wait for any shutdown order including from test code
-            await Host.WaitForShutdownAsync();
-
-            // reset the started flag for the next test
+            _startedSource.TrySetCanceled();
             _startedSource = new TaskCompletionSource<bool>();
         }
+
+        /// <summary>
+        /// Returns a task that completes when the host starts.
+        /// </summary>
+        public static Task Started => _startedSource.Task;
     }
 }
