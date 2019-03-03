@@ -1,7 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Moq;
+using Orleans;
 using Orleans.Hosting;
 using Silo;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnitTests.Fakes;
 using Xunit;
 
 namespace UnitTests
@@ -230,6 +236,28 @@ namespace UnitTests
             });
 
             Assert.Equal("configuration", error.ParamName);
+        }
+
+        [Fact]
+        public void TryUseInMemoryReminderService_Applies_ReminderService()
+        {
+            // arrange
+            var builder = new FakeSiloHostBuilder();
+            var services = new FakeServiceCollection();
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    { "Orleans:Providers:Reminders:Provider", "InMemory" }
+                })
+                .Build();
+
+            // act
+            builder.TryUseInMemoryReminderService(configuration);
+
+            // assert
+            var service = builder.ServiceCollection.SingleOrDefault(_ => _.ServiceType == typeof(IReminderTable));
+            Assert.NotNull(service);
+            Assert.Contains("UseInMemoryReminderService", service.ImplementationFactory.Method.Name);
         }
     }
 }
