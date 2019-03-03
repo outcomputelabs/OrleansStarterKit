@@ -11,7 +11,7 @@ namespace UnitTests
     public class SiloProgramTests
     {
         [Fact]
-        public async Task Program_Runs()
+        public async Task Program_Runs_And_Stops_Via_Host_Command()
         {
             // arrange
             var parameters = new List<string>
@@ -21,23 +21,25 @@ namespace UnitTests
                 "/Orleans:Providers:Storage:Default:Provider=InMemory",
                 "/Orleans:Providers:Storage:PubSub:Provider=InMemory"
             };
-            var source = new CancellationTokenSource(TimeSpan.FromMinutes(1));
 
             // act
-            var task = Program.MainForTesting(parameters.ToArray(), source.Token);
+            var task = Program.Main(parameters.ToArray());
 
             // wait for program to start
             await Program.Started;
 
-            // order shutdown
-            source.Cancel(true);
+            // assert the host is there
+            Assert.NotNull(Program.Host);
+
+            // order the host to shutdown
+            await Program.Host.StopAsync();
 
             // wait for program to shutdown
             await task;
         }
 
         [Fact]
-        public async Task Program_Has_Host()
+        public async Task Program_Runs_And_Stops_Via_Token()
         {
             // arrange
             var parameters = new List<string>
