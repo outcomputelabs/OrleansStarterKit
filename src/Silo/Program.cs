@@ -6,12 +6,10 @@ using Orleans.Hosting;
 using Serilog;
 using Serilog.Events;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace Silo
 {
-    [ExcludeFromCodeCoverage]
     public static class Program
     {
         private const string EnvironmentVariablePrefix = "ORLEANS_";
