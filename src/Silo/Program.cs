@@ -78,7 +78,7 @@ namespace Silo
             // write the port configuration on the console title
             var silo = Host.Services.GetService<SiloHostedService>();
             var api = Host.Services.GetService<SupportApiHostedService>();
-            Console.Title = $"{nameof(IHost)}: Silo: {silo.SiloPort}, Gateway: {silo.GatewayPort}, Dashboard: {silo.DashboardPort}, Api: {api.Port}";
+            Console.Title = $"{nameof(Silo)}: Silo: {silo.SiloPort}, Gateway: {silo.GatewayPort}, Dashboard: {silo.DashboardPort}, Api: {api.Port}";
 
             // start the host now
             await Host.StartAsync();
