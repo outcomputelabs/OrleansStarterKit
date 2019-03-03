@@ -33,7 +33,7 @@ namespace Silo
         /// <summary>
         /// Facilitates unit testing by allowing test code to stop execution.
         /// </summary>
-        public static Task Main(string[] args, CancellationToken cancellationToken)
+        public static Task MainForTesting(string[] args, CancellationToken cancellationToken)
         {
             _cancellationToken = cancellationToken;
             return Main(args);

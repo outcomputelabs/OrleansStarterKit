@@ -62,11 +62,7 @@ namespace Silo
                         op.GroupNameFormat = "'v'VVV";
                     });
 
-                    configure.Configure<SupportApiOptions>(_ =>
-                    {
-                        _.Title = configuration.GetValue<string>("Api:Title");
-                    });
-
+                    configure.AddSupportApiInfo(configuration["Api:Title"]);
                     configure.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
                     configure.AddSwaggerGen();
                     configure.AddSingleton(client);

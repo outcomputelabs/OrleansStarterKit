@@ -23,7 +23,7 @@ namespace UnitTests
             var source = new CancellationTokenSource(TimeSpan.FromMinutes(1));
 
             // act
-            var task = Program.Main(parameters.ToArray(), source.Token);
+            var task = Program.MainForTesting(parameters.ToArray(), source.Token);
 
             // wait for program to start
             await Program.Started;
