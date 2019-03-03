@@ -66,5 +66,24 @@ namespace UnitTests
             // wait for program to shutdown
             await task;
         }
+
+        [Fact]
+        public async Task Program_Cancels_Start()
+        {
+            // arrange
+            var parameters = new List<string>
+            {
+                "/Orleans:Providers:Clustering:Provider=Localhost",
+                "/Orleans:Providers:Reminders:Provider=InMemory",
+                "/Orleans:Providers:Storage:Default:Provider=InMemory",
+                "/Orleans:Providers:Storage:PubSub:Provider=InMemory"
+            };
+
+            // act
+            await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+            {
+                await Program.MainForTesting(parameters.ToArray(), new CancellationToken(true));
+            });
+        }
     }
 }
