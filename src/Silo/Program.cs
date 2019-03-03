@@ -15,19 +15,21 @@ namespace Silo
     {
         private const string EnvironmentVariablePrefix = "ORLEANS_";
 
-        private static IHost _host;
+        public static IHost Host { get; private set; }
 
         private static TaskCompletionSource<bool> _startedSource = new TaskCompletionSource<bool>();
 
-        public static async Task Main(string[] args)
+        private static CancellationToken _cancellationToken = default;
+
+        public static Task MainForTesting(string[] args, CancellationToken cancellationToken)
         {
-            await StartAsync(args);
-            await _host.WaitForShutdownAsync();
+            _cancellationToken = cancellationToken;
+            return Main(args);
         }
 
-        public static async Task StartAsync(string[] args, CancellationToken cancellationToken = default)
+        public static async Task Main(string[] args)
         {
-            _host = new HostBuilder()
+            Host = new HostBuilder()
                 .ConfigureHostConfiguration(configure =>
                 {
                     configure.AddJsonFile("hostsettings.json", true, true);
@@ -72,28 +74,11 @@ namespace Silo
                 .Build();
 
             // write the port configuration on the console title
-            var silo = _host.Services.GetService<SiloHostedService>();
-            var api = _host.Services.GetService<SupportApiHostedService>();
+            var silo = Host.Services.GetService<SiloHostedService>();
+            var api = Host.Services.GetService<SupportApiHostedService>();
             Console.Title = $"{nameof(Silo)}: Silo: {silo.SiloPort}, Gateway: {silo.GatewayPort}, Dashboard: {silo.DashboardPort}, Api: {api.Port}";
 
-            await _host.StartAsync(cancellationToken);
-            _startedSource.TrySetResult(true);
+            await Host.RunAsync(_cancellationToken);
         }
-
-        /// <summary>
-        /// Allows forcing the program to stop.
-        /// </summary>
-        public static async Task StopAsync(CancellationToken cancellationToken = default)
-        {
-            await _host.StopAsync(cancellationToken);
-
-            _startedSource.TrySetCanceled();
-            _startedSource = new TaskCompletionSource<bool>();
-        }
-
-        /// <summary>
-        /// Returns a task that completes when the host starts.
-        /// </summary>
-        public static Task Started => _startedSource.Task;
     }
 }
