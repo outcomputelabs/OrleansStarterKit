@@ -334,11 +334,11 @@ ASALocalRun/
 
 # OpenCover
 coverage.xml
-/test/Grains.Tests/coverage.opencover.xml
-/test/Silo.Tests/coverage.opencover.xml
+/test/**/coverage.opencover.xml
 
 # SonarQube
 /.sonarqube
 
 # Generated XML Documentation
 /src/Silo/Silo.xml
+/test/Client.Tests/coverage.opencover.xml
