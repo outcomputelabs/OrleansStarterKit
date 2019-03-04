@@ -29,8 +29,6 @@ after_test:
 - cmd: >-
     create-coverage-report.cmd
 
-    upload-coverage-to-coveralls.cmd
-
     sonarscanner-end.cmd
 
     publish-to-folder.cmd

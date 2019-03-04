@@ -1,7 +1,7 @@
 ## Orleans Starter Kit
 
 [![Build status](https://ci.appveyor.com/api/projects/status/tbnukulpu51v4obo?svg=true)](https://ci.appveyor.com/project/JorgeCandeias/orleansstarterkit)
-[![Coverage Status](https://coveralls.io/repos/github/JorgeCandeias/OrleansStarterKit/badge.svg?branch=master)](https://coveralls.io/github/JorgeCandeias/OrleansStarterKit?branch=master)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=JorgeCandeias_OrleansStarterKit&metric=coverage)](https://sonarcloud.io/dashboard?id=JorgeCandeias_OrleansStarterKit)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=JorgeCandeias_OrleansStarterKit&metric=alert_status)](https://sonarcloud.io/dashboard?id=JorgeCandeias_OrleansStarterKit)
 
 The objective of this template is to provide developers with a shortcut to setting up a full end-to-end _real-time_ microservice from the ground up

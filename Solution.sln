@@ -27,12 +27,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 		sonarscanner-begin.cmd = sonarscanner-begin.cmd
 		sonarscanner-end.cmd = sonarscanner-end.cmd
-		upload-coverage-to-coveralls.cmd = upload-coverage-to-coveralls.cmd
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grains.Tests", "test\Grains.Tests\Grains.Tests.csproj", "{28DAA0EC-E004-45D9-AB50-9A4D851D3684}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grains.Tests", "test\Grains.Tests\Grains.Tests.csproj", "{28DAA0EC-E004-45D9-AB50-9A4D851D3684}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Silo.Tests", "test\Silo.Tests\Silo.Tests.csproj", "{EE7DF00D-8031-497A-97F1-146EC339013C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Silo.Tests", "test\Silo.Tests\Silo.Tests.csproj", "{EE7DF00D-8031-497A-97F1-146EC339013C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
