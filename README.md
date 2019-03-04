@@ -19,7 +19,7 @@ Its dream target is to enable developers to slice through devops efforts like bu
 ## Baked-In
 
 * Hosting:
-  * Local Only.
+  * On Premises.
 
 * Clustering:
   * ADO.NET > SQL Server Database
@@ -42,37 +42,14 @@ Its dream target is to enable developers to slice through devops efforts like bu
 
 * Quality:
   * Testing: xUnit
-  * Coverage: OpenCover
+  * Coverage: Coverlet > SonarQube
   * Inspection: SonarQube
 
 ## Todos
 
-Current items in the todo list for this project, not necessarily in the order written:
+The Orleans Starter Kit is in early prototyping phase.
 
-* Develop Sample Real-Time Chat REST API.
-* Develop Sample Real-Time Chat Web Site.
-* Develop Sample SignalR Hub.
-* Setup Performance Testing.
-* Setup Orleans Dashboard.
-* Setup Azure Cloud Hosting Template.
-* Setup Azure Service Fabric Hosting Template.
-* Setup Azure Kubernetes Hosting Template.
-* Setup Azure Table Storage Clustering Template.
-* Setup AWS DynamoDB Clustering Template.
-* Setup Azure Table Storage Reminders Template.
-* Setup AWS DynamoDB Reminders Template.
-* Setup Azure Table Storage Grain Storage Template.
-* Setup Azure Blob Storage Grain Storage Template.
-* Setup AWS DynamoDB Grain Storage Template.
-* Setup Azure EventHub Streaming Template.
-* Setup Azure Queues Streaming Template.
-* Setup AWS SQS Streaming Template.
-* Setup Microsoft Bond Serializer.
-* Setup Performance Counters Telemetry Consumer.
-* Setup Azure Application Insights Telemetry Consumer.
-* Setup Azure Storage Transactions Template.
-* Setup Elastic Search Logging.
-* Develop a Step-by-Step Installation Wizard.
+Tasks that need to happen are in the [Prototyping](https://github.com/JorgeCandeias/OrleansStarterKit/projects/1) project.
 
 ## How To Use
 
