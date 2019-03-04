@@ -12,7 +12,7 @@
     <DocumentationFile>Silo.xml</DocumentationFile>
     <NoWarn>1701;1702;1591</NoWarn>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 

@@ -334,6 +334,8 @@ ASALocalRun/
 
 # OpenCover
 coverage.xml
+/test/Grains.Tests/coverage.opencover.xml
+/test/Silo.Tests/coverage.opencover.xml
 
 # SonarQube
 /.sonarqube
