@@ -341,4 +341,3 @@ coverage.xml
 
 # Generated XML Documentation
 /src/Silo/Silo.xml
-/test/Client.Tests/coverage.opencover.xml
