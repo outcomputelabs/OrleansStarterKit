@@ -3,7 +3,6 @@ using Orleans;
 using Orleans.Hosting;
 using Orleans.Runtime;
 using Orleans.Storage;
-using Silo.Tests.Fakes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,7 @@ using Xunit;
 
 namespace Silo.Tests
 {
-    public class SiloHostedServiceSiloHostBuilderExtensionsTests
+    public class SiloHostBuilderExtensionsTests
     {
         [Fact]
         public void TryUseLocalhostClustering_Refuses_Null_Builder()
