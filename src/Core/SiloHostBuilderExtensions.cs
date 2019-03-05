@@ -4,9 +4,9 @@ using Orleans.Configuration;
 using Orleans.Hosting;
 using System;
 
-namespace Silo
+namespace Core
 {
-    public static class SiloHostedServiceSiloHostBuilderExtensions
+    public static class SiloHostBuilderExtensions
     {
         public static ISiloHostBuilder TryUseLocalhostClustering(this ISiloHostBuilder builder, IConfiguration configuration, int siloPort, int gatewayPort)
         {

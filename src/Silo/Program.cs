@@ -37,6 +37,7 @@ namespace Silo
                 .ConfigureAppConfiguration((hosting, configure) =>
                 {
                     configure
+                        .AddJsonFile("appsettings.shared.json", true, true)
                         .AddJsonFile("appsettings.json", true, true)
                         .AddJsonFile($"appsettings.{hosting.HostingEnvironment.EnvironmentName}.json", true, true)
                         .AddEnvironmentVariables(EnvironmentVariablePrefix)

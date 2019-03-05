@@ -1,15 +1,11 @@
-﻿using Grains;
-using Grains.Models;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 using Orleans;
-using Orleans.Configuration;
 using Orleans.Hosting;
 using Serilog;
 using Serilog.Events;
 using System;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Client
@@ -18,19 +14,33 @@ namespace Client
     {
         private static string userId;
 
-        private static IConfiguration Configuration { get; } =
-            new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
-            .Build();
+        private const string EnvironmentVariablePrefix = "ORLEANS_";
 
-        private static async Task Main()
+        private static Task Main(string[] args)
         {
-            // set the window title
-            Console.Title = Configuration.GetValue("Console:Title", nameof(ISiloHost));
+            return new HostBuilder()
+                .ConfigureHostConfiguration(configure =>
+                {
+                    configure.AddJsonFile("hostsettings.json", true, true);
+                    configure.AddEnvironmentVariables(EnvironmentVariablePrefix);
+                    configure.AddCommandLine(args);
+                })
+                .ConfigureAppConfiguration((hosting, configure) =>
+                {
+                    configure
+                        .AddJsonFile("appsettings.shared.json", true, true)
+                        .AddJsonFile("appsettings.json", true, true)
+                        .AddJsonFile($"appsettings.{hosting.HostingEnvironment.EnvironmentName}.json", true, true)
+                        .AddEnvironmentVariables(EnvironmentVariablePrefix)
+                        .AddCommandLine(args);
+                })
+                .ConfigureServices(_ =>
+                {
+                    _.AddHostedService<ConsoleClientHostedService>();
+                })
+                .RunConsoleAsync();
 
-            // configure services
-            var services = ConfigureServices(Configuration);
-
+            /*
             // build the client
             var client = new ClientBuilder()
                 .Configure<ClusterOptions>(options =>
@@ -114,6 +124,7 @@ namespace Client
                     Console.ResetColor();
                 }
             }
+            */
         }
 
         private static IServiceProvider ConfigureServices(IConfiguration configuration)
