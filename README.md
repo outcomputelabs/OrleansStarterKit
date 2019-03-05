@@ -49,7 +49,7 @@ Its dream target is to enable developers to slice through devops efforts like bu
 
 The Orleans Starter Kit is in early prototyping phase.
 
-Tasks that need to happen are in the [Prototyping](https://github.com/JorgeCandeias/OrleansStarterKit/projects/1) project.
+Tasks that need to happen are in the [Minimum Viable Product](https://github.com/JorgeCandeias/OrleansStarterKit/projects/1) project.
 
 ## How To Use
 
