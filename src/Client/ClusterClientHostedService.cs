@@ -13,15 +13,16 @@ namespace Client
 {
     public class ClusterClientHostedService : IHostedService
     {
-        public ClusterClientHostedService(IConfiguration configuration, ILoggerProvider loggerProvider, ILogger<ClusterClientHostedService> logger)
+        public ClusterClientHostedService(IConfiguration configuration, ILoggerProvider loggerProvider)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _loggerProvider = loggerProvider ?? throw new ArgumentNullException(nameof(loggerProvider));
+            _logger = _loggerProvider.CreateLogger(GetType().FullName);
         }
 
         private readonly IConfiguration _configuration;
         private readonly ILoggerProvider _loggerProvider;
-        private readonly ILogger<ClusterClientHostedService> _logger;
+        private readonly ILogger _logger;
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
@@ -56,9 +57,9 @@ namespace Client
             _logger.LogInformation("Connected.");
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            await ClusterClient.Close();
         }
 
         public IClusterClient ClusterClient { get; private set; }

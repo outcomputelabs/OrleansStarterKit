@@ -34,30 +34,17 @@ namespace Client
                         .AddEnvironmentVariables(EnvironmentVariablePrefix)
                         .AddCommandLine(args);
                 })
-                .ConfigureServices(_ =>
+                .ConfigureServices(services =>
                 {
-                    _.AddHostedService<ConsoleClientHostedService>();
+                    services.AddHostedService<ClusterClientHostedService>();
+                    services.AddSingleton(provider => provider.GetService<ClusterClientHostedService>().ClusterClient);
+
+                    services.AddHostedService<ConsoleClientHostedService>();
                 })
                 .RunConsoleAsync();
 
             /*
             // build the client
-            var client = new ClientBuilder()
-                .Configure<ClusterOptions>(options =>
-                {
-                    options.ClusterId = Configuration.GetValue<string>("Orleans:ClusterId");
-                    options.ServiceId = Configuration.GetValue<string>("Orleans:ServiceId");
-                })
-                .UseAdoNetClustering(options =>
-                {
-                    options.ConnectionString = Configuration.GetConnectionString("Orleans");
-                    options.Invariant = Configuration.GetValue<string>("Orleans:AdoNet:Invariant");
-                })
-                .ConfigureLogging(builder =>
-                {
-                    builder.AddProvider(services.GetRequiredService<ILoggerProvider>());
-                })
-                .Build();
 
             Console.WriteLine("Connecting...");
 

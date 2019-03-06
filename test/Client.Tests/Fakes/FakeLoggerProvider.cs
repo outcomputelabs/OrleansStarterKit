@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
 
 namespace Client.Tests.Fakes
 {
@@ -7,12 +6,11 @@ namespace Client.Tests.Fakes
     {
         public ILogger CreateLogger(string categoryName)
         {
-            throw new NotImplementedException();
+            return new FakeLogger(categoryName);
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
         }
     }
 }
