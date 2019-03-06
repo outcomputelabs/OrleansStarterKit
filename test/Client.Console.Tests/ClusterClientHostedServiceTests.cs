@@ -1,6 +1,7 @@
 ﻿using Client.Console.Tests.Fakes;
 using Grains;
 using Microsoft.Extensions.Configuration;
+using Orleans.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -80,6 +81,30 @@ namespace Client.Console.Tests
             Assert.NotNull(service.ClusterClient);
             Assert.True(service.ClusterClient.IsInitialized);
             Assert.Equal(id, await service.ClusterClient.GetGrain<ITestGrain>(id).GetKeyAsync());
+        }
+
+        [Fact]
+        public async Task FailsToConnectClusterClient()
+        {
+            // arrange
+            var id = Guid.NewGuid();
+            var config = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    { "Orleans:Ports:Gateway:Start", "12345" },
+                    { "Orleans:Ports:Gateway:End", "12345" },
+                    { "Orleans:ClusterId", "dev" },
+                    { "Orleans:ServiceId", "dev" },
+                    { "Orleans:Providers:Clustering:Provider", "Localhost" }
+                })
+                .Build();
+
+            // act and assert
+            var service = new ClusterClientHostedService(config, new FakeLoggerProvider());
+            await Assert.ThrowsAsync<OrleansMessageRejectionException>(async () =>
+            {
+                await service.StartAsync(default(CancellationToken));
+            });
         }
 
         [Fact]
