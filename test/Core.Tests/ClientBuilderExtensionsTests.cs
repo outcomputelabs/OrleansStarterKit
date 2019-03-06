@@ -125,29 +125,5 @@ namespace Core.Tests
             Assert.Equal("SomeConnectionString", adonetOptions.Value.ConnectionString);
             Assert.Equal("SomeInvariant", adonetOptions.Value.Invariant);
         }
-
-        [Fact]
-        public void TryUseAdoNetClustering_IgnoresConfiguration()
-        {
-            // arrange
-            var builder = new Mock<IClientBuilder>();
-            var config = new ConfigurationBuilder()
-                .AddInMemoryCollection(new Dictionary<string, string>
-                {
-                    { "Orleans:Providers:Clustering:Provider", "None" },
-                    { "Orleans:Providers:Clustering:AdoNet:ConnectionStringName", "SomeConnectionStringName" },
-                    { "Orleans:Providers:Clustering:AdoNet:Invariant", "SomeInvariant" },
-                    { "Orleans:ServiceId", "SomeServiceId" },
-                    { "Orleans:ClusterId", "SomeClusterId" },
-                    { "ConnectionStrings:SomeConnectionStringName", "SomeConnectionString" }
-                })
-                .Build();
-
-            // act
-            builder.Object.TryUseAdoNetClustering(config);
-
-            // assert that nothing happened
-            builder.VerifyNoOtherCalls();
-        }
     }
 }
