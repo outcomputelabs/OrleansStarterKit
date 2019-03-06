@@ -7,11 +7,11 @@ namespace Client.Console.Tests
 {
     public class ClusterFixture : IDisposable
     {
-        private readonly ISiloHost _host;
+        public ISiloHost Host { get; private set; }
 
         public ClusterFixture()
         {
-            _host = new SiloHostBuilder()
+            Host = new SiloHostBuilder()
                 .ConfigureApplicationParts(_ =>
                 {
                     _.AddApplicationPart(typeof(TestGrain).Assembly).WithReferences();
@@ -19,12 +19,12 @@ namespace Client.Console.Tests
                 .UseLocalhostClustering()
                 .Build();
 
-            _host.StartAsync().Wait();
+            Host.StartAsync().Wait();
         }
 
         public void Dispose()
         {
-            _host.StopAsync().Wait();
+            Host.StopAsync().Wait();
         }
     }
 }
