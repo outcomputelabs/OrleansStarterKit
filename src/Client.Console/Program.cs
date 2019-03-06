@@ -5,7 +5,6 @@ using Orleans;
 using Orleans.Hosting;
 using Serilog;
 using Serilog.Events;
-using System;
 using System.Threading.Tasks;
 
 namespace Client.Console
@@ -34,27 +33,31 @@ namespace Client.Console
                         .AddEnvironmentVariables(EnvironmentVariablePrefix)
                         .AddCommandLine(args);
                 })
+                .ConfigureLogging((context, builder) =>
+                {
+                    builder.AddSerilog(new LoggerConfiguration()
+                        .WriteTo.Console(
+                            restrictedToMinimumLevel: context.Configuration.GetValue<LogEventLevel>("Serilog:Console:RestrictedToMinimumLevel"))
+                        .WriteTo.MSSqlServer(
+                            connectionString: context.Configuration.GetConnectionString("Orleans"),
+                            schemaName: context.Configuration["Serilog:MSSqlServer:SchemaName"],
+                            tableName: context.Configuration["Serilog:MSSqlServer:TableName"],
+                            restrictedToMinimumLevel: context.Configuration.GetValue<LogEventLevel>("Serilog:MSSqlServer:RestrictedToMinimumLevel"))
+                        .CreateLogger());
+                })
                 .ConfigureServices(services =>
                 {
-                    services.AddHostedService<ClusterClientHostedService>();
-                    services.AddSingleton(provider => provider.GetService<ClusterClientHostedService>().ClusterClient);
+                    services.AddSingleton<ClusterClientHostedService>();
+                    services.AddSingleton<IHostedService>(_ => _.GetService<ClusterClientHostedService>());
+                    services.AddSingleton(_ => _.GetService<ClusterClientHostedService>().ClusterClient);
 
-                    services.AddHostedService<ConsoleClientHostedService>();
+                    services.AddSingleton<IHostedService, ConsoleClientHostedService>();
                 })
                 .RunConsoleAsync();
 
             /*
             // build the client
-
-            Console.WriteLine("Connecting...");
-
-            await client.Connect(async error =>
-            {
-                await Task.Delay(1000);
-                return true;
-            });
-
-            Console.WriteLine("Connected.");
+            
 
             while (true)
             {
@@ -112,25 +115,6 @@ namespace Client.Console
                 }
             }
             */
-        }
-
-        private static IServiceProvider ConfigureServices(IConfiguration configuration)
-        {
-            var services = new ServiceCollection();
-
-            // configure serilog
-            services.AddLogging(config => config.AddSerilog(new LoggerConfiguration()
-                .WriteTo.Console(
-                    restrictedToMinimumLevel: configuration.GetValue<LogEventLevel>("Serilog:Console:RestrictedToMinimumLevel"))
-                .WriteTo.MSSqlServer(
-                    connectionString: configuration.GetConnectionString("Orleans"),
-                    schemaName: configuration["Serilog:MSSqlServer:SchemaName"],
-                    tableName: configuration["Serilog:MSSqlServer:TableName"],
-                    restrictedToMinimumLevel: configuration.GetValue<LogEventLevel>("Serilog:MSSqlServer:RestrictedToMinimumLevel"))
-                .CreateLogger()));
-
-            // all done
-            return services.BuildServiceProvider();
         }
     }
 }

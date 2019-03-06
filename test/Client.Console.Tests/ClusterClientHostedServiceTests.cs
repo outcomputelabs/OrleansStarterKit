@@ -33,7 +33,31 @@ namespace Client.Console.Tests
         }
 
         [Fact]
-        public async Task StartsAndMakesClusterClientAvailable()
+        public void BuildsClusterClient()
+        {
+            // arrange
+            var id = Guid.NewGuid();
+            var config = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    { "Orleans:Ports:Gateway:Start", "30000" },
+                    { "Orleans:Ports:Gateway:End", "30000" },
+                    { "Orleans:ClusterId", "dev" },
+                    { "Orleans:ServiceId", "dev" },
+                    { "Orleans:Providers:Clustering:Provider", "Localhost" }
+                })
+                .Build();
+
+            // act
+            var service = new ClusterClientHostedService(config, new FakeLoggerProvider());
+
+            // assert
+            Assert.NotNull(service.ClusterClient);
+            Assert.False(service.ClusterClient.IsInitialized);
+        }
+
+        [Fact]
+        public async Task ConnectsClusterClient()
         {
             // arrange
             var id = Guid.NewGuid();
@@ -59,7 +83,7 @@ namespace Client.Console.Tests
         }
 
         [Fact]
-        public async Task StartsAndStops()
+        public async Task DisconnectsClusterClient()
         {
             // arrange
             var id = Guid.NewGuid();

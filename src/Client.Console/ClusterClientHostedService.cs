@@ -18,14 +18,7 @@ namespace Client.Console
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _loggerProvider = loggerProvider ?? throw new ArgumentNullException(nameof(loggerProvider));
             _logger = _loggerProvider.CreateLogger(GetType().FullName);
-        }
 
-        private readonly IConfiguration _configuration;
-        private readonly ILoggerProvider _loggerProvider;
-        private readonly ILogger _logger;
-
-        public async Task StartAsync(CancellationToken cancellationToken)
-        {
             ClusterClient = new ClientBuilder()
                 .Configure<ClusterOptions>(options =>
                 {
@@ -41,7 +34,14 @@ namespace Client.Console
                     builder.AddProvider(_loggerProvider);
                 })
                 .Build();
+        }
 
+        private readonly IConfiguration _configuration;
+        private readonly ILoggerProvider _loggerProvider;
+        private readonly ILogger _logger;
+
+        public async Task StartAsync(CancellationToken cancellationToken)
+        {
             _logger.LogInformation("Connecting...");
 
             var maxRetries = _configuration.GetValue<int>("Client:Connect:MaxRetries");
@@ -59,7 +59,11 @@ namespace Client.Console
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Disconnecting...");
+
             await ClusterClient.Close();
+
+            _logger.LogInformation("Disconnected.");
         }
 
         public IClusterClient ClusterClient { get; private set; }
