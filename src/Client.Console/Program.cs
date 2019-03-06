@@ -6,6 +6,7 @@ using Orleans.Hosting;
 using Serilog;
 using Serilog.Events;
 using System.Threading.Tasks;
+using EnvironmentName = Microsoft.Extensions.Hosting.EnvironmentName;
 
 namespace Client.Console
 {
@@ -18,6 +19,7 @@ namespace Client.Console
         private static Task Main(string[] args)
         {
             return new HostBuilder()
+                .UseEnvironment(EnvironmentName.Development)
                 .ConfigureHostConfiguration(configure =>
                 {
                     configure.AddJsonFile("hostsettings.json", true, true);
