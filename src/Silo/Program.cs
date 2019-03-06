@@ -8,6 +8,7 @@ using Serilog.Events;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using EnvironmentName = Microsoft.Extensions.Hosting.EnvironmentName;
 
 namespace Silo
 {
@@ -28,6 +29,7 @@ namespace Silo
         public static async Task Main(string[] args)
         {
             Host = new HostBuilder()
+                .UseEnvironment(EnvironmentName.Development)
                 .ConfigureHostConfiguration(configure =>
                 {
                     configure.AddJsonFile("hostsettings.json", true, true);
