@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Client.Console.Tests.Fakes;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Client.Console.Tests
@@ -13,6 +16,23 @@ namespace Client.Console.Tests
                 new ConsoleClientHostedService(null);
             });
             Assert.Equal("client", error.ParamName);
+        }
+
+        [Fact]
+        public async Task Starts()
+        {
+            var service = new ConsoleClientHostedService(new FakeClusterClient());
+
+            await service.StartAsync(default(CancellationToken));
+        }
+
+        [Fact]
+        public async Task Stops()
+        {
+            var service = new ConsoleClientHostedService(new FakeClusterClient());
+
+            await service.StartAsync(default(CancellationToken));
+            await service.StopAsync(default(CancellationToken));
         }
     }
 }
