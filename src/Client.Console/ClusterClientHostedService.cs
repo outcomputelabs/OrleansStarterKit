@@ -44,8 +44,8 @@ namespace Client.Console
         {
             _logger.LogInformation("Connecting...");
 
-            var maxRetries = _configuration.GetValue<int>("Client:Connect:MaxRetries");
-            var retryDelay = _configuration.GetValue<TimeSpan>("Client:Connect:RetryDelay");
+            var maxRetries = _configuration.GetValue<int>("Orleans:Client:Connect:MaxRetries");
+            var retryDelay = _configuration.GetValue<TimeSpan>("Orleans:Client:Connect:RetryDelay");
             await ClusterClient.Connect(async error =>
             {
                 _logger.LogError(error, "Error Connecting: {@Message}", error.Message);

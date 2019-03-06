@@ -107,7 +107,7 @@ namespace Client.Console.Tests
             Assert.False(service.ClusterClient.IsInitialized);
             await Assert.ThrowsAsync<ObjectDisposedException>(async () =>
             {
-                await service.ClusterClient.GetGrain<ITestGrain>(Guid.Empty).GetKeyAsync();
+                await service.ClusterClient.GetGrain<ITestGrain>(id).GetKeyAsync();
             });
         }
     }
