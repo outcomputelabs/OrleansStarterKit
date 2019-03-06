@@ -31,5 +31,29 @@ namespace Core.Tests
             });
             Assert.Equal("configuration", error.ParamName);
         }
+
+        [Fact]
+        public void TryUseAdoNetClustering_RefusesNullBuilder()
+        {
+            IClientBuilder builder = null;
+
+            var error = Assert.Throws<ArgumentNullException>(() =>
+            {
+                builder.TryUseAdoNetClustering(new ConfigurationBuilder().Build());
+            });
+            Assert.Equal("builder", error.ParamName);
+        }
+
+        [Fact]
+        public void TryUseAdoNetClustering_RefusesNullConfiguration()
+        {
+            var builder = new FakeClientBuilder();
+
+            var error = Assert.Throws<ArgumentNullException>(() =>
+            {
+                builder.TryUseAdoNetClustering(null);
+            });
+            Assert.Equal("configuration", error.ParamName);
+        }
     }
 }
