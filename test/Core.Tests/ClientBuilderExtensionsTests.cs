@@ -39,24 +39,32 @@ namespace Core.Tests
         [Fact]
         public void TryUseLocalhostClustering_AppliesConfiguration()
         {
+            // arrange
             var builder = new ClientBuilder();
             var config = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string>
                 {
                     { "Orleans:Providers:Clustering:Provider", "Localhost" },
-                    { "Orleans:Ports:Gateway:Start", "11111" },
+                    { "Orleans:Ports:Gateway:Start", "22222" },
                     { "Orleans:ServiceId", "SomeServiceId" },
                     { "Orleans:ClusterId", "SomeClusterId" }
                 })
                 .Build();
 
+            // act
             builder.TryUseLocalhostClustering(config);
 
+            // assert the cluster options are there
             var client = builder.Build();
-            var options = client.ServiceProvider.GetService<IOptions<ClusterOptions>>();
-            Assert.NotNull(options);
-            Assert.Equal("SomeClusterId", options.Value.ClusterId);
-            Assert.Equal("SomeServiceId", options.Value.ServiceId);
+            var clusterOptions = client.ServiceProvider.GetService<IOptions<ClusterOptions>>();
+            Assert.NotNull(clusterOptions);
+            Assert.Equal("SomeClusterId", clusterOptions.Value.ClusterId);
+            Assert.Equal("SomeServiceId", clusterOptions.Value.ServiceId);
+
+            // assert the static gateway options are there
+            var providerOptions = client.ServiceProvider.GetService<IOptions<StaticGatewayListProviderOptions>>();
+            Assert.Single(providerOptions.Value.Gateways);
+            Assert.Equal(22222, providerOptions.Value.Gateways[0].Port);
         }
 
         [Fact]
