@@ -17,8 +17,6 @@ namespace Client.Console
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            System.Console.Title = nameof(Client);
-
             return Task.CompletedTask;
         }
 

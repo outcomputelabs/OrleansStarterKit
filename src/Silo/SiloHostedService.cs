@@ -8,6 +8,7 @@ using Orleans;
 using Orleans.Configuration;
 using Orleans.Hosting;
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
@@ -54,7 +55,7 @@ namespace Silo
                 })
                 .Configure<ClusterMembershipOptions>(_ =>
                 {
-                    if (environment.IsDevelopment())
+                    if (environment.IsDevelopment() || Debugger.IsAttached)
                     {
                         _.ValidateInitialConnectivity = false;
                     }
