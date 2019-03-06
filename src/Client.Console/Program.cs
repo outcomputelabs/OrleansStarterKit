@@ -5,6 +5,7 @@ using Orleans;
 using Orleans.Hosting;
 using Serilog;
 using Serilog.Events;
+using System.Threading;
 using System.Threading.Tasks;
 using EnvironmentName = Microsoft.Extensions.Hosting.EnvironmentName;
 
@@ -16,7 +17,12 @@ namespace Client.Console
 
         private const string EnvironmentVariablePrefix = "ORLEANS_";
 
-        private static Task Main(string[] args)
+        /// <summary>
+        /// For testing only.
+        /// </summary>
+        public static CancellationToken CancellationToken { get; set; }
+
+        public static Task Main(string[] args)
         {
             return new HostBuilder()
                 .UseEnvironment(EnvironmentName.Development)
@@ -55,7 +61,7 @@ namespace Client.Console
 
                     services.AddSingleton<IHostedService, ConsoleClientHostedService>();
                 })
-                .RunConsoleAsync();
+                .RunConsoleAsync(CancellationToken);
 
             /*
             // build the client
