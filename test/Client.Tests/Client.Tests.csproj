@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Client\Client.csproj" />
+    <ProjectReference Include="..\..\src\Grains\Grains.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Silo.Tests.Fakes
+namespace Core.Tests.Fakes
 {
     public class FakeServiceCollection : IServiceCollection
     {

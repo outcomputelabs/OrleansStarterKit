@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Core.Tests.Fakes;
+using Microsoft.Extensions.Configuration;
 using Orleans;
 using Orleans.Hosting;
 using Orleans.Runtime;
@@ -8,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace Silo.Tests
+namespace Core.Tests
 {
     public class SiloHostBuilderExtensionsTests
     {

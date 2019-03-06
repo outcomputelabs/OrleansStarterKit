@@ -1,11 +1,15 @@
 ﻿using Client.Tests.Fakes;
+using Grains;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Client.Tests
 {
+    [Collection(nameof(ClusterCollection))]
     public class ClusterClientHostedServiceTests
     {
         [Fact]
@@ -25,24 +29,62 @@ namespace Client.Tests
             {
                 new ClusterClientHostedService(new FakeConfiguration(), null);
             });
-            Assert.Equal("configuration", error.ParamName);
+            Assert.Equal("loggerProvider", error.ParamName);
         }
 
         [Fact]
-        public void StartsAndMakesClusterClientAvailable()
+        public async Task StartsAndMakesClusterClientAvailable()
         {
             // arrange
+            var id = Guid.NewGuid();
             var config = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string>
                 {
+                    { "Orleans:Ports:Gateway:Start", "30000" },
+                    { "Orleans:Ports:Gateway:End", "30000" },
+                    { "Orleans:ClusterId", "dev" },
+                    { "Orleans:ServiceId", "dev" },
+                    { "Orleans:Providers:Clustering:Provider", "Localhost" }
                 })
                 .Build();
 
             // act
             var service = new ClusterClientHostedService(config, new FakeLoggerProvider());
+            await service.StartAsync(default(CancellationToken));
 
             // assert
             Assert.NotNull(service.ClusterClient);
+            Assert.True(service.ClusterClient.IsInitialized);
+            Assert.Equal(id, await service.ClusterClient.GetGrain<ITestGrain>(id).GetKeyAsync());
+        }
+
+        [Fact]
+        public async Task StartsAndStops()
+        {
+            // arrange
+            var id = Guid.NewGuid();
+            var config = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    { "Orleans:Ports:Gateway:Start", "30000" },
+                    { "Orleans:Ports:Gateway:End", "30000" },
+                    { "Orleans:ClusterId", "dev" },
+                    { "Orleans:ServiceId", "dev" },
+                    { "Orleans:Providers:Clustering:Provider", "Localhost" }
+                })
+                .Build();
+
+            // act
+            var service = new ClusterClientHostedService(config, new FakeLoggerProvider());
+            await service.StartAsync(default(CancellationToken));
+            await service.StopAsync(default(CancellationToken));
+
+            // assert
+            Assert.False(service.ClusterClient.IsInitialized);
+            await Assert.ThrowsAsync<ObjectDisposedException>(async () =>
+            {
+                await service.ClusterClient.GetGrain<ITestGrain>(Guid.Empty).GetKeyAsync();
+            });
         }
     }
 }
