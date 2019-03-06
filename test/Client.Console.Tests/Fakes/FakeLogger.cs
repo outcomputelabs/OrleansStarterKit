@@ -2,7 +2,7 @@
 using System;
 using System.Diagnostics;
 
-namespace Client.Tests.Fakes
+namespace Client.Console.Tests.Fakes
 {
     public class FakeLogger : ILogger
     {

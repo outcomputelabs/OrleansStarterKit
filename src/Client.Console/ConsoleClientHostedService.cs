@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Client
+namespace Client.Console
 {
     public class ConsoleClientHostedService : IHostedService
     {
@@ -17,7 +17,7 @@ namespace Client
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            Console.Title = nameof(Client);
+            System.Console.Title = nameof(Client);
 
             return Task.CompletedTask;
         }

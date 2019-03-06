@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Client.Tests.Fakes
+namespace Client.Console.Tests.Fakes
 {
     public class FakeDisposable : IDisposable
     {
