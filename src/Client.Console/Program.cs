@@ -8,7 +8,7 @@ using Serilog.Events;
 using System;
 using System.Threading.Tasks;
 
-namespace Client
+namespace Client.Console
 {
     public static class Program
     {

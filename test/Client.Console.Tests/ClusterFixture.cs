@@ -3,7 +3,7 @@ using Orleans;
 using Orleans.Hosting;
 using System;
 
-namespace Client.Tests
+namespace Client.Console.Tests
 {
     public class ClusterFixture : IDisposable
     {

@@ -1,4 +1,4 @@
-﻿using Client.Tests.Fakes;
+﻿using Client.Console.Tests.Fakes;
 using Grains;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Client.Tests
+namespace Client.Console.Tests
 {
     [Collection(nameof(ClusterCollection))]
     public class ClusterClientHostedServiceTests

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 
-namespace Client.Tests.Fakes
+namespace Client.Console.Tests.Fakes
 {
     public class FakeConfiguration : IConfiguration
     {

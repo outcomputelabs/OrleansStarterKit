@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace Client.Tests.Fakes
+namespace Client.Console.Tests.Fakes
 {
     public class FakeLoggerProvider : ILoggerProvider
     {
