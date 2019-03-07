@@ -79,7 +79,7 @@ namespace Client.Console
 
             Started.TrySetResult(true);
 
-            await Host.RunAsync(CancellationTokenSource.Token);
+            await Host.WaitForShutdownAsync(CancellationTokenSource.Token);
 
             /*
             // build the client
