@@ -17,7 +17,7 @@ namespace Client.Console.Tests
         private readonly ClusterFixture _context;
 
         [Fact]
-        public async Task RunsAndConnectsToCluster()
+        public async Task Runs()
         {
             // arrange
             Program.CancellationTokenSource = new CancellationTokenSource();
@@ -40,14 +40,52 @@ namespace Client.Console.Tests
             Assert.NotNull(Program.Host.Services.GetService<ConsoleClientHostedService>());
 
             // stop execution
+            await Program.Host.StopAsync();
+            await execution;
+        }
+
+        [Fact]
+        public async Task CancelsStart()
+        {
+            // arrange
+            Program.CancellationTokenSource = new CancellationTokenSource();
+            Program.Started = new TaskCompletionSource<bool>();
+            var args = new[]
+            {
+                "/Orleans:Providers:Clustering:Provider=Localhost",
+                "/Orleans:Providers:Reminders:Provider=InMemory",
+                "/Orleans:Providers:Storage:Default:Provider=InMemory",
+                "/Orleans:Providers:Storage:PubSub:Provider=InMemory"
+            };
+
+            // act
             Program.CancellationTokenSource.Cancel();
-            try
+            await Assert.ThrowsAsync<OperationCanceledException>(async () =>
             {
-                await execution;
-            }
-            catch (OperationCanceledException)
+                await Program.Main(args);
+            });
+        }
+
+        [Fact]
+        public async Task CancelsExecution()
+        {
+            // arrange
+            Program.CancellationTokenSource = new CancellationTokenSource();
+            Program.Started = new TaskCompletionSource<bool>();
+            var args = new[]
             {
-            }
+                "/Orleans:Providers:Clustering:Provider=Localhost",
+                "/Orleans:Providers:Reminders:Provider=InMemory",
+                "/Orleans:Providers:Storage:Default:Provider=InMemory",
+                "/Orleans:Providers:Storage:PubSub:Provider=InMemory"
+            };
+
+            // act
+            var execution = Program.Main(args);
+            await Program.Started.Task;
+
+            Program.CancellationTokenSource.Cancel();
+            await execution;
         }
     }
 }
