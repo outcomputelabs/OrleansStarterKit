@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -19,12 +20,34 @@ namespace Client.Console.Tests
         public async Task RunsAndConnectsToCluster()
         {
             // arrange
-            Program.CancellationToken = new CancellationToken();
+            Program.CancellationTokenSource = new CancellationTokenSource();
+            Program.Started = new TaskCompletionSource<bool>();
+            var args = new[]
+            {
+                "/Orleans:Providers:Clustering:Provider=Localhost",
+                "/Orleans:Providers:Reminders:Provider=InMemory",
+                "/Orleans:Providers:Storage:Default:Provider=InMemory",
+                "/Orleans:Providers:Storage:PubSub:Provider=InMemory"
+            };
 
             // act
-            await Program.Main(null);
+            var execution = Program.Main(args);
+            await Program.Started.Task;
 
+            // assert
+            Assert.NotNull(Program.Host);
+            Assert.NotNull(Program.Host.Services.GetService<ClusterClientHostedService>());
+            Assert.NotNull(Program.Host.Services.GetService<ConsoleClientHostedService>());
 
+            // stop execution
+            Program.CancellationTokenSource.Cancel();
+            try
+            {
+                await execution;
+            }
+            catch (OperationCanceledException)
+            {
+            }
         }
     }
 }
