@@ -20,11 +20,21 @@ namespace Client.Console
         /// <summary>
         /// For testing only.
         /// </summary>
-        public static CancellationToken CancellationToken { get; set; }
+        public static CancellationTokenSource CancellationTokenSource { get; set; } = new CancellationTokenSource();
 
-        public static Task Main(string[] args)
+        /// <summary>
+        /// For testing only.
+        /// </summary>
+        public static TaskCompletionSource<bool> Started { get; set; } = new TaskCompletionSource<bool>();
+
+        /// <summary>
+        /// Exposes the host to test code.
+        /// </summary>
+        public static IHost Host { get; private set; }
+
+        public static async Task Main(string[] args)
         {
-            return new HostBuilder()
+            Host = new HostBuilder()
                 .UseEnvironment(EnvironmentName.Development)
                 .ConfigureHostConfiguration(configure =>
                 {
@@ -59,9 +69,17 @@ namespace Client.Console
                     services.AddSingleton<IHostedService>(_ => _.GetService<ClusterClientHostedService>());
                     services.AddSingleton(_ => _.GetService<ClusterClientHostedService>().ClusterClient);
 
-                    services.AddSingleton<IHostedService, ConsoleClientHostedService>();
+                    services.AddSingleton<ConsoleClientHostedService>();
+                    services.AddSingleton<IHostedService>(_ => _.GetService<ConsoleClientHostedService>());
                 })
-                .RunConsoleAsync(CancellationToken);
+                .UseConsoleLifetime()
+                .Build();
+
+            await Host.StartAsync(CancellationTokenSource.Token);
+
+            Started.TrySetResult(true);
+
+            await Host.RunAsync(CancellationTokenSource.Token);
 
             /*
             // build the client
