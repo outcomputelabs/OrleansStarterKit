@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Grains;
+using Microsoft.Extensions.Hosting;
 using Orleans;
 using System;
 using System.Threading;
@@ -14,9 +15,14 @@ namespace Client.Console
         }
 
         private readonly IClusterClient _client;
+        private Task _consoleTask;
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            _consoleTask = Task.Run(async () =>
+            {
+                await _client.GetGrain<ITestGrain>(Guid.NewGuid()).GetKeyAsync();
+            });
             return Task.CompletedTask;
         }
 
