@@ -32,7 +32,9 @@ namespace Client.Console.Tests
 
             // act
             var execution = Program.Main(args);
-            await Program.Started.Task;
+
+            // wait for starting or crashing
+            await Task.WhenAny(Program.Started.Task, execution);
 
             // assert
             Assert.NotNull(Program.Host);
