@@ -40,7 +40,7 @@ artifacts:
   name: Database
 - path: /src/Silo/bin/**/Release/netcoreapp2.1/publish/**/*.*
   name: Silo
-- path: /src/Client/bin/**/Release/netcoreapp2.1/publish/**/*.*
+- path: /src/Client.Console/bin/**/Release/netcoreapp2.1/publish/**/*.*
   name: Client
 deploy:
 - provider: Environment
