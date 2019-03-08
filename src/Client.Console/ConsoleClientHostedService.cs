@@ -3,7 +3,6 @@ using Orleans;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using X = System.Console;
 
 namespace Client.Console
 {
@@ -18,15 +17,6 @@ namespace Client.Console
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            X.WriteLine("Welcome to the Console Client!");
-            X.WriteLine("You can use the following commands. Type /help to see them again.");
-            X.WriteLine("/help: shows this list.");
-
-            while (true)
-            {
-                X.Write("> ");
-            }
-
             return Task.CompletedTask;
         }
 

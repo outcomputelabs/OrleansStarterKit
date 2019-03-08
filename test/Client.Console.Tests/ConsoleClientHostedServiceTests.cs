@@ -19,15 +19,7 @@ namespace Client.Console.Tests
         }
 
         [Fact]
-        public async Task Starts()
-        {
-            var service = new ConsoleClientHostedService(new FakeClusterClient());
-
-            await service.StartAsync(default(CancellationToken));
-        }
-
-        [Fact]
-        public async Task Stops()
+        public async Task StartsAndStops()
         {
             var service = new ConsoleClientHostedService(new FakeClusterClient());
 
