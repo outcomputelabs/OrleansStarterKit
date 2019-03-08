@@ -1,1 +1,1 @@
-@if not defined dotnet sonarscanner end /d:sonar.login="%SONARQUBE_TOKEN%"
+@if not defined APPVEYOR_PULL_REQUEST_NUMBER dotnet sonarscanner end /d:sonar.login="%SONARQUBE_TOKEN%"
