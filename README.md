@@ -4,24 +4,30 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=JorgeCandeias_OrleansStarterKit&metric=coverage)](https://sonarcloud.io/dashboard?id=JorgeCandeias_OrleansStarterKit)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=JorgeCandeias_OrleansStarterKit&metric=alert_status)](https://sonarcloud.io/dashboard?id=JorgeCandeias_OrleansStarterKit)
 
-The objective of this template is to provide developers with a shortcut to setting up a full end-to-end _real-time_ microservice from the ground up
-by providing a pre-configured and pre-tested combination of front-end and back-end software and providers, with Microsoft Orleans at its core.
+Boilerplate is boring.
+Configuration is colorless.
+Deployment is dull.
 
-Its dream target is to enable developers to slice through devops efforts like butter and start writing _and deploying_ user stories from day one.
+The Orleans Starter Kit helps developers cut to the chase and start adding business value from day one, using a scalable-by-default technology stack with [Microsoft Orleans](http://dotnet.github.io/orleans/) at its core.
 
-**Attention: This project is in early prototyping stages. Things will break and move around. These docs will change a lot. Use at your own risk.**
+## Progress
+
+This project is now at MVP stage. Things will break and move around. These docs will change a lot. MVP progress [tracked here](https://github.com/JorgeCandeias/OrleansStarterKit/projects/1). The project will exit MVP stage when both on-premise and Azure providers are added and stabilized and the configuration instructions on this page are clear.
 
 ## Minimum Requirements
 
 * Microsoft Visual Studio Community 2017
 * .NET Core 2.1
 
-## Baked-In
+## Baked-In Providers
 
 * Hosting:
   * On Premises.
 
-* Clustering:
+* Frontend APIs:
+  * *None yet*.
+
+* Cluster Membership:
   * ADO.NET > SQL Server Database
 
 * Reminders:
@@ -45,12 +51,6 @@ Its dream target is to enable developers to slice through devops efforts like bu
   * Coverage: Coverlet > SonarQube
   * Inspection: SonarQube
 
-## Todos
-
-The Orleans Starter Kit is in early prototyping phase.
-
-Tasks that need to happen are in the [Minimum Viable Product](https://github.com/JorgeCandeias/OrleansStarterKit/projects/1) project.
-
 ## How To Use
 
 Clone the repository.
@@ -59,4 +59,8 @@ Clone the repository.
 git clone https://github.com/JorgeCandeias/OrleansStarterKit.git
 ```
 
-*TODO*
+*TODO: Add Visual Studio instructions here.*
+
+## Configuration
+
+*TODO: Add configuration instructions here.*
