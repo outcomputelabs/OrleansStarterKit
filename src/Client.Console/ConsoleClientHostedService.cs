@@ -15,14 +15,14 @@ namespace Client.Console
         }
 
         private readonly IClusterClient _client;
-        private Task _consoleTask;
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _consoleTask = Task.Run(async () =>
+            Task.Run(async () =>
             {
                 await _client.GetGrain<ITestGrain>(Guid.NewGuid()).GetKeyAsync();
-            });
+            }).Ignore();
+
             return Task.CompletedTask;
         }
 
