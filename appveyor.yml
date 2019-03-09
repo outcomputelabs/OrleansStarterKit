@@ -25,7 +25,10 @@ build:
   project: Solution.sln
   verbosity: minimal
 after_build:
-- cmd: ''
+- cmd: >-
+    7z a -r -mx9 Silo.zip ./src/Silo/publish/*.*
+
+    7z a -r -mx9 Client.Console.zip ./src/Client.Console/publish/*.*
 before_test:
 - cmd: ''
 after_test:
@@ -38,10 +41,10 @@ after_test:
 artifacts:
 - path: /src/Database/bin/Release/Database.dacpac
   name: Database
-- path: /src/Silo/bin/**/Release/netcoreapp2.1/publish/**/*.*
+- path: Silo.zip
   name: Silo
-- path: /src/Client.Console/bin/**/Release/netcoreapp2.1/publish/**/*.*
-  name: Client
+- path: Client.Console.zip
+  name: Client.Console
 deploy:
 - provider: Environment
   name: Development
