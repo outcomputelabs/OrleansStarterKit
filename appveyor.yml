@@ -25,10 +25,7 @@ build:
   project: Solution.sln
   verbosity: minimal
 after_build:
-- cmd: >-
-    7z a -r -mx9 Silo.zip ./src/Silo/publish/*.*
-
-    7z a -r -mx9 Client.Console.zip ./src/Client.Console/publish/*.*
+- cmd: ''
 before_test:
 - cmd: ''
 after_test:
@@ -38,6 +35,10 @@ after_test:
     sonarscanner-end.cmd
 
     publish-to-folder.cmd
+
+    7z a -r -mx9 Silo.zip ./src/Silo/publish/*.*
+
+    7z a -r -mx9 Client.Console.zip ./src/Client.Console/publish/*.*
 artifacts:
 - path: /src/Database/bin/Release/Database.dacpac
   name: Database
