@@ -38,7 +38,8 @@ namespace Grains.Tests
                     .ConfigureApplicationParts(configure =>
                     {
                         configure.AddApplicationPart(typeof(ChatUser).Assembly).WithReferences();
-                    });
+                    })
+                    .AddMemoryGrainStorageAsDefault();
             }
         }
     }

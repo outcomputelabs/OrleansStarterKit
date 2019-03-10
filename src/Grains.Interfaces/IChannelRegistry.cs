@@ -5,18 +5,17 @@ using System.Threading.Tasks;
 namespace Grains
 {
     /// <summary>
-    /// Maps a transient channel name to its internal identifier.
-    /// This allows a channel to change while its identifier remains the same forever.
-    /// Provide the channel name as the grain string sharding key.
+    /// Maps a transient channel name to the channel permanent identifier.
+    /// This allows a channel name to change while its identifier remains the same.
+    /// Provide the channel name as the grain string key.
     /// </summary>
     public interface IChannelRegistry : IGrainWithStringKey
     {
         /// <summary>
-        /// Get the unique key for the given channel name.
-        /// If the key does not yet exist, then creates a new key.
+        /// Get the channel key for the channel name passed in the grain key.
+        /// If the channel key does not yet exist, then creates a new key.
         /// </summary>
-        /// <param name="name">The channel name to get the key for.</param>
         /// <returns>The key for the given channel name.</returns>
-        Task<Guid> GetOrCreateKey(string name);
+        Task<Guid> GetOrCreateKeyAsync();
     }
 }
