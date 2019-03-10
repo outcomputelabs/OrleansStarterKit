@@ -44,7 +44,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
-    <ProjectReference Include="..\Grains.Abstractions\Grains.Abstractions.csproj" />
+    <ProjectReference Include="..\Grains.Interfaces\Grains.Interfaces.csproj" />
   </ItemGroup>
 
   <ItemGroup>
