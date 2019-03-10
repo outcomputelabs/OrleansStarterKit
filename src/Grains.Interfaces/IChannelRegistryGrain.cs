@@ -9,7 +9,7 @@ namespace Grains
     /// This allows a channel name to change while its identifier remains the same.
     /// Provide the channel name as the grain string key.
     /// </summary>
-    public interface IChannelRegistry : IGrainWithStringKey
+    public interface IChannelRegistryGrain : IGrainWithStringKey
     {
         /// <summary>
         /// Get the channel key for the channel name passed in the grain key.

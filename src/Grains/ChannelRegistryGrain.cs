@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Grains
 {
     /// <inheritdoc />
-    public class ChannelRegistry : Grain<ChannelRegistryState>, IChannelRegistry
+    public class ChannelRegistryGrain : Grain<ChannelRegistryState>, IChannelRegistryGrain
     {
         /// <inheritdoc />
         public async Task<Guid> GetOrCreateKeyAsync()

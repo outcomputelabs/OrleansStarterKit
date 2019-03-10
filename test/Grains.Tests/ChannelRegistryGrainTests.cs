@@ -6,9 +6,9 @@ using Xunit;
 namespace Grains.Tests
 {
     [Collection(nameof(ClusterCollection))]
-    public class ChannelRegistryTests
+    public class ChannelRegistryGrainTests
     {
-        public ChannelRegistryTests(ClusterFixture context)
+        public ChannelRegistryGrainTests(ClusterFixture context)
         {
             _cluster = context.Cluster;
         }
@@ -18,8 +18,8 @@ namespace Grains.Tests
         [Fact]
         public async Task GetsDifferentKeyForDifferentNames()
         {
-            var name1 = await _cluster.GrainFactory.GetGrain<IChannelRegistry>("ChannelOne").GetOrCreateKeyAsync();
-            var name2 = await _cluster.GrainFactory.GetGrain<IChannelRegistry>("ChannelTwo").GetOrCreateKeyAsync();
+            var name1 = await _cluster.GrainFactory.GetGrain<IChannelRegistryGrain>("ChannelOne").GetOrCreateKeyAsync();
+            var name2 = await _cluster.GrainFactory.GetGrain<IChannelRegistryGrain>("ChannelTwo").GetOrCreateKeyAsync();
 
             Assert.NotEqual(Guid.Empty, name1);
             Assert.NotEqual(Guid.Empty, name2);
@@ -29,8 +29,8 @@ namespace Grains.Tests
         [Fact]
         public async Task GetsSameKeyForSameName()
         {
-            var name1 = await _cluster.GrainFactory.GetGrain<IChannelRegistry>("ChannelThree").GetOrCreateKeyAsync();
-            var name2 = await _cluster.GrainFactory.GetGrain<IChannelRegistry>("ChannelThree").GetOrCreateKeyAsync();
+            var name1 = await _cluster.GrainFactory.GetGrain<IChannelRegistryGrain>("ChannelThree").GetOrCreateKeyAsync();
+            var name2 = await _cluster.GrainFactory.GetGrain<IChannelRegistryGrain>("ChannelThree").GetOrCreateKeyAsync();
 
             Assert.NotEqual(Guid.Empty, name1);
             Assert.NotEqual(Guid.Empty, name2);
