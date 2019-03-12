@@ -41,7 +41,7 @@ namespace Silo.Tests
             var api = new SupportApiHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeClusterClient(),
+                Mock.Of<IClusterClient>(),
                 new FakeNetworkPortFinder());
 
             // assert - white box
@@ -66,7 +66,7 @@ namespace Silo.Tests
             var api = new SupportApiHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeClusterClient(),
+                Mock.Of<IClusterClient>(),
                 new FakeNetworkPortFinder());
 
             // assert - white box
@@ -91,7 +91,7 @@ namespace Silo.Tests
             var api = new SupportApiHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeClusterClient(),
+                Mock.Of<IClusterClient>(),
                 new FakeNetworkPortFinder());
 
             // assert - white box
@@ -116,7 +116,7 @@ namespace Silo.Tests
             var api = new SupportApiHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeClusterClient(),
+                Mock.Of<IClusterClient>(),
                 new FakeNetworkPortFinder());
 
             // assert - white box
@@ -141,7 +141,7 @@ namespace Silo.Tests
             var api = new SupportApiHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeClusterClient(),
+                Mock.Of<IClusterClient>(),
                 new FakeNetworkPortFinder());
 
             // assert - white box
@@ -166,7 +166,7 @@ namespace Silo.Tests
             var api = new SupportApiHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeClusterClient(),
+                Mock.Of<IClusterClient>(),
                 new FakeNetworkPortFinder());
 
             // assert - white box
@@ -191,7 +191,7 @@ namespace Silo.Tests
             var api = new SupportApiHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeClusterClient(),
+                Mock.Of<IClusterClient>(),
                 new FakeNetworkPortFinder());
 
             // assert - white box
@@ -217,7 +217,7 @@ namespace Silo.Tests
             var api = new SupportApiHostedService(
                 config,
                 loggerProvider,
-                new FakeClusterClient(),
+                Mock.Of<IClusterClient>(),
                 new FakeNetworkPortFinder());
 
             // assert - white box
@@ -237,7 +237,7 @@ namespace Silo.Tests
                 {
                 })
                 .Build();
-            var client = new FakeClusterClient();
+            var client = Mock.Of<IClusterClient>();
 
             // act
             var api = new SupportApiHostedService(
@@ -269,7 +269,7 @@ namespace Silo.Tests
             var api = new SupportApiHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeClusterClient(),
+                Mock.Of<IClusterClient>(),
                 new FakeNetworkPortFinder());
 
             // assert - white box
@@ -295,7 +295,7 @@ namespace Silo.Tests
             var api = new SupportApiHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeClusterClient(),
+                Mock.Of<IClusterClient>(),
                 new FakeNetworkPortFinder());
 
             // assert - white box
@@ -317,7 +317,7 @@ namespace Silo.Tests
         {
             var error = Assert.Throws<ArgumentNullException>(() =>
             {
-                new SupportApiHostedService(null, new FakeLoggerProvider(), new FakeClusterClient(), new FakeNetworkPortFinder());
+                new SupportApiHostedService(null, new FakeLoggerProvider(), Mock.Of<IClusterClient>(), new FakeNetworkPortFinder());
             });
             Assert.Equal("configuration", error.ParamName);
         }
@@ -327,7 +327,7 @@ namespace Silo.Tests
         {
             var error = Assert.Throws<ArgumentNullException>(() =>
             {
-                new SupportApiHostedService(new Mock<IConfiguration>().Object, null, new FakeClusterClient(), new FakeNetworkPortFinder());
+                new SupportApiHostedService(new Mock<IConfiguration>().Object, null, Mock.Of<IClusterClient>(), new FakeNetworkPortFinder());
             });
             Assert.Equal("loggerProvider", error.ParamName);
         }
@@ -347,7 +347,7 @@ namespace Silo.Tests
         {
             var error = Assert.Throws<ArgumentNullException>(() =>
             {
-                new SupportApiHostedService(new Mock<IConfiguration>().Object, new FakeLoggerProvider(), new FakeClusterClient(), null);
+                new SupportApiHostedService(new Mock<IConfiguration>().Object, new FakeLoggerProvider(), Mock.Of<IClusterClient>(), null);
             });
             Assert.Equal("portFinder", error.ParamName);
         }
