@@ -1,4 +1,5 @@
-﻿using Client.Console.Tests.Fakes;
+﻿using Moq;
+using Orleans;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,7 +22,8 @@ namespace Client.Console.Tests
         [Fact]
         public async Task StartsAndStops()
         {
-            var service = new ConsoleClientHostedService(new FakeClusterClient());
+            var client = new Mock<IClusterClient>();
+            var service = new ConsoleClientHostedService(client.Object);
 
             await service.StartAsync(default(CancellationToken));
             await service.StopAsync(default(CancellationToken));
