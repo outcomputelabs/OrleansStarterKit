@@ -13,10 +13,7 @@ namespace Client.Console.Tests.Fakes
             _categoryName = categoryName;
         }
 
-        public IDisposable BeginScope<TState>(TState state)
-        {
-            return new FakeDisposable();
-        }
+        public IDisposable BeginScope<TState>(TState state) => null;
 
         public bool IsEnabled(LogLevel logLevel)
         {
