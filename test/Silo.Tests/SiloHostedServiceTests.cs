@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
+using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
 
 namespace Silo.Tests
 {
@@ -47,7 +48,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                new FakeHostingEnvironment());
+                Mock.Of<IHostingEnvironment>());
 
             // assert - white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
@@ -76,7 +77,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                new FakeHostingEnvironment());
+                Mock.Of<IHostingEnvironment>());
 
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
@@ -110,7 +111,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                new FakeHostingEnvironment());
+                Mock.Of<IHostingEnvironment>());
 
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
@@ -144,7 +145,7 @@ namespace Silo.Tests
                 config,
                 loggerProvider,
                 new FakeNetworkPortFinder(),
-                new FakeHostingEnvironment());
+                Mock.Of<IHostingEnvironment>());
 
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
@@ -179,7 +180,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                new FakeHostingEnvironment());
+                Mock.Of<IHostingEnvironment>());
 
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
@@ -213,7 +214,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                new FakeHostingEnvironment());
+                Mock.Of<IHostingEnvironment>());
 
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
@@ -247,7 +248,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                new FakeHostingEnvironment());
+                Mock.Of<IHostingEnvironment>());
 
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
@@ -280,10 +281,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                new FakeHostingEnvironment()
-                {
-                    EnvironmentName = EnvironmentName.Development
-                });
+                Mock.Of<IHostingEnvironment>(_ => _.EnvironmentName == EnvironmentName.Development));
 
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
@@ -320,7 +318,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                new FakeHostingEnvironment());
+                Mock.Of<IHostingEnvironment>());
 
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
@@ -359,7 +357,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                new FakeHostingEnvironment());
+                Mock.Of<IHostingEnvironment>());
 
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
@@ -394,7 +392,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                new FakeHostingEnvironment());
+                Mock.Of<IHostingEnvironment>());
 
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
@@ -432,7 +430,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                new FakeHostingEnvironment());
+                Mock.Of<IHostingEnvironment>());
 
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
@@ -468,7 +466,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                new FakeHostingEnvironment());
+                Mock.Of<IHostingEnvironment>());
 
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
@@ -501,7 +499,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                new FakeHostingEnvironment());
+                Mock.Of<IHostingEnvironment>());
 
             // white box
             var host = service.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service) as ISiloHost;
@@ -537,7 +535,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                new FakeHostingEnvironment());
+                Mock.Of<IHostingEnvironment>());
 
             // assert
             Assert.NotNull(service.ClusterClient);
@@ -552,11 +550,10 @@ namespace Silo.Tests
                     null,
                     new FakeLoggerProvider(),
                     new FakeNetworkPortFinder(),
-                    new FakeHostingEnvironment());
+                    Mock.Of<IHostingEnvironment>());
             });
             Assert.Equal("configuration", error.ParamName);
         }
-
 
         [Fact]
         public void Refuses_Null_LoggerProvider()
@@ -567,7 +564,7 @@ namespace Silo.Tests
                     new Mock<IConfiguration>().Object,
                     null,
                     new FakeNetworkPortFinder(),
-                    new FakeHostingEnvironment());
+                    Mock.Of<IHostingEnvironment>());
             });
             Assert.Equal("loggerProvider", error.ParamName);
         }
@@ -581,7 +578,7 @@ namespace Silo.Tests
                     new Mock<IConfiguration>().Object,
                     new FakeLoggerProvider(),
                     null,
-                    new FakeHostingEnvironment());
+                    Mock.Of<IHostingEnvironment>());
             });
             Assert.Equal("portFinder", error.ParamName);
         }
@@ -620,7 +617,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 new FakeNetworkPortFinder(),
-                new FakeHostingEnvironment());
+                Mock.Of<IHostingEnvironment>());
 
             // assert
             await service.StartAsync(new CancellationToken());
