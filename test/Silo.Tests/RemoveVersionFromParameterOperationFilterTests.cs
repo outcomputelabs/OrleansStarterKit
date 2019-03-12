@@ -24,7 +24,7 @@ namespace Silo.Tests
                     parameter.Object
                 }
             };
-            var context = new OperationFilterContext(new ApiDescription(), new FakeSchemaRegistry(), new FakeMethodInfo());
+            var context = new OperationFilterContext(new ApiDescription(), Mock.Of<ISchemaRegistry>(), new FakeMethodInfo());
 
             // act
             filter.Apply(operation, context);
@@ -47,7 +47,7 @@ namespace Silo.Tests
                     parameter.Object
                 }
             };
-            var context = new OperationFilterContext(new ApiDescription(), new FakeSchemaRegistry(), new FakeMethodInfo());
+            var context = new OperationFilterContext(new ApiDescription(), Mock.Of<ISchemaRegistry>(), new FakeMethodInfo());
 
             // act
             filter.Apply(operation, context);
