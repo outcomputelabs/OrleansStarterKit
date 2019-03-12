@@ -1,2 +1,2 @@
-@dotnet test /p:CollectCoverage=true /p:CoverletOutput=coverage.opencover.xml /p:CoverletOutputFormat=opencover /p:Exclude=[xunit*]* /p:ExcludeByAttribute=GeneratedCodeAttribute
+@dotnet test /p:CollectCoverage=true /p:CoverletOutput=coverage.opencover.xml /p:CoverletOutputFormat=opencover /p:Include="""[Core*]*,[Grains*]*,[Client*]*,[Silo*]*""" /p:Exclude="""[*Tests]*,[xunit*]*""" /p:ExcludeByAttribute="GeneratedCodeAttribute"
 @reportgenerator -reports:./**/coverage.opencover.xml -targetdir:.coverage
