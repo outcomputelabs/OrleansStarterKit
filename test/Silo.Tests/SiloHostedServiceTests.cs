@@ -47,7 +47,7 @@ namespace Silo.Tests
             var service = new SiloHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeNetworkPortFinder(),
+                Mock.Of<INetworkPortFinder>(_ => _.GetAvailablePortFrom(It.IsAny<int>(), It.IsAny<int>()) == 11111),
                 Mock.Of<IHostingEnvironment>());
 
             // assert - white box
@@ -76,7 +76,9 @@ namespace Silo.Tests
             var service = new SiloHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeNetworkPortFinder(),
+                Mock.Of<INetworkPortFinder>(_ =>
+                    _.GetAvailablePortFrom(11111, 11111) == 11111 &&
+                    _.GetAvailablePortFrom(22222, 22222) == 22222),
                 Mock.Of<IHostingEnvironment>());
 
             // white box
@@ -110,7 +112,9 @@ namespace Silo.Tests
             var service = new SiloHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeNetworkPortFinder(),
+                Mock.Of<INetworkPortFinder>(_ =>
+                    _.GetAvailablePortFrom(11111, 11111) == 11111 &&
+                    _.GetAvailablePortFrom(22222, 22222) == 22222),
                 Mock.Of<IHostingEnvironment>());
 
             // white box
@@ -144,7 +148,9 @@ namespace Silo.Tests
             var service = new SiloHostedService(
                 config,
                 loggerProvider,
-                new FakeNetworkPortFinder(),
+                Mock.Of<INetworkPortFinder>(_ =>
+                    _.GetAvailablePortFrom(11111, 11111) == 11111 &&
+                    _.GetAvailablePortFrom(22222, 22222) == 22222),
                 Mock.Of<IHostingEnvironment>());
 
             // white box
@@ -179,7 +185,9 @@ namespace Silo.Tests
             var service = new SiloHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeNetworkPortFinder(),
+                Mock.Of<INetworkPortFinder>(_ =>
+                    _.GetAvailablePortFrom(11111, 11111) == 11111 &&
+                    _.GetAvailablePortFrom(22222, 22222) == 22222),
                 Mock.Of<IHostingEnvironment>());
 
             // white box
@@ -213,7 +221,9 @@ namespace Silo.Tests
             var service = new SiloHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeNetworkPortFinder(),
+                Mock.Of<INetworkPortFinder>(_ =>
+                    _.GetAvailablePortFrom(11111, 11111) == 11111 &&
+                    _.GetAvailablePortFrom(22222, 22222) == 22222),
                 Mock.Of<IHostingEnvironment>());
 
             // white box
@@ -247,7 +257,9 @@ namespace Silo.Tests
             var service = new SiloHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeNetworkPortFinder(),
+                Mock.Of<INetworkPortFinder>(_ =>
+                    _.GetAvailablePortFrom(11111, 11111) == 11111 &&
+                    _.GetAvailablePortFrom(22222, 22222) == 22222),
                 Mock.Of<IHostingEnvironment>());
 
             // white box
@@ -280,7 +292,9 @@ namespace Silo.Tests
             var service = new SiloHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeNetworkPortFinder(),
+                Mock.Of<INetworkPortFinder>(_ =>
+                    _.GetAvailablePortFrom(11111, 11111) == 11111 &&
+                    _.GetAvailablePortFrom(22222, 22222) == 22222),
                 Mock.Of<IHostingEnvironment>(_ => _.EnvironmentName == EnvironmentName.Development));
 
             // white box
@@ -317,7 +331,9 @@ namespace Silo.Tests
             var service = new SiloHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeNetworkPortFinder(),
+                Mock.Of<INetworkPortFinder>(_ =>
+                    _.GetAvailablePortFrom(11111, 11111) == 11111 &&
+                    _.GetAvailablePortFrom(22222, 22222) == 22222),
                 Mock.Of<IHostingEnvironment>());
 
             // white box
@@ -356,7 +372,9 @@ namespace Silo.Tests
             var service = new SiloHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeNetworkPortFinder(),
+                Mock.Of<INetworkPortFinder>(_ =>
+                    _.GetAvailablePortFrom(11111, 11111) == 11111 &&
+                    _.GetAvailablePortFrom(22222, 22222) == 22222),
                 Mock.Of<IHostingEnvironment>());
 
             // white box
@@ -391,7 +409,9 @@ namespace Silo.Tests
             var service = new SiloHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeNetworkPortFinder(),
+                Mock.Of<INetworkPortFinder>(_ =>
+                    _.GetAvailablePortFrom(11111, 11111) == 11111 &&
+                    _.GetAvailablePortFrom(22222, 22222) == 22222),
                 Mock.Of<IHostingEnvironment>());
 
             // white box
@@ -429,7 +449,9 @@ namespace Silo.Tests
             var service = new SiloHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeNetworkPortFinder(),
+                Mock.Of<INetworkPortFinder>(_ =>
+                    _.GetAvailablePortFrom(11111, 11111) == 11111 &&
+                    _.GetAvailablePortFrom(22222, 22222) == 22222),
                 Mock.Of<IHostingEnvironment>());
 
             // white box
@@ -465,7 +487,10 @@ namespace Silo.Tests
             var service = new SiloHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeNetworkPortFinder(),
+                Mock.Of<INetworkPortFinder>(_ =>
+                    _.GetAvailablePortFrom(11111, 11111) == 11111 &&
+                    _.GetAvailablePortFrom(22222, 22222) == 22222 &&
+                    _.GetAvailablePortFrom(33333, 33333) == 33333),
                 Mock.Of<IHostingEnvironment>());
 
             // white box
@@ -498,7 +523,9 @@ namespace Silo.Tests
             var service = new SiloHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeNetworkPortFinder(),
+                Mock.Of<INetworkPortFinder>(_ =>
+                    _.GetAvailablePortFrom(11111, 11111) == 11111 &&
+                    _.GetAvailablePortFrom(22222, 22222) == 22222),
                 Mock.Of<IHostingEnvironment>());
 
             // white box
@@ -534,7 +561,9 @@ namespace Silo.Tests
             var service = new SiloHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeNetworkPortFinder(),
+                Mock.Of<INetworkPortFinder>(_ =>
+                    _.GetAvailablePortFrom(11111, 11111) == 11111 &&
+                    _.GetAvailablePortFrom(22222, 22222) == 22222),
                 Mock.Of<IHostingEnvironment>());
 
             // assert
@@ -549,7 +578,7 @@ namespace Silo.Tests
                 new SiloHostedService(
                     null,
                     new FakeLoggerProvider(),
-                    new FakeNetworkPortFinder(),
+                    Mock.Of<INetworkPortFinder>(),
                     Mock.Of<IHostingEnvironment>());
             });
             Assert.Equal("configuration", error.ParamName);
@@ -563,7 +592,7 @@ namespace Silo.Tests
                 new SiloHostedService(
                     new Mock<IConfiguration>().Object,
                     null,
-                    new FakeNetworkPortFinder(),
+                    Mock.Of<INetworkPortFinder>(),
                     Mock.Of<IHostingEnvironment>());
             });
             Assert.Equal("loggerProvider", error.ParamName);
@@ -591,7 +620,7 @@ namespace Silo.Tests
                 new SiloHostedService(
                     new Mock<IConfiguration>().Object,
                     new FakeLoggerProvider(),
-                    new FakeNetworkPortFinder(),
+                    Mock.Of<INetworkPortFinder>(),
                     null);
             });
             Assert.Equal("environment", error.ParamName);
@@ -616,7 +645,7 @@ namespace Silo.Tests
             var service = new SiloHostedService(
                 config,
                 new FakeLoggerProvider(),
-                new FakeNetworkPortFinder(),
+                Mock.Of<INetworkPortFinder>(_ => _.GetAvailablePortFrom(11111, 11111) == 11111),
                 Mock.Of<IHostingEnvironment>());
 
             // assert

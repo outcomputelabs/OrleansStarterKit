@@ -42,7 +42,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 Mock.Of<IClusterClient>(),
-                new FakeNetworkPortFinder());
+                Mock.Of<INetworkPortFinder>(_ => _.GetAvailablePortFrom(55555, 55555) == 55555));
 
             // assert - white box
             var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
@@ -67,7 +67,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 Mock.Of<IClusterClient>(),
-                new FakeNetworkPortFinder());
+                Mock.Of<INetworkPortFinder>());
 
             // assert - white box
             var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
@@ -92,7 +92,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 Mock.Of<IClusterClient>(),
-                new FakeNetworkPortFinder());
+                Mock.Of<INetworkPortFinder>());
 
             // assert - white box
             var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
@@ -117,7 +117,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 Mock.Of<IClusterClient>(),
-                new FakeNetworkPortFinder());
+                Mock.Of<INetworkPortFinder>());
 
             // assert - white box
             var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
@@ -142,7 +142,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 Mock.Of<IClusterClient>(),
-                new FakeNetworkPortFinder());
+                Mock.Of<INetworkPortFinder>());
 
             // assert - white box
             var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
@@ -167,7 +167,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 Mock.Of<IClusterClient>(),
-                new FakeNetworkPortFinder());
+                Mock.Of<INetworkPortFinder>());
 
             // assert - white box
             var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
@@ -192,7 +192,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 Mock.Of<IClusterClient>(),
-                new FakeNetworkPortFinder());
+                Mock.Of<INetworkPortFinder>());
 
             // assert - white box
             var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
@@ -218,7 +218,7 @@ namespace Silo.Tests
                 config,
                 loggerProvider,
                 Mock.Of<IClusterClient>(),
-                new FakeNetworkPortFinder());
+                Mock.Of<INetworkPortFinder>());
 
             // assert - white box
             var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
@@ -244,7 +244,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 client,
-                new FakeNetworkPortFinder());
+                Mock.Of<INetworkPortFinder>());
 
             // assert - white box
             var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
@@ -270,7 +270,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 Mock.Of<IClusterClient>(),
-                new FakeNetworkPortFinder());
+                Mock.Of<INetworkPortFinder>());
 
             // assert - white box
             var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
@@ -296,7 +296,7 @@ namespace Silo.Tests
                 config,
                 new FakeLoggerProvider(),
                 Mock.Of<IClusterClient>(),
-                new FakeNetworkPortFinder());
+                Mock.Of<INetworkPortFinder>());
 
             // assert - white box
             var host = api.GetType().GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(api) as IWebHost;
@@ -317,7 +317,7 @@ namespace Silo.Tests
         {
             var error = Assert.Throws<ArgumentNullException>(() =>
             {
-                new SupportApiHostedService(null, new FakeLoggerProvider(), Mock.Of<IClusterClient>(), new FakeNetworkPortFinder());
+                new SupportApiHostedService(null, new FakeLoggerProvider(), Mock.Of<IClusterClient>(), Mock.Of<INetworkPortFinder>());
             });
             Assert.Equal("configuration", error.ParamName);
         }
@@ -327,7 +327,7 @@ namespace Silo.Tests
         {
             var error = Assert.Throws<ArgumentNullException>(() =>
             {
-                new SupportApiHostedService(new Mock<IConfiguration>().Object, null, Mock.Of<IClusterClient>(), new FakeNetworkPortFinder());
+                new SupportApiHostedService(new Mock<IConfiguration>().Object, null, Mock.Of<IClusterClient>(), Mock.Of<INetworkPortFinder>());
             });
             Assert.Equal("loggerProvider", error.ParamName);
         }
@@ -337,7 +337,7 @@ namespace Silo.Tests
         {
             var error = Assert.Throws<ArgumentNullException>(() =>
             {
-                new SupportApiHostedService(new Mock<IConfiguration>().Object, new FakeLoggerProvider(), null, new FakeNetworkPortFinder());
+                new SupportApiHostedService(new Mock<IConfiguration>().Object, new FakeLoggerProvider(), null, Mock.Of<INetworkPortFinder>());
             });
             Assert.Equal("client", error.ParamName);
         }
