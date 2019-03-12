@@ -1,6 +1,7 @@
 ﻿using Client.Console.Tests.Fakes;
 using Grains;
 using Microsoft.Extensions.Configuration;
+using Moq;
 using Orleans.Runtime;
 using System;
 using System.Collections.Generic;
@@ -26,9 +27,10 @@ namespace Client.Console.Tests
         [Fact]
         public void RefusesNullLoggerProvider()
         {
+            var config = new Mock<IConfiguration>();
             var error = Assert.Throws<ArgumentNullException>(() =>
             {
-                new ClusterClientHostedService(new FakeConfiguration(), null);
+                new ClusterClientHostedService(config.Object, null);
             });
             Assert.Equal("loggerProvider", error.ParamName);
         }
