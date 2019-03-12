@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.Extensions.Options;
 using Moq;
-using Silo.Tests.Fakes;
+using Silo.Options;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
@@ -23,7 +24,7 @@ namespace Silo.Tests
                 {
                     new ApiVersionDescription(new ApiVersion(1, 0), group, false)
                 });
-            var options = new FakeSupportApiOptions();
+            var options = Mock.Of<IOptions<SupportApiOptions>>(_ => _.Value.Title == "SomeTitle");
 
             // act
             var config = new ConfigureSwaggerOptions(provider.Object, options);
@@ -54,7 +55,7 @@ namespace Silo.Tests
         {
             var error = Assert.Throws<ArgumentNullException>(() =>
             {
-                new ConfigureSwaggerOptions(null, new FakeSupportApiOptions());
+                new ConfigureSwaggerOptions(null, Mock.Of<IOptions<SupportApiOptions>>());
             });
             Assert.Equal("provider", error.ParamName);
         }
