@@ -17,11 +17,11 @@ namespace Grains.Tests
         private readonly TestCluster _cluster;
 
         [Fact]
-        public async Task ChatUser_Stores_And_Retrieves_Message()
+        public async Task StoresAndRetrievesMessage()
         {
             // arrange
             var grain = _cluster.GrainFactory.GetGrain<IChatUserGrain>("A");
-            var message = new ChatMessage(Guid.NewGuid(), "B", "A", "xpto", DateTime.UtcNow);
+            var message = new ChatMessage(Guid.NewGuid(), "B", "xpto", DateTime.UtcNow);
 
             // act
             await grain.MessageAsync(message);
@@ -30,8 +30,7 @@ namespace Grains.Tests
             // assert
             Assert.Single(messages);
             Assert.Equal(message.Id, messages[0].Id);
-            Assert.Equal(message.FromUserId, messages[0].FromUserId);
-            Assert.Equal(message.ToUserId, messages[0].ToUserId);
+            Assert.Equal(message.PublisherId, messages[0].PublisherId);
             Assert.Equal(message.Content, messages[0].Content);
             Assert.Equal(message.Timestamp, messages[0].Timestamp);
         }
