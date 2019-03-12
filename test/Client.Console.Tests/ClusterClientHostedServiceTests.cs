@@ -1,6 +1,6 @@
-﻿using Client.Console.Tests.Fakes;
-using Grains;
+﻿using Grains;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Orleans.Runtime;
 using System;
@@ -14,12 +14,22 @@ namespace Client.Console.Tests
     [Collection(nameof(ClusterCollection))]
     public class ClusterClientHostedServiceTests
     {
+        public ClusterClientHostedServiceTests()
+        {
+            logger = Mock.Of<ILogger>();
+            loggerProvider = Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == logger);
+        }
+
+        private readonly ILogger logger;
+        private readonly ILoggerProvider loggerProvider;
+
         [Fact]
         public void RefusesNullConfiguration()
         {
+            var loggerProvider = Mock.Of<ILoggerProvider>();
             var error = Assert.Throws<ArgumentNullException>(() =>
             {
-                new ClusterClientHostedService(null, new FakeLoggerProvider());
+                new ClusterClientHostedService(null, loggerProvider);
             });
             Assert.Equal("configuration", error.ParamName);
         }
@@ -52,7 +62,7 @@ namespace Client.Console.Tests
                 .Build();
 
             // act
-            var service = new ClusterClientHostedService(config, new FakeLoggerProvider());
+            var service = new ClusterClientHostedService(config, loggerProvider);
 
             // assert
             Assert.NotNull(service.ClusterClient);
@@ -76,7 +86,7 @@ namespace Client.Console.Tests
                 .Build();
 
             // act
-            var service = new ClusterClientHostedService(config, new FakeLoggerProvider());
+            var service = new ClusterClientHostedService(config, loggerProvider);
             await service.StartAsync(default(CancellationToken));
 
             // assert
@@ -102,7 +112,7 @@ namespace Client.Console.Tests
                 .Build();
 
             // act and assert
-            var service = new ClusterClientHostedService(config, new FakeLoggerProvider());
+            var service = new ClusterClientHostedService(config, loggerProvider);
             await Assert.ThrowsAsync<OrleansMessageRejectionException>(async () =>
             {
                 await service.StartAsync(default(CancellationToken));
@@ -126,7 +136,7 @@ namespace Client.Console.Tests
                 .Build();
 
             // act
-            var service = new ClusterClientHostedService(config, new FakeLoggerProvider());
+            var service = new ClusterClientHostedService(config, loggerProvider);
             await service.StartAsync(default(CancellationToken));
             await service.StopAsync(default(CancellationToken));
 
