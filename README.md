@@ -4,11 +4,7 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=JorgeCandeias_OrleansStarterKit&metric=coverage)](https://sonarcloud.io/dashboard?id=JorgeCandeias_OrleansStarterKit)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=JorgeCandeias_OrleansStarterKit&metric=alert_status)](https://sonarcloud.io/dashboard?id=JorgeCandeias_OrleansStarterKit)
 
-Boilerplate is boring.
-Configuration is colorless.
-Deployment is dull.
-
-The Orleans Starter Kit helps developers cut to the chase and start adding business value from day one, using a scalable-by-default technology stack with [Microsoft Orleans](http://dotnet.github.io/orleans/) at its core.
+The Orleans Starter Kit helps developers start adding business value from day one, using a scalable-by-default technology stack with [Microsoft Orleans](http://dotnet.github.io/orleans/) at its core.
 
 ## Progress
 
