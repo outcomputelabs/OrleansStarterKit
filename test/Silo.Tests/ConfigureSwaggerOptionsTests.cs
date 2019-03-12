@@ -62,9 +62,10 @@ namespace Silo.Tests
         [Fact]
         public void ConfigureSwaggerOptions_Refuses_Null_Options()
         {
+            var provider = Mock.Of<IApiVersionDescriptionProvider>();
             var error = Assert.Throws<ArgumentNullException>(() =>
             {
-                new ConfigureSwaggerOptions(new FakeApiVersionDescriptionProvider(), null);
+                new ConfigureSwaggerOptions(provider, null);
             });
             Assert.Equal("options", error.ParamName);
         }
