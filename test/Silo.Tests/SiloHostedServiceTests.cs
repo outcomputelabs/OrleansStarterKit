@@ -117,7 +117,7 @@ namespace Silo.Tests
 
             // assert the application part is there
             var parts = host.Services.GetService<IApplicationPartManager>();
-            Assert.Contains(parts.ApplicationParts, _ => (_ as AssemblyPart)?.Assembly == typeof(ChatUser).Assembly);
+            Assert.Contains(parts.ApplicationParts, _ => (_ as AssemblyPart)?.Assembly == typeof(TestGrain).Assembly);
         }
 
         [Fact]

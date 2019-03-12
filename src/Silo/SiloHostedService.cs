@@ -46,7 +46,7 @@ namespace Silo
 
                 .ConfigureApplicationParts(_ =>
                 {
-                    _.AddApplicationPart(typeof(ChatUser).Assembly).WithReferences();
+                    _.AddApplicationPart(typeof(TestGrain).Assembly).WithReferences();
                 })
                 .ConfigureLogging(_ =>
                 {

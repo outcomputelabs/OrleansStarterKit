@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace Grains
 {
-    public class ChatUser : Grain, IChatUser
+    public class ChatUserGrain : Grain, IChatUserGrain
     {
-        private readonly ILogger<ChatUser> _logger;
+        private readonly ILogger<ChatUserGrain> _logger;
 
         private readonly Queue<ChatMessage> _messages = new Queue<ChatMessage>();
 
         private readonly int MaxMessagesCached = 100;
 
-        public ChatUser(ILogger<ChatUser> logger)
+        public ChatUserGrain(ILogger<ChatUserGrain> logger)
         {
             _logger = logger;
         }
@@ -32,7 +32,7 @@ namespace Grains
         public Task MessageAsync(ChatMessage message)
         {
             _logger.LogInformation("{@GrainType} {@GrainKey} received {@Message}",
-                nameof(ChatUser), _grainKey, message);
+                nameof(ChatUserGrain), _grainKey, message);
 
             _messages.Enqueue(message, MaxMessagesCached);
 
