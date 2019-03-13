@@ -1,4 +1,5 @@
-﻿using Silo.Tests.Fakes;
+﻿using Moq;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Silo.Tests
@@ -27,9 +28,13 @@ namespace Silo.Tests
             var value = "123";
             var compare = "234";
             var replace = "345";
+            var comparer = Mock.Of<IEqualityComparer<string>>(_ =>
+                _.Equals(value, compare) == true &&
+                _.GetHashCode(value) == value.Length &&
+                _.GetHashCode(compare) == value.Length);
 
             // act
-            var actual = value.ValueIf(compare, replace, new FakeStringLengthEqualityComparer());
+            var actual = value.ValueIf(compare, replace, comparer);
 
             // assert
             Assert.Equal(replace, actual);
