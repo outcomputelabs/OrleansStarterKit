@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Moq;
-using Silo.Tests.Fakes;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
+using System.Reflection;
 using Xunit;
 
 namespace Silo.Tests
@@ -24,7 +24,7 @@ namespace Silo.Tests
                     parameter.Object
                 }
             };
-            var context = new OperationFilterContext(new ApiDescription(), Mock.Of<ISchemaRegistry>(), new FakeMethodInfo());
+            var context = new OperationFilterContext(new ApiDescription(), Mock.Of<ISchemaRegistry>(), Mock.Of<MethodInfo>());
 
             // act
             filter.Apply(operation, context);
@@ -47,7 +47,7 @@ namespace Silo.Tests
                     parameter.Object
                 }
             };
-            var context = new OperationFilterContext(new ApiDescription(), Mock.Of<ISchemaRegistry>(), new FakeMethodInfo());
+            var context = new OperationFilterContext(new ApiDescription(), Mock.Of<ISchemaRegistry>(), Mock.Of<MethodInfo>());
 
             // act
             filter.Apply(operation, context);
