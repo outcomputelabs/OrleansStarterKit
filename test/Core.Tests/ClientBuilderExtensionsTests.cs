@@ -1,13 +1,12 @@
-﻿using Core.Tests.Fakes;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Moq;
 using Orleans;
 using Orleans.Configuration;
 using System;
 using System.Collections.Generic;
 using Xunit;
-using Moq;
 
 namespace Core.Tests
 {
