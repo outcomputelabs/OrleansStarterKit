@@ -14,7 +14,6 @@ using Orleans.Providers.Streams.SimpleMessageStream;
 using Orleans.Runtime;
 using Orleans.Streams;
 using OrleansDashboard;
-using Silo.Tests.Fakes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +45,7 @@ namespace Silo.Tests
             // act
             var service = new SiloHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>()),
                 Mock.Of<INetworkPortFinder>(_ => _.GetAvailablePortFrom(It.IsAny<int>(), It.IsAny<int>()) == 11111),
                 Mock.Of<IHostingEnvironment>());
 
@@ -75,7 +74,7 @@ namespace Silo.Tests
             // act
             var service = new SiloHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>()),
                 Mock.Of<INetworkPortFinder>(_ =>
                     _.GetAvailablePortFrom(11111, 11111) == 11111 &&
                     _.GetAvailablePortFrom(22222, 22222) == 22222),
@@ -111,7 +110,7 @@ namespace Silo.Tests
             // act
             var service = new SiloHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>()),
                 Mock.Of<INetworkPortFinder>(_ =>
                     _.GetAvailablePortFrom(11111, 11111) == 11111 &&
                     _.GetAvailablePortFrom(22222, 22222) == 22222),
@@ -142,7 +141,7 @@ namespace Silo.Tests
                 })
                 .Build();
 
-            var loggerProvider = new FakeLoggerProvider();
+            var loggerProvider = Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>());
 
             // act
             var service = new SiloHostedService(
@@ -184,7 +183,7 @@ namespace Silo.Tests
             // act
             var service = new SiloHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>()),
                 Mock.Of<INetworkPortFinder>(_ =>
                     _.GetAvailablePortFrom(11111, 11111) == 11111 &&
                     _.GetAvailablePortFrom(22222, 22222) == 22222),
@@ -220,7 +219,7 @@ namespace Silo.Tests
             // act
             var service = new SiloHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>()),
                 Mock.Of<INetworkPortFinder>(_ =>
                     _.GetAvailablePortFrom(11111, 11111) == 11111 &&
                     _.GetAvailablePortFrom(22222, 22222) == 22222),
@@ -256,7 +255,7 @@ namespace Silo.Tests
             // act
             var service = new SiloHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>()),
                 Mock.Of<INetworkPortFinder>(_ =>
                     _.GetAvailablePortFrom(11111, 11111) == 11111 &&
                     _.GetAvailablePortFrom(22222, 22222) == 22222),
@@ -291,7 +290,7 @@ namespace Silo.Tests
             // act
             var service = new SiloHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>()),
                 Mock.Of<INetworkPortFinder>(_ =>
                     _.GetAvailablePortFrom(11111, 11111) == 11111 &&
                     _.GetAvailablePortFrom(22222, 22222) == 22222),
@@ -330,7 +329,7 @@ namespace Silo.Tests
             // act
             var service = new SiloHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>()),
                 Mock.Of<INetworkPortFinder>(_ =>
                     _.GetAvailablePortFrom(11111, 11111) == 11111 &&
                     _.GetAvailablePortFrom(22222, 22222) == 22222),
@@ -371,7 +370,7 @@ namespace Silo.Tests
             // act
             var service = new SiloHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>()),
                 Mock.Of<INetworkPortFinder>(_ =>
                     _.GetAvailablePortFrom(11111, 11111) == 11111 &&
                     _.GetAvailablePortFrom(22222, 22222) == 22222),
@@ -408,7 +407,7 @@ namespace Silo.Tests
             // act
             var service = new SiloHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>()),
                 Mock.Of<INetworkPortFinder>(_ =>
                     _.GetAvailablePortFrom(11111, 11111) == 11111 &&
                     _.GetAvailablePortFrom(22222, 22222) == 22222),
@@ -448,7 +447,7 @@ namespace Silo.Tests
             // act
             var service = new SiloHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>()),
                 Mock.Of<INetworkPortFinder>(_ =>
                     _.GetAvailablePortFrom(11111, 11111) == 11111 &&
                     _.GetAvailablePortFrom(22222, 22222) == 22222),
@@ -486,7 +485,7 @@ namespace Silo.Tests
             // act
             var service = new SiloHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>()),
                 Mock.Of<INetworkPortFinder>(_ =>
                     _.GetAvailablePortFrom(11111, 11111) == 11111 &&
                     _.GetAvailablePortFrom(22222, 22222) == 22222 &&
@@ -522,7 +521,7 @@ namespace Silo.Tests
             // act
             var service = new SiloHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>()),
                 Mock.Of<INetworkPortFinder>(_ =>
                     _.GetAvailablePortFrom(11111, 11111) == 11111 &&
                     _.GetAvailablePortFrom(22222, 22222) == 22222),
@@ -560,7 +559,7 @@ namespace Silo.Tests
             // act
             var service = new SiloHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>()),
                 Mock.Of<INetworkPortFinder>(_ =>
                     _.GetAvailablePortFrom(11111, 11111) == 11111 &&
                     _.GetAvailablePortFrom(22222, 22222) == 22222),
@@ -577,7 +576,7 @@ namespace Silo.Tests
             {
                 new SiloHostedService(
                     null,
-                    new FakeLoggerProvider(),
+                    Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>()),
                     Mock.Of<INetworkPortFinder>(),
                     Mock.Of<IHostingEnvironment>());
             });
@@ -605,7 +604,7 @@ namespace Silo.Tests
             {
                 new SiloHostedService(
                     new Mock<IConfiguration>().Object,
-                    new FakeLoggerProvider(),
+                    Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>()),
                     null,
                     Mock.Of<IHostingEnvironment>());
             });
@@ -619,7 +618,7 @@ namespace Silo.Tests
             {
                 new SiloHostedService(
                     new Mock<IConfiguration>().Object,
-                    new FakeLoggerProvider(),
+                    Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>()),
                     Mock.Of<INetworkPortFinder>(),
                     null);
             });
@@ -644,7 +643,7 @@ namespace Silo.Tests
             // act
             var service = new SiloHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>()),
                 Mock.Of<INetworkPortFinder>(_ => _.GetAvailablePortFrom(11111, 11111) == 11111),
                 Mock.Of<IHostingEnvironment>());
 

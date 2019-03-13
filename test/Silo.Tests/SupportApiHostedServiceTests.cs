@@ -10,7 +10,6 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Orleans;
 using Silo.Options;
-using Silo.Tests.Fakes;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
@@ -40,7 +39,7 @@ namespace Silo.Tests
             // act
             var api = new SupportApiHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(),
                 Mock.Of<IClusterClient>(),
                 Mock.Of<INetworkPortFinder>(_ => _.GetAvailablePortFrom(55555, 55555) == 55555));
 
@@ -65,7 +64,7 @@ namespace Silo.Tests
             // act
             var api = new SupportApiHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(),
                 Mock.Of<IClusterClient>(),
                 Mock.Of<INetworkPortFinder>());
 
@@ -90,7 +89,7 @@ namespace Silo.Tests
             // act
             var api = new SupportApiHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(),
                 Mock.Of<IClusterClient>(),
                 Mock.Of<INetworkPortFinder>());
 
@@ -115,7 +114,7 @@ namespace Silo.Tests
             // act
             var api = new SupportApiHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(),
                 Mock.Of<IClusterClient>(),
                 Mock.Of<INetworkPortFinder>());
 
@@ -140,7 +139,7 @@ namespace Silo.Tests
             // act
             var api = new SupportApiHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(),
                 Mock.Of<IClusterClient>(),
                 Mock.Of<INetworkPortFinder>());
 
@@ -165,7 +164,7 @@ namespace Silo.Tests
             // act
             var api = new SupportApiHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(),
                 Mock.Of<IClusterClient>(),
                 Mock.Of<INetworkPortFinder>());
 
@@ -190,7 +189,7 @@ namespace Silo.Tests
             // act
             var api = new SupportApiHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(),
                 Mock.Of<IClusterClient>(),
                 Mock.Of<INetworkPortFinder>());
 
@@ -211,7 +210,7 @@ namespace Silo.Tests
                 {
                 })
                 .Build();
-            var loggerProvider = new FakeLoggerProvider();
+            var loggerProvider = Mock.Of<ILoggerProvider>();
 
             // act
             var api = new SupportApiHostedService(
@@ -242,7 +241,7 @@ namespace Silo.Tests
             // act
             var api = new SupportApiHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(),
                 client,
                 Mock.Of<INetworkPortFinder>());
 
@@ -268,7 +267,7 @@ namespace Silo.Tests
             // act
             var api = new SupportApiHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(),
                 Mock.Of<IClusterClient>(),
                 Mock.Of<INetworkPortFinder>());
 
@@ -294,7 +293,7 @@ namespace Silo.Tests
             // act
             var api = new SupportApiHostedService(
                 config,
-                new FakeLoggerProvider(),
+                Mock.Of<ILoggerProvider>(_ => _.CreateLogger(It.IsAny<string>()) == Mock.Of<ILogger>()),
                 Mock.Of<IClusterClient>(),
                 Mock.Of<INetworkPortFinder>());
 
@@ -317,7 +316,7 @@ namespace Silo.Tests
         {
             var error = Assert.Throws<ArgumentNullException>(() =>
             {
-                new SupportApiHostedService(null, new FakeLoggerProvider(), Mock.Of<IClusterClient>(), Mock.Of<INetworkPortFinder>());
+                new SupportApiHostedService(null, Mock.Of<ILoggerProvider>(), Mock.Of<IClusterClient>(), Mock.Of<INetworkPortFinder>());
             });
             Assert.Equal("configuration", error.ParamName);
         }
@@ -337,7 +336,7 @@ namespace Silo.Tests
         {
             var error = Assert.Throws<ArgumentNullException>(() =>
             {
-                new SupportApiHostedService(new Mock<IConfiguration>().Object, new FakeLoggerProvider(), null, Mock.Of<INetworkPortFinder>());
+                new SupportApiHostedService(new Mock<IConfiguration>().Object, Mock.Of<ILoggerProvider>(), null, Mock.Of<INetworkPortFinder>());
             });
             Assert.Equal("client", error.ParamName);
         }
@@ -347,7 +346,7 @@ namespace Silo.Tests
         {
             var error = Assert.Throws<ArgumentNullException>(() =>
             {
-                new SupportApiHostedService(new Mock<IConfiguration>().Object, new FakeLoggerProvider(), Mock.Of<IClusterClient>(), null);
+                new SupportApiHostedService(new Mock<IConfiguration>().Object, Mock.Of<ILoggerProvider>(), Mock.Of<IClusterClient>(), null);
             });
             Assert.Equal("portFinder", error.ParamName);
         }
