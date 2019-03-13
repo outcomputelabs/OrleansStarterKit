@@ -41,6 +41,6 @@ namespace Core.Tests.Fakes
             throw new NotImplementedException();
         }
 
-        public FakeServiceCollection ServiceCollection { get; } = new FakeServiceCollection();
+        public IServiceCollection ServiceCollection { get; } = new ServiceCollection();
     }
 }

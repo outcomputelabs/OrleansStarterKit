@@ -1,11 +1,12 @@
 ﻿using Core.Tests.Fakes;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using Orleans;
 using Orleans.Hosting;
 using Orleans.Runtime;
 using Orleans.Storage;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -241,20 +242,23 @@ namespace Core.Tests
         public void TryUseInMemoryReminderService_Applies_ReminderService()
         {
             // arrange
-            var builder = new FakeSiloHostBuilder();
-            var services = new FakeServiceCollection();
-            var configuration = new ConfigurationBuilder()
-                .AddInMemoryCollection(new Dictionary<string, string>
+            var services = new ServiceCollection();
+            var builder = new Mock<ISiloHostBuilder>(MockBehavior.Strict);
+            builder.Setup(_ => _.ConfigureServices(It.IsAny<Action<HostBuilderContext, IServiceCollection>>()))
+                .Callback((Action<HostBuilderContext, IServiceCollection> action) =>
                 {
-                    { "Orleans:Providers:Reminders:Provider", "InMemory" }
+                    action(null, services);
                 })
-                .Build();
+                .Returns(() => builder.Object);
+
+            var config = Mock.Of<IConfiguration>(_ =>
+                _["Orleans:Providers:Reminders:Provider"] == "InMemory");
 
             // act
-            builder.TryUseInMemoryReminderService(configuration);
+            builder.Object.TryUseInMemoryReminderService(config);
 
             // assert
-            var service = builder.ServiceCollection.SingleOrDefault(_ => _.ServiceType == typeof(IReminderTable));
+            var service = services.SingleOrDefault(_ => _.ServiceType == typeof(IReminderTable));
             Assert.NotNull(service);
             Assert.Contains("UseInMemoryReminderService", service.ImplementationFactory.Method.Name);
         }
@@ -264,13 +268,9 @@ namespace Core.Tests
         {
             // arrange
             var builder = new FakeSiloHostBuilder();
-            var services = new FakeServiceCollection();
-            var configuration = new ConfigurationBuilder()
-                .AddInMemoryCollection(new Dictionary<string, string>
-                {
-                    { "Orleans:Providers:Storage:Default:Provider", "InMemory" }
-                })
-                .Build();
+            var services = new ServiceCollection();
+            var configuration = Mock.Of<IConfiguration>(_ =>
+                _["Orleans:Providers:Storage:Default:Provider"] == "InMemory");
 
             // act
             builder.TryAddMemoryGrainStorageAsDefault(configuration);
@@ -286,13 +286,9 @@ namespace Core.Tests
         {
             // arrange
             var builder = new FakeSiloHostBuilder();
-            var services = new FakeServiceCollection();
-            var configuration = new ConfigurationBuilder()
-                .AddInMemoryCollection(new Dictionary<string, string>
-                {
-                    { "Orleans:Providers:Storage:PubSub:Provider", "InMemory" }
-                })
-                .Build();
+            var services = new ServiceCollection();
+            var configuration = Mock.Of<IConfiguration>(_ =>
+                _["Orleans:Providers:Storage:PubSub:Provider"] == "InMemory");
 
             // act
             builder.TryAddMemoryGrainStorageForPubSub(configuration);
