@@ -10,15 +10,16 @@ namespace Grains.Tests
         public void HoldsData()
         {
             // arrange
-            var id = Guid.NewGuid();
+            var publisherId = Guid.NewGuid();
+            var messageId = Guid.NewGuid();
             var timestamp = DateTime.UtcNow;
 
             // act
-            var message = new ChatMessage(id, "User1", "SomeContent", timestamp);
+            var message = new ChatMessage(messageId, publisherId, "SomeContent", timestamp);
 
             // assert
-            Assert.Equal(id, message.Id);
-            Assert.Equal("User1", message.PublisherId);
+            Assert.Equal(messageId, message.Id);
+            Assert.Equal(publisherId, message.PublisherId);
             Assert.Equal("SomeContent", message.Content);
             Assert.Equal(timestamp, message.Timestamp);
         }

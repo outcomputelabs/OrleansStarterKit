@@ -20,8 +20,8 @@ namespace Grains.Tests
         public async Task StoresAndRetrievesMessage()
         {
             // arrange
-            var grain = _cluster.GrainFactory.GetGrain<IChatUserGrain>("A");
-            var message = new ChatMessage(Guid.NewGuid(), "B", "xpto", DateTime.UtcNow);
+            var grain = _cluster.GrainFactory.GetGrain<IChatUserGrain>(Guid.NewGuid());
+            var message = new ChatMessage(Guid.NewGuid(), Guid.NewGuid(), "xpto", DateTime.UtcNow);
 
             // act
             await grain.MessageAsync(message);
