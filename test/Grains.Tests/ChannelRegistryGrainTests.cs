@@ -1,5 +1,4 @@
 ﻿using Orleans.TestingHost;
-using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -16,25 +15,25 @@ namespace Grains.Tests
         private readonly TestCluster _cluster;
 
         [Fact]
-        public async Task GetsDifferentKeyForDifferentNames()
+        public async Task GetsDifferentChatRoomsForDifferentNames()
         {
-            var name1 = await _cluster.GrainFactory.GetGrain<IChannelRegistryGrain>("ChannelOne").GetOrCreateKeyAsync();
-            var name2 = await _cluster.GrainFactory.GetGrain<IChannelRegistryGrain>("ChannelTwo").GetOrCreateKeyAsync();
+            var room1 = await _cluster.GrainFactory.GetGrain<IChatRoomRegistryGrain>("ChannelOne").GetOrCreateChatRoomAsync();
+            var room2 = await _cluster.GrainFactory.GetGrain<IChatRoomRegistryGrain>("ChannelTwo").GetOrCreateChatRoomAsync();
 
-            Assert.NotEqual(Guid.Empty, name1);
-            Assert.NotEqual(Guid.Empty, name2);
-            Assert.NotEqual(name1, name2);
+            Assert.NotNull(room1);
+            Assert.NotNull(room2);
+            Assert.NotEqual(room1, room2);
         }
 
         [Fact]
-        public async Task GetsSameKeyForSameName()
+        public async Task GetsSameChatRoomForSameName()
         {
-            var name1 = await _cluster.GrainFactory.GetGrain<IChannelRegistryGrain>("ChannelThree").GetOrCreateKeyAsync();
-            var name2 = await _cluster.GrainFactory.GetGrain<IChannelRegistryGrain>("ChannelThree").GetOrCreateKeyAsync();
+            var room1 = await _cluster.GrainFactory.GetGrain<IChatRoomRegistryGrain>("ChannelThree").GetOrCreateChatRoomAsync();
+            var room2 = await _cluster.GrainFactory.GetGrain<IChatRoomRegistryGrain>("ChannelThree").GetOrCreateChatRoomAsync();
 
-            Assert.NotEqual(Guid.Empty, name1);
-            Assert.NotEqual(Guid.Empty, name2);
-            Assert.Equal(name1, name2);
+            Assert.NotNull(room1);
+            Assert.NotNull(room2);
+            Assert.Equal(room1, room2);
         }
     }
 }
