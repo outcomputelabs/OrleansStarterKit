@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Grains
 {
     /// <inheritdoc />
-    public class ChannelRegistryGrain : Grain<ChannelRegistryState>, IChatRoomRegistryGrain
+    public class ChatRoomRegistryGrain : Grain<ChannelRegistryState>, IChatRoomRegistryGrain
     {
         /// <inheritdoc />
         public Task<bool> ExistsAsync() => Task.FromResult(State.Key != Guid.Empty);
