@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Grains
 {
-    public interface IChatUserGrain : IGrainWithStringKey
+    public interface IChatUserGrain : IGrainWithGuidKey
     {
         /// <summary>
         /// Sends a message to this user.
