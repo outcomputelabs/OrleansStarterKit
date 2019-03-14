@@ -5,17 +5,20 @@ using System.Threading.Tasks;
 namespace Grains
 {
     /// <inheritdoc />
-    public class ChannelRegistryGrain : Grain<ChannelRegistryState>, IChannelRegistryGrain
+    public class ChannelRegistryGrain : Grain<ChannelRegistryState>, IChatRoomRegistryGrain
     {
         /// <inheritdoc />
-        public async Task<Guid> GetOrCreateKeyAsync()
+        public Task<bool> ExistsAsync() => Task.FromResult(State.Key != Guid.Empty);
+
+        /// <inheritdoc />
+        public async Task<IChatRoomGrain> GetOrCreateChatRoomAsync()
         {
             if (State.Key == Guid.Empty)
             {
                 State.Key = Guid.NewGuid();
                 await WriteStateAsync();
             }
-            return State.Key;
+            return GrainFactory.GetGrain<IChatRoomGrain>(State.Key);
         }
     }
 
