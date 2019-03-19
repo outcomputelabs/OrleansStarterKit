@@ -1,5 +1,4 @@
-﻿using Grains;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Orleans;
 using System;
 using System.Threading;
@@ -18,15 +17,17 @@ namespace Client.Console
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            Task.Run(async () =>
-            {
-                await _client.GetGrain<ITestGrain>(Guid.NewGuid()).GetKeyAsync();
-            }).Ignore();
+            Task.Run(() => RunShellAsync()).Ignore();
 
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
+        private Task RunShellAsync()
         {
             return Task.CompletedTask;
         }
