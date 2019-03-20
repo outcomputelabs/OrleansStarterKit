@@ -70,7 +70,6 @@ namespace Silo
                     _.HostSelf = true;
                     _.Port = DashboardPort;
                 })
-                .EnableDirectClient()
 
                 // configure the clustering provider
                 .TryUseLocalhostClustering(configuration, SiloPort, GatewayPort)
