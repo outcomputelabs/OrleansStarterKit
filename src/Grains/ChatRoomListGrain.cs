@@ -1,38 +1,92 @@
 ﻿using Grains.Models;
-using Orleans;
-using System;
+using Microsoft.Extensions.Logging;
+using Orleans.Concurrency;
+using Orleans.EventSourcing;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Threading.Tasks;
 
 namespace Grains
 {
-    public class ChatRoomListGrain : Grain<ChatRoomListState>, IChatRoomListGrain
+    [Reentrant]
+    public class ChatRoomListGrain : JournaledGrain<ChatRoomListState>, IChatRoomListGrain
     {
-        public async Task<Guid> AddOrUpdateAsync(ChatRoomInfo info)
+        private readonly ILogger<ChatRoomListGrain> _logger;
+
+        private TaskCompletionSource<ChatRoomListPollResult> _future;
+        private Task<ChatRoomListPollResult> _present;
+
+        public ChatRoomListGrain(ILogger<ChatRoomListGrain> logger)
         {
-            State.List.Remove(info);
-            State.List.Add(info);
-            State.CacheToken = Guid.NewGuid();
+            _logger = logger;
+        }
 
-            await WriteStateAsync();
+        public override Task OnActivateAsync()
+        {
+            // initialize state
+            if (State.List == null) State.List = new HashSet<ChatRoomInfo>();
 
-            return State.CacheToken;
+            // initialize reactive promises
+            _future = new TaskCompletionSource<ChatRoomListPollResult>();
+            _present = Task.FromResult(new ChatRoomListPollResult(Version, State.List.ToImmutableList()));
+
+            return base.OnActivateAsync();
+        }
+
+        public async Task<int> SetAsync(ChatRoomInfo info)
+        {
+            RaiseEvent(new ChatRoomSetEvent(info));
+            await ConfirmEvents();
+
+            return Version;
         }
 
         public Task<ImmutableList<ChatRoomInfo>> GetAsync() => Task.FromResult(State.List.ToImmutableList());
 
-        public override Task OnActivateAsync()
-        {
-            if (State.List == null) State.List = new HashSet<ChatRoomInfo>();
+        public Task<ChatRoomListPollResult> PollAsync(int version) => version == Version ? _future.Task : _present;
 
-            return base.OnActivateAsync();
+        protected override void TransitionState(ChatRoomListState state, object @event)
+        {
+            switch (@event)
+            {
+                case ChatRoomSetEvent set:
+                    State.List.Remove(set.Info);
+                    State.List.Add(set.Info);
+                    break;
+            }
+
+            base.TransitionState(state, @event);
+        }
+
+        protected override void OnStateChanged()
+        {
+            // compute the new read-to-send result
+            var result = new ChatRoomListPollResult(Version, State.List.ToImmutableList());
+
+            // fulfill the current reactive promise and create a new one
+            _future.SetResult(result);
+            _future = new TaskCompletionSource<ChatRoomListPollResult>();
+
+            // ready the data for sending for present requests
+            _present = Task.FromResult(result);
+
+            base.OnStateChanged();
         }
     }
 
     public class ChatRoomListState
     {
-        public Guid CacheToken { get; set; }
         public HashSet<ChatRoomInfo> List { get; set; }
+    }
+
+    [Immutable]
+    public class ChatRoomSetEvent
+    {
+        public ChatRoomSetEvent(ChatRoomInfo info)
+        {
+            Info = info;
+        }
+
+        public ChatRoomInfo Info { get; }
     }
 }
