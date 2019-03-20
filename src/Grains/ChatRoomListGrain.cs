@@ -1,6 +1,7 @@
 ﻿using Grains.Models;
 using Orleans;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Threading.Tasks;
 
 namespace Grains
@@ -14,6 +15,8 @@ namespace Grains
 
             return WriteStateAsync();
         }
+
+        public Task<ImmutableList<ChatRoomInfo>> GetAsync() => Task.FromResult(State.List.ToImmutableList());
 
         public override Task OnActivateAsync()
         {
