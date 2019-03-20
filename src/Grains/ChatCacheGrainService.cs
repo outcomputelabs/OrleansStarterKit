@@ -1,6 +1,10 @@
-﻿namespace Grains
+﻿using Orleans.Concurrency;
+using Orleans.Runtime;
+
+namespace Grains
 {
-    public class ChatCacheGrainService : IChatCacheGrainService
+    [Reentrant]
+    public class ChatCacheGrainService : GrainService, IChatCacheGrainService
     {
     }
 }
