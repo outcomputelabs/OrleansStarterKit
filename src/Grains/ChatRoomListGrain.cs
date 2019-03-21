@@ -23,7 +23,7 @@ namespace Grains
 
         public override Task OnActivateAsync()
         {
-            // initialize state
+            // initialize state if needed
             if (State.List == null) State.List = new HashSet<ChatRoomInfo>();
 
             // initialize reactive promises
