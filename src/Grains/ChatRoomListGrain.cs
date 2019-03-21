@@ -60,7 +60,7 @@ namespace Grains
 
         protected override void OnStateChanged()
         {
-            // compute the new read-to-send result
+            // compute the new ready-to-send result
             var result = new ChatRoomListPollResult(Version, State.List.ToImmutableList());
 
             // fulfill the current reactive promise and create a new one
