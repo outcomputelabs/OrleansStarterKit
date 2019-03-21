@@ -59,11 +59,6 @@ namespace Silo
                         _.ValidateInitialConnectivity = false;
                     }
                 })
-                .ConfigureServices(_ =>
-                {
-                    _.AddSingleton<IChatCacheGrainService, ChatCacheGrainService>();
-                    _.AddSingleton<IChatCacheGrainServiceClient, ChatCacheGrainServiceClient>();
-                })
                 .AddSimpleMessageStreamProvider(SimpleMessageStreamProviderName)
                 .UseDashboard(_ =>
                 {
