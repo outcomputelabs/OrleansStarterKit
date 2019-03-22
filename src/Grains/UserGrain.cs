@@ -15,6 +15,8 @@ namespace Grains
             return WriteStateAsync();
         }
 
+        public Task<UserInfo> GetInfoAsync() => Task.FromResult(State.Info);
+
         private Guid GrainKey => this.GetPrimaryKey();
     }
 

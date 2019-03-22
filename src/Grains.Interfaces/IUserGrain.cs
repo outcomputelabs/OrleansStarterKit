@@ -7,5 +7,6 @@ namespace Grains
     public interface IUserGrain : IGrainWithGuidKey
     {
         Task SetInfoAsync(UserInfo info);
+        Task<UserInfo> GetInfoAsync();
     }
 }
