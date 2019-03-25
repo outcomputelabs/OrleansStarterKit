@@ -7,27 +7,22 @@ namespace Grains
 {
     public class PlayerGrain : Grain<PlayerState>, IPlayerGrain
     {
-        public override Task OnActivateAsync()
-        {
-            if (State.Info != null && State.Info.Handle != GrainKey)
-            {
-                throw new InvalidOperationException();
-            }
-
-            return base.OnActivateAsync();
-        }
-
         private string GrainKey => this.GetPrimaryKeyString();
 
-        public Task SetInfoAsync(PlayerInfo info)
+        public async Task SetInfoAsync(PlayerInfo info)
         {
+            // validate input consistency
             if (info.Handle != GrainKey)
             {
                 throw new InvalidOperationException();
             }
 
+            // apply to grain state
             State.Info = info;
-            return WriteStateAsync();
+            await WriteStateAsync();
+
+            // update the registry
+            await GrainFactory.GetGrain<IPlayerRegistryGrain>(0).RegisterAsync(info);
         }
 
         public Task<PlayerInfo> GetInfoAsync() => Task.FromResult(State.Info);
