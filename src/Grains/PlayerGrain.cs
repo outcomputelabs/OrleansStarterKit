@@ -1,4 +1,5 @@
 ﻿using Grains.Models;
+using Microsoft.Extensions.Logging;
 using Orleans;
 using System;
 using System.Threading.Tasks;
@@ -7,7 +8,15 @@ namespace Grains
 {
     public class PlayerGrain : Grain<PlayerState>, IPlayerGrain
     {
+        private readonly ILogger<PlayerGrain> _logger;
+
+        private string GrainType => nameof(PlayerGrain);
         private string GrainKey => this.GetPrimaryKeyString();
+
+        public PlayerGrain(ILogger<PlayerGrain> logger)
+        {
+            _logger = logger;
+        }
 
         public async Task SetInfoAsync(PlayerInfo info)
         {
@@ -26,6 +35,14 @@ namespace Grains
         }
 
         public Task<PlayerInfo> GetInfoAsync() => Task.FromResult(State.Info);
+
+        public Task TellAsync(TellMessage message)
+        {
+            _logger.LogDebug("{@GrainType} {@GrainKey} received tell {@Message}",
+                GrainType, GrainKey, message);
+
+            return Task.CompletedTask;
+        }
     }
 
     public class PlayerState

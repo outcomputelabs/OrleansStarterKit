@@ -8,5 +8,6 @@ namespace Grains
     {
         Task SetInfoAsync(PlayerInfo info);
         Task<PlayerInfo> GetInfoAsync();
+        Task TellAsync(TellMessage message);
     }
 }
