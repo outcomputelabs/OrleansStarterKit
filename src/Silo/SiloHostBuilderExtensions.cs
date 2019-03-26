@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Grains;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Orleans.Configuration;
 using Orleans.Hosting;
@@ -93,6 +95,11 @@ namespace Silo
             if (configuration["Orleans:Providers:Storage:Default:Provider"] == "InMemory")
             {
                 builder.AddMemoryGrainStorageAsDefault();
+                builder.ConfigureServices(services =>
+                {
+                    services.AddSingleton<IStorageGrainService, InMemoryStorageGrainService>();
+                    services.AddSingleton<IStorageGrainServiceClient, StorageGrainServiceClient>();
+                });
             }
 
             return builder;
@@ -113,6 +120,11 @@ namespace Silo
                     _.Invariant = section["Invariant"];
                     _.UseJsonFormat = section.GetValue<bool>("UseJsonFormat");
                     _.TypeNameHandling = section.GetValue<TypeNameHandling>("TypeNameHandling");
+                });
+                builder.ConfigureServices(services =>
+                {
+                    services.AddSingleton<IStorageGrainService, SqlStorageGrainService>();
+                    services.AddSingleton<IStorageGrainServiceClient, StorageGrainServiceClient>();
                 });
             }
 
