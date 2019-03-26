@@ -1,5 +1,6 @@
 ﻿using Core;
 using Grains;
+using Grains.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -59,6 +60,12 @@ namespace Silo
                         _.ValidateInitialConnectivity = false;
                     }
                 })
+
+                .Configure<PlayerOptions>(options =>
+                {
+                    options.MaxCachedMessages = 100;
+                })
+
                 .AddSimpleMessageStreamProvider(SimpleMessageStreamProviderName)
                 .UseDashboard(_ =>
                 {
