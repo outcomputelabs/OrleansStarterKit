@@ -4,7 +4,7 @@ using Orleans.Configuration;
 using Orleans.Hosting;
 using System;
 
-namespace Core
+namespace Silo
 {
     public static class SiloHostBuilderExtensions
     {
