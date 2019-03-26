@@ -29,6 +29,9 @@ namespace Grains
             // validate input consistency
             if (info.Handle != GrainKey)
             {
+                _logger.LogError("{@GrainType} {@GrainKey} refusing request to set info to {@PlayerInfo} because of inconsistent key",
+                    GrainType, GrainKey, info);
+
                 throw new InvalidOperationException();
             }
 
@@ -36,8 +39,14 @@ namespace Grains
             State.Info = info;
             await WriteStateAsync();
 
+            _logger.LogDebug("{@GrainType} {@GrainKey} updated info to {@PlayerInfo}",
+                GrainType, GrainKey, info);
+
             // update the registry
             await GrainFactory.GetGrain<IPlayerRegistryGrain>(0).RegisterAsync(info);
+
+            _logger.LogDebug("{@GrainType} {@GrainKey} registered with {@RegistryGrainType} {@RegistryGrainKey}",
+                GrainType, GrainKey, nameof(IPlayerRegistryGrain), 0);
         }
 
         public Task<PlayerInfo> GetInfoAsync() => Task.FromResult(State.Info);
