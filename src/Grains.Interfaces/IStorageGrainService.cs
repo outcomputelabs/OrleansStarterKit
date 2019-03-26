@@ -2,7 +2,7 @@
 
 namespace Grains
 {
-    public interface IPersistenceService : IGrainService
+    public interface IStorageGrainService : IGrainService
     {
     }
 }
