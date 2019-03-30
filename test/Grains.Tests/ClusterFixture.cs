@@ -37,7 +37,7 @@ namespace Grains.Tests
                     })
                     .ConfigureApplicationParts(configure =>
                     {
-                        configure.AddApplicationPart(typeof(PlayerGrain).Assembly).WithReferences();
+                        configure.AddApplicationPart(typeof(UserGrain).Assembly).WithReferences();
                     })
                     .AddMemoryGrainStorageAsDefault();
             }

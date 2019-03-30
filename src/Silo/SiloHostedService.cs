@@ -61,7 +61,7 @@ namespace Silo
                     }
                 })
 
-                .Configure<PlayerOptions>(options =>
+                .Configure<UserOptions>(options =>
                 {
                     options.MaxCachedMessages = 100;
                 })

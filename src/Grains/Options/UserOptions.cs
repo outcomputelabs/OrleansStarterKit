@@ -1,6 +1,6 @@
 ﻿namespace Grains.Options
 {
-    public class PlayerOptions
+    public class UserOptions
     {
         public int MaxCachedMessages { get; set; }
     }

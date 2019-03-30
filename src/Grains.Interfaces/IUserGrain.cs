@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 
 namespace Grains
 {
-    public interface IPlayerGrain : IGrainWithStringKey
+    public interface IUserGrain : IGrainWithGuidKey
     {
-        Task SetInfoAsync(PlayerInfo info);
-        Task<PlayerInfo> GetInfoAsync();
+        Task SetInfoAsync(UserInfo info);
+        Task<UserInfo> GetInfoAsync();
         Task TellAsync(TellMessage message);
     }
 }
