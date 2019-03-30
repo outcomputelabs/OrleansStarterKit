@@ -28,6 +28,14 @@ namespace Grains
             }
         }
 
+        public async Task<UserInfo> GetByHandleAsync(string handle)
+        {
+            using (var context = new SqlServerUserRegistryContext(_options))
+            {
+                return await context.Users.SingleOrDefaultAsync(_ => _.Handle == handle);
+            }
+        }
+
         public async Task RegisterAsync(UserInfo entity)
         {
             using (var context = new SqlServerUserRegistryContext(_options))
