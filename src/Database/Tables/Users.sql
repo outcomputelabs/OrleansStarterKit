@@ -6,9 +6,16 @@
 )
 GO
 
-CREATE UNIQUE NONCLUSTERED INDEX [UNCI_Users_Id]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_Users_Id]
 ON [dbo].[Users]
 (
 	[Id]
+)
+GO
+
+CREATE UNIQUE NONCLUSTERED INDEX [UK_Users_Handle]
+ON [dbo].[Users]
+(
+	[Handle]
 )
 GO
