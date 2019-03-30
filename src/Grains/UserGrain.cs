@@ -13,7 +13,7 @@ namespace Grains
     {
         private readonly ILogger<UserGrain> _logger;
         private readonly UserOptions _options;
-        private readonly Queue<TellMessage> _messages = new Queue<TellMessage>();
+        private readonly Queue<Message> _messages = new Queue<Message>();
 
         private string GrainType => nameof(UserGrain);
         private string GrainKey => this.GetPrimaryKeyString();
@@ -45,7 +45,7 @@ namespace Grains
 
         public Task<UserInfo> GetInfoAsync() => Task.FromResult(State.Info);
 
-        public Task TellAsync(TellMessage message)
+        public Task TellAsync(Message message)
         {
             _logger.LogDebug("{@GrainType} {@GrainKey} received tell {@Message}",
                 GrainType, GrainKey, message);
