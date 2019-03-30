@@ -9,22 +9,22 @@ using System.Threading.Tasks;
 
 namespace Grains
 {
-    public class PlayerGrain : Grain<PlayerState>, IPlayerGrain
+    public class UserGrain : Grain<UserState>, IUserGrain
     {
-        private readonly ILogger<PlayerGrain> _logger;
-        private readonly PlayerOptions _options;
+        private readonly ILogger<UserGrain> _logger;
+        private readonly UserOptions _options;
         private readonly Queue<TellMessage> _messages = new Queue<TellMessage>();
 
-        private string GrainType => nameof(PlayerGrain);
+        private string GrainType => nameof(UserGrain);
         private string GrainKey => this.GetPrimaryKeyString();
 
-        public PlayerGrain(ILogger<PlayerGrain> logger, IOptions<PlayerOptions> options)
+        public UserGrain(ILogger<UserGrain> logger, IOptions<UserOptions> options)
         {
             _logger = logger;
             _options = options.Value;
         }
 
-        public async Task SetInfoAsync(PlayerInfo info)
+        public async Task SetInfoAsync(UserInfo info)
         {
             // validate input consistency
             if (info.Handle != GrainKey)
@@ -43,7 +43,7 @@ namespace Grains
                 GrainType, GrainKey, info);
         }
 
-        public Task<PlayerInfo> GetInfoAsync() => Task.FromResult(State.Info);
+        public Task<UserInfo> GetInfoAsync() => Task.FromResult(State.Info);
 
         public Task TellAsync(TellMessage message)
         {
@@ -56,8 +56,8 @@ namespace Grains
         }
     }
 
-    public class PlayerState
+    public class UserState
     {
-        public PlayerInfo Info { get; set; }
+        public UserInfo Info { get; set; }
     }
 }
