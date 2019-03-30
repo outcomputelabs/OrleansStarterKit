@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Orleans;
 using Orleans.Concurrency;
+using System;
 using System.Threading.Tasks;
 
 namespace Grains
 {
+    [Reentrant]
     [StatelessWorker]
     public class SqlServerUserRegistryGrain : Grain, IUserRegistryGrain
     {
@@ -16,6 +18,14 @@ namespace Grains
         public SqlServerUserRegistryGrain(IOptions<SqlServerUserRegistryOptions> options)
         {
             _options = options.Value;
+        }
+
+        public async Task<UserInfo> GetAsync(Guid id)
+        {
+            using (var context = new SqlServerUserRegistryContext(_options))
+            {
+                return await context.Users.FindAsync(id);
+            }
         }
 
         public async Task RegisterAsync(UserInfo entity)
