@@ -1,0 +1,14 @@
+﻿CREATE TABLE [dbo].[Users]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL,
+	[Handle] NVARCHAR(100) NOT NULL,
+	[Name] NVARCHAR(100) NOT NULL
+)
+GO
+
+CREATE UNIQUE NONCLUSTERED INDEX [UNCI_Users_Id]
+ON [dbo].[Users]
+(
+	[Id]
+)
+GO

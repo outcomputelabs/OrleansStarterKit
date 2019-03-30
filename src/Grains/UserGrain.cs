@@ -16,7 +16,7 @@ namespace Grains
         private readonly Queue<Message> _messages = new Queue<Message>();
 
         private string GrainType => nameof(UserGrain);
-        private string GrainKey => this.GetPrimaryKeyString();
+        private Guid GrainKey => this.GetPrimaryKey();
 
         public UserGrain(ILogger<UserGrain> logger, IOptions<UserOptions> options)
         {
@@ -27,9 +27,9 @@ namespace Grains
         public async Task SetInfoAsync(UserInfo info)
         {
             // validate input consistency
-            if (info.Handle != GrainKey)
+            if (info.Id != GrainKey)
             {
-                _logger.LogError("{@GrainType} {@GrainKey} refusing request to set info to {@PlayerInfo} because of inconsistent key",
+                _logger.LogError("{@GrainType} {@GrainKey} refusing request to set info to {@UserInfo} because of inconsistent key",
                     GrainType, GrainKey, info);
 
                 throw new InvalidOperationException();
@@ -38,6 +38,10 @@ namespace Grains
             // apply to grain state
             State.Info = info;
             await WriteStateAsync();
+
+            // apply to registry
+            await GrainFactory.GetGrain<IUserRegistryGrain>(Guid.Empty)
+                .RegisterAsync(info);
 
             _logger.LogDebug("{@GrainType} {@GrainKey} updated info to {@PlayerInfo}",
                 GrainType, GrainKey, info);
