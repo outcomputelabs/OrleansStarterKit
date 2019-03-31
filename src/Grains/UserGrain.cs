@@ -16,7 +16,7 @@ namespace Grains
         private readonly UserOptions _options;
         private readonly Queue<Message> _messages = new Queue<Message>();
 
-        private IUserRegistryGrain _registry;
+        private IUserRegistryGrain _userRegistry;
         private UserInfo _info;
 
         private string GrainType => nameof(UserGrain);
@@ -30,11 +30,11 @@ namespace Grains
 
         public override async Task OnActivateAsync()
         {
-            // keep the registry proxy for comfort
-            _registry = GrainFactory.GetGrain<IUserRegistryGrain>(Guid.Empty);
+            // keep the user registry proxy for comfort
+            _userRegistry = GrainFactory.GetGrain<IUserRegistryGrain>(Guid.Empty);
 
-            // load any existing info from the registry
-            _info = await _registry.GetAsync(GrainKey);
+            // cache any existing user info from the registry
+            _info = await _userRegistry.GetAsync(GrainKey);
         }
 
         public async Task SetInfoAsync(UserInfo info)
@@ -49,7 +49,7 @@ namespace Grains
             }
 
             // save info state to registry
-            await _registry.RegisterAsync(info);
+            await _userRegistry.RegisterAsync(info);
 
             _logger.LogDebug("{@GrainType} {@GrainKey} updated info to {@PlayerInfo}",
                 GrainType, GrainKey, info);
