@@ -1,5 +1,6 @@
 ﻿using Grains.Models;
 using Microsoft.EntityFrameworkCore;
+using Orleans;
 using Orleans.Concurrency;
 using System;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace Grains
     /// </summary>
     [Reentrant]
     [StatelessWorker]
-    public class EntityFrameworkChannelRegistryGrain : IChannelRegistryGrain
+    public class EntityFrameworkChannelRegistryGrain : Grain, IChannelRegistryGrain
     {
         private readonly Func<RegistryContext> _factory;
 
