@@ -5,12 +5,9 @@ namespace Grains
 {
     public class RegistryContext : DbContext
     {
-        private readonly DbContextOptions<RegistryContext> _options;
-
         public RegistryContext(DbContextOptions<RegistryContext> options)
             : base(options)
         {
-            _options = options;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
