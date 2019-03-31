@@ -1,4 +1,7 @@
-﻿using Orleans;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.DependencyInjection;
+using Orleans;
 using Orleans.Configuration;
 using Orleans.Hosting;
 using Orleans.TestingHost;
@@ -10,9 +13,14 @@ namespace Grains.Tests
     {
         public TestCluster Cluster { get; private set; }
 
+        public static IServiceProvider StaticSiloServiceProvider { get; private set; }
+        public IServiceProvider SiloServiceProvider => StaticSiloServiceProvider;
+
+        private static readonly InMemoryDatabaseRoot _registryContextRoot = new InMemoryDatabaseRoot();
+
         public ClusterFixture()
         {
-            var builder = new TestClusterBuilder(3);
+            var builder = new TestClusterBuilder();
             builder.AddSiloBuilderConfigurator<TestSiloBuilderConfigurator>();
             var cluster = builder.Build();
             cluster.Deploy();
@@ -38,6 +46,20 @@ namespace Grains.Tests
                     .ConfigureApplicationParts(configure =>
                     {
                         configure.AddApplicationPart(typeof(UserGrain).Assembly).WithReferences();
+                    })
+                    .ConfigureServices(services =>
+                    {
+                        services.AddDbContext<RegistryContext>(options =>
+                        {
+                            options.UseInMemoryDatabase(nameof(TestCluster), _registryContextRoot);
+                        });
+                        services.AddTransient<Func<RegistryContext>>(_ => () => _.GetService<RegistryContext>());
+                    })
+                    .UseServiceProviderFactory(services =>
+                    {
+                        var provider = services.BuildServiceProvider();
+                        StaticSiloServiceProvider = provider;
+                        return provider;
                     })
                     .AddMemoryGrainStorageAsDefault();
             }

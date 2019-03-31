@@ -12,15 +12,29 @@ namespace Grains
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserInfo>().HasKey(_ => _.Id);
-            modelBuilder.Entity<UserInfo>().HasIndex(_ => _.Handle).IsUnique();
+            modelBuilder.Entity<UserInfo>(e =>
+            {
+                e.HasKey(_ => _.Id);
+                e.HasIndex(_ => _.Handle).IsUnique();
+                e.Property(_ => _.Name);
+            });
 
-            modelBuilder.Entity<ChannelInfo>().HasKey(_ => _.Id);
-            modelBuilder.Entity<ChannelInfo>().HasIndex(_ => _.Handle).IsUnique();
+            modelBuilder.Entity<ChannelInfo>(e =>
+            {
+                e.HasKey(_ => _.Id);
+                e.HasIndex(_ => _.Handle).IsUnique();
+                e.Property(_ => _.Description);
+            });
 
-            modelBuilder.Entity<Message>().HasKey(_ => _.Id);
-            modelBuilder.Entity<Message>().HasIndex(_ => new { _.SenderId, _.Timestamp });
-            modelBuilder.Entity<Message>().HasIndex(_ => new { _.ReceiverId, _.Timestamp });
+            modelBuilder.Entity<Message>(e =>
+            {
+                e.HasKey(_ => _.Id);
+                e.HasIndex(_ => new { _.SenderId, _.Timestamp });
+                e.HasIndex(_ => new { _.ReceiverId, _.Timestamp });
+                e.Property(_ => _.SenderHandle);
+                e.Property(_ => _.SenderName);
+                e.Property(_ => _.Content);
+            });
 
             base.OnModelCreating(modelBuilder);
         }

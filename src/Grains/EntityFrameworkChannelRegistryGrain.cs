@@ -21,45 +21,39 @@ namespace Grains
             _factory = factory;
         }
 
-        public async Task<ChannelInfo> GetAsync(Guid id)
+        public Task<ChannelInfo> GetAsync(Guid id)
         {
-            using (var context = _factory())
-            {
-                return await context.Channels.FindAsync(id);
-            }
+            return _factory()
+                .Channels
+                .FindAsync(id);
         }
 
-        public async Task<ChannelInfo> GetByHandleAsync(string handle)
+        public Task<ChannelInfo> GetByHandleAsync(string handle)
         {
-            using (var context = _factory())
-            {
-                return await context.Channels.SingleOrDefaultAsync(_ => _.Handle == handle);
-            }
+            return _factory()
+                .Channels
+                .SingleOrDefaultAsync(_ => _.Handle == handle);
         }
 
         public async Task RegisterAsync(ChannelInfo entity)
         {
-            using (var context = _factory())
+            var context = _factory();
+            if (await context.Channels.CountAsync(_ => _.Id == entity.Id) == 0)
             {
-                if (await context.Channels.CountAsync(_ => _.Id == entity.Id) == 0)
-                {
-                    context.Channels.Add(entity);
-                }
-                else
-                {
-                    context.Channels.Update(entity);
-                }
-                await context.SaveChangesAsync();
+                context.Channels.Add(entity);
             }
+            else
+            {
+                context.Channels.Update(entity);
+            }
+            await context.SaveChangesAsync();
         }
 
         public async Task UnregisterAsync(ChannelInfo entity)
         {
-            using (var context = _factory())
-            {
-                context.Channels.Remove(entity);
-                await context.SaveChangesAsync();
-            }
+            var context = _factory();
+            context.Channels.Remove(entity);
+            await context.SaveChangesAsync();
         }
     }
 }
