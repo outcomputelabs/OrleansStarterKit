@@ -1,5 +1,6 @@
 ﻿using Grains.Models;
 using Orleans;
+using System.Collections.Immutable;
 using System.Threading.Tasks;
 
 namespace Grains
@@ -9,5 +10,6 @@ namespace Grains
         Task SetInfoAsync(UserInfo info);
         Task<UserInfo> GetInfoAsync();
         Task TellAsync(Message message);
+        Task<ImmutableList<Message>> GetLatestMessagesAsync();
     }
 }

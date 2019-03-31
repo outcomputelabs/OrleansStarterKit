@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Orleans;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -82,6 +83,14 @@ namespace Grains
             // cache this message in memory
             // this helps fulfill requests for the latest messages without touching storage
             _messages.Enqueue(message, _options.MaxCachedMessages);
+        }
+
+        /// <summary>
+        /// Returns the latest messages as cached by this grain.
+        /// </summary>
+        public Task<ImmutableList<Message>> GetLatestMessagesAsync()
+        {
+            return Task.FromResult(_messages.ToImmutableList());
         }
 
         #region Helpers
