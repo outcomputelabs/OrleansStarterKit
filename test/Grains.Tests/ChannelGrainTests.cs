@@ -40,5 +40,29 @@ namespace Grains.Tests
             Assert.Equal(info.Handle, state.Handle);
             Assert.Equal(info.Description, state.Description);
         }
+
+        [Fact]
+        public async Task SetInfoAsync_Caches_State()
+        {
+            // arrange
+            var id = Guid.NewGuid();
+            var handle = "SomeHandle";
+            var description = "SomeDescription";
+            var info = new ChannelInfo(id, handle, description);
+
+            // act
+            await _fixture.Cluster.GrainFactory
+                .GetGrain<IChannelGrain>(id)
+                .SetInfoAsync(info);
+
+            // assert the state is available
+            var state = await _fixture.Cluster.GrainFactory
+                .GetGrain<IChannelGrain>(id)
+                .GetInfoAsync();
+
+            Assert.Equal(info.Id, state.Id);
+            Assert.Equal(info.Handle, state.Handle);
+            Assert.Equal(info.Description, state.Description);
+        }
     }
 }
