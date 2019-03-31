@@ -36,9 +36,8 @@ namespace Grains.Tests
                 .Channels
                 .FindAsync(id);
 
+            Assert.NotNull(state);
             Assert.Equal(info.Id, state.Id);
-            Assert.Equal(info.Handle, state.Handle);
-            Assert.Equal(info.Description, state.Description);
         }
 
         [Fact]
@@ -60,9 +59,8 @@ namespace Grains.Tests
                 .GetGrain<IChannelGrain>(id)
                 .GetInfoAsync();
 
+            Assert.NotNull(state);
             Assert.Equal(info.Id, state.Id);
-            Assert.Equal(info.Handle, state.Handle);
-            Assert.Equal(info.Description, state.Description);
         }
 
         [Fact]
@@ -84,9 +82,36 @@ namespace Grains.Tests
                 .GetInfoAsync();
 
             // assert the state matches
+            Assert.NotNull(state);
             Assert.Equal(info.Id, state.Id);
-            Assert.Equal(info.Handle, state.Handle);
-            Assert.Equal(info.Description, state.Description);
+        }
+
+        [Fact]
+        public async Task TellAsync_Saves_Message()
+        {
+            // arrange
+            var id = Guid.NewGuid();
+            var senderId = Guid.NewGuid();
+            var senderHandle = "SomeSender";
+            var senderName = "Some Sender";
+            var receiverId = Guid.NewGuid();
+            var content = "Some Content";
+            var timestamp = DateTime.Now;
+            var message = new Message(id, senderId, senderHandle, senderName, receiverId, content, timestamp);
+
+            await _fixture.Cluster.GrainFactory
+                .GetGrain<IChannelGrain>(receiverId)
+                .SetInfoAsync(new ChannelInfo(receiverId, "SomeReceiver", "Some Receiver"));
+
+            // act
+            await _fixture.Cluster.GrainFactory
+                .GetGrain<IChannelGrain>(receiverId)
+                .TellAsync(message);
+
+            // assert the message was saved
+            var state = await _fixture.SiloServiceProvider.GetService<RegistryContext>().Messages.FindAsync(id);
+            Assert.NotNull(state);
+            Assert.Equal(id, state.Id);
         }
     }
 }
