@@ -89,6 +89,10 @@ namespace Silo
                 .TryAddMemoryGrainStorageForPubSub(configuration)
                 .TryAddAdoNetGrainStorageForPubSub(configuration)
 
+                // configure the registry provider
+                .TryAddInMemoryRegistry(configuration)
+                .TryAddSqlServerRegistry(configuration)
+
                 // done
                 .Build();
         }

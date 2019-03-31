@@ -1,4 +1,5 @@
 ﻿using Grains;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -129,6 +130,46 @@ namespace Silo
             if (configuration["Orleans:Providers:Storage:PubSub:Provider"] == "InMemory")
             {
                 builder.AddMemoryGrainStorage("PubSubStore");
+            }
+
+            return builder;
+        }
+
+        public static ISiloHostBuilder TryAddSqlServerRegistry(this ISiloHostBuilder builder, IConfiguration configuration)
+        {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+
+            if (configuration["Registry:Provider"] == "SqlServer")
+            {
+                builder.ConfigureServices(services =>
+                {
+                    services.AddDbContext<RegistryContext>(options =>
+                    {
+                        options.UseSqlServer(
+                            configuration.GetConnectionString(configuration["Registry:Providers:SqlServer:ConnectionStringName"]));
+                    });
+                });
+            }
+
+            return builder;
+        }
+
+        public static ISiloHostBuilder TryAddInMemoryRegistry(this ISiloHostBuilder builder, IConfiguration configuration)
+        {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+
+            if (configuration["Registry:Provider"] == "InMemory")
+            {
+                builder.ConfigureServices(services =>
+                {
+                    services.AddDbContext<RegistryContext>(options =>
+                    {
+                        options.UseInMemoryDatabase(
+                            configuration["Registry:Providers:InMemory:DatabaseName"]);
+                    });
+                });
             }
 
             return builder;
