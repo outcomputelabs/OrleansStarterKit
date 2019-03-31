@@ -71,6 +71,7 @@
     <Build Include="Tables\Storage.sql" />
     <Build Include="Tables\Users.sql" />
     <Build Include="Tables\Messages.sql" />
+    <Build Include="Tables\Channels.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
