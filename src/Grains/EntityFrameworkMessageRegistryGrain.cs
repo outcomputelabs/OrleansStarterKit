@@ -25,49 +25,39 @@ namespace Grains
 
         public async Task<Message> GetAsync(Guid id)
         {
-            using (var context = _factory())
-            {
-                return await context.Messages.FindAsync(id);
-            }
+            return await _factory().Messages.FindAsync(id);
         }
 
         public async Task<ImmutableList<Message>> GetLatestByReceiverIdAsync(Guid receiverId, int count)
         {
-            using (var context = _factory())
-            {
-                var result = await context.Messages
-                    .Where(_ => _.ReceiverId == receiverId)
-                    .OrderByDescending(_ => _.Timestamp)
-                    .Take(count)
-                    .ToListAsync();
+            var result = await _factory().Messages
+                .Where(_ => _.ReceiverId == receiverId)
+                .OrderByDescending(_ => _.Timestamp)
+                .Take(count)
+                .ToListAsync();
 
-                return result.ToImmutableList();
-            }
+            return result.ToImmutableList();
         }
 
         public async Task RegisterAsync(Message entity)
         {
-            using (var context = _factory())
+            var context = _factory();
+            if (await context.Messages.FindAsync(entity.Id) == null)
             {
-                if (await context.Messages.FindAsync(entity.Id) == null)
-                {
-                    context.Messages.Add(entity);
-                }
-                else
-                {
-                    context.Messages.Update(entity);
-                }
-                await context.SaveChangesAsync();
+                context.Messages.Add(entity);
             }
+            else
+            {
+                context.Messages.Update(entity);
+            }
+            await context.SaveChangesAsync();
         }
 
         public async Task UnregisterAsync(Message entity)
         {
-            using (var context = _factory())
-            {
-                context.Messages.Remove(entity);
-                await context.SaveChangesAsync();
-            }
+            var context = _factory();
+            context.Messages.Remove(entity);
+            await context.SaveChangesAsync();
         }
     }
 }

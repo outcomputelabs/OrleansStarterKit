@@ -56,6 +56,9 @@ namespace Grains
             // save info state to registry
             await _channelRegistry.RegisterAsync(info);
 
+            // keep it cached
+            _info = info;
+
             LogChannelInfoUpdated(info);
         }
 
