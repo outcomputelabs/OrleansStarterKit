@@ -57,7 +57,7 @@ namespace Grains
         {
             using (var context = _factory())
             {
-                context.Remove(entity);
+                context.Users.Remove(entity);
                 await context.SaveChangesAsync();
             }
         }
