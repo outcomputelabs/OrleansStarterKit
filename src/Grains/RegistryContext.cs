@@ -10,6 +10,9 @@ namespace Grains
             modelBuilder.Entity<UserInfo>().HasKey(_ => _.Id);
             modelBuilder.Entity<UserInfo>().HasIndex(_ => _.Handle).IsUnique();
 
+            modelBuilder.Entity<ChannelInfo>().HasKey(_ => _.Id);
+            modelBuilder.Entity<ChannelInfo>().HasIndex(_ => _.Handle).IsUnique();
+
             modelBuilder.Entity<Message>().HasKey(_ => _.Id);
             modelBuilder.Entity<Message>().HasIndex(_ => new { _.SenderId, _.Timestamp });
             modelBuilder.Entity<Message>().HasIndex(_ => new { _.ReceiverId, _.Timestamp });
@@ -18,6 +21,7 @@ namespace Grains
         }
 
         public DbSet<UserInfo> Users { get; set; }
+        public DbSet<ChannelInfo> Channels { get; set; }
         public DbSet<Message> Messages { get; set; }
     }
 }
