@@ -1,6 +1,6 @@
 ﻿namespace Grains.Options
 {
-    public class SqlServerUserRegistryOptions
+    public class SqlServerRegistryOptions
     {
         public string ConnectionString { get; set; }
     }
