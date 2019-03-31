@@ -31,12 +31,12 @@ namespace Grains
             }
         }
 
-        public async Task<ImmutableList<Message>> GetLastestAsync(Guid publisherId, int count)
+        public async Task<ImmutableList<Message>> GetLatestByReceiverIdAsync(Guid receiverId, int count)
         {
             using (var context = _factory())
             {
                 var result = await context.Messages
-                    .Where(_ => _.PublisherId == publisherId)
+                    .Where(_ => _.ReceiverId == receiverId)
                     .OrderByDescending(_ => _.Timestamp)
                     .Take(count)
                     .ToListAsync();
