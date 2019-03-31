@@ -30,8 +30,8 @@ namespace Grains
         Task<Message> GetAsync(Guid id);
 
         /// <summary>
-        /// Returns the latest messages for a given user id, up to the given count.
+        /// Returns the latest messages for a given receiver id, up to the given count.
         /// </summary>
-        Task<ImmutableList<Message>> GetLastestAsync(Guid publisherId, int count);
+        Task<ImmutableList<Message>> GetLatestByReceiverIdAsync(Guid receiverId, int count);
     }
 }

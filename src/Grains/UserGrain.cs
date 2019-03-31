@@ -17,6 +17,8 @@ namespace Grains
         private readonly Queue<Message> _messages = new Queue<Message>();
 
         private IUserRegistryGrain _userRegistry;
+        private IMessageRegistryGrain _messageRegistry;
+
         private UserInfo _info;
 
         private string GrainType => nameof(UserGrain);
@@ -33,60 +35,156 @@ namespace Grains
             // keep the user registry proxy for comfort
             _userRegistry = GrainFactory.GetGrain<IUserRegistryGrain>(Guid.Empty);
 
+            // keep the message registry proxy for comfort
+            _messageRegistry = GrainFactory.GetGrain<IMessageRegistryGrain>(Guid.Empty);
+
             // cache any existing user info from the registry
             _info = await _userRegistry.GetAsync(GrainKey);
+
+            // cache latest messages
+            _messages.Enqueue(await _messageRegistry.GetLatestByReceiverIdAsync(GrainKey, _options.MaxCachedMessages), _options.MaxCachedMessages);
         }
 
+        /// <summary>
+        /// Set the user information for this user.
+        /// </summary>
         public async Task SetInfoAsync(UserInfo info)
         {
-            // validate input consistency
-            if (info.Id != GrainKey)
-            {
-                _logger.LogError("{@GrainType} {@GrainKey} refusing request to set info to {@UserInfo} because of inconsistent key",
-                    GrainType, GrainKey, info);
-
-                throw new InvalidOperationException();
-            }
+            ValidateUserInfo(info);
 
             // save info state to registry
             await _userRegistry.RegisterAsync(info);
 
-            _logger.LogDebug("{@GrainType} {@GrainKey} updated info to {@PlayerInfo}",
-                GrainType, GrainKey, info);
+            LogUserInfoUpdated(info);
         }
 
-        public Task<UserInfo> GetInfoAsync() => Task.FromResult(_info);
-
-        public Task TellAsync(Message message)
+        /// <summary>
+        /// Returns the user information for this user.
+        /// </summary>
+        public Task<UserInfo> GetInfoAsync()
         {
-            ThrowIfNotInitialized();
+            EnsureInitialized();
+            return Task.FromResult(_info);
+        }
 
-            _logger.LogDebug("{@GrainType} {@GrainKey} received tell {@Message}",
-                GrainType, GrainKey, message);
+        /// <summary>
+        /// Receives a tell message and saves it to the message registry.
+        /// </summary>
+        public async Task TellAsync(Message message)
+        {
+            EnsureInitialized();
+            ValidateMessage(message);
+            LogTell(message);
 
+            // save this message to the registry
+            await _messageRegistry.RegisterAsync(message);
+
+            // cache this message in memory
+            // this helps fulfill requests for the latest messages without touching storage
             _messages.Enqueue(message, _options.MaxCachedMessages);
+        }
 
-            return Task.CompletedTask;
+        #region Helpers
+
+        /// <summary>
+        /// This method checks if the given message is directed at the current user and throws an <see cref="InvalidOperationException"/> if not.
+        /// It also throws a <see cref="ArgumentNullException"/> if the message is null.
+        /// Either will only ever happen to some accidental design bug, but better to be defensive about it.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">The message is null.</exception>
+        /// <exception cref="InvalidOperationException">The receiver id of the message does not match the current user.</exception>
+        private void ValidateMessage(Message message)
+        {
+            if (message == null)
+            {
+                LogNullMessage();
+                throw new ArgumentNullException(nameof(message));
+            }
+
+            if (message.ReceiverId != GrainKey) throw new InvalidOperationException();
         }
 
         /// <summary>
         /// This method checks if the user information has been initialized and throws an <see cref="InvalidOperationException"/> if not.
-        /// It also log an error that contains the name of the method that called this one.
+        /// It also logs an error that contains the name of the method that called this one.
         /// Use this to protect grain calls that require user information to be initialized.
         /// This event will only even happen due to some accidental design bug but better to be defensive about it.
         /// </summary>
-        private void ThrowIfNotInitialized([CallerMemberName] string method = null)
+        /// <exception cref="InvalidOperationException">The user is not initialized yet.</exception>
+        private void EnsureInitialized([CallerMemberName] string method = null)
         {
             if (_info == null)
             {
-                var error = new InvalidOperationException();
-
-                _logger.LogError(error,
-                    "{@GrainType} {@GrainKey} cannot execute {@MethodName} because the user information is not yet initialized",
-                    GrainType, GrainKey, method);
-
-                throw error;
+                LogCannotExecuteMethod(method);
+                throw new InvalidOperationException();
             }
         }
+
+        /// <summary>
+        /// Checks if the given user info is consistent with the current user.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">The id of the given user info does not match the current grain key.</exception>
+        private void ValidateUserInfo(UserInfo info)
+        {
+            if (info.Id != GrainKey)
+            {
+                LogInconsistentKey(info);
+                throw new InvalidOperationException();
+            }
+        }
+
+        #endregion
+
+        #region Logging
+
+        /// <summary>
+        /// Logs a debug entry regarding a tell message being received.
+        /// </summary>
+        /// <param name="message"></param>
+        private void LogTell(Message message)
+        {
+            _logger.LogDebug("{@GrainType} {@GrainKey} received tell {@Message}",
+                GrainType, GrainKey, message);
+        }
+
+        /// <summary>
+        /// Logs an error regarding inability to execute a certain method due to user information not yet being initialzed.
+        /// </summary>
+        private void LogCannotExecuteMethod(string method)
+        {
+            _logger.LogError(
+                "{@GrainType} {@GrainKey} cannot execute {@MethodName} because the user information is not yet initialized",
+                GrainType, GrainKey, method);
+        }
+
+        /// <summary>
+        /// Logs an error regarding an attempt to set the user info with an inconsistent key.
+        /// </summary>
+        private void LogInconsistentKey(UserInfo info)
+        {
+            _logger.LogError("{@GrainType} {@GrainKey} refusing request to set info to {@UserInfo} because of inconsistent key",
+                GrainType, GrainKey, info);
+        }
+
+        /// <summary>
+        /// Logs an error regarding receiving a null message.
+        /// </summary>
+        private void LogNullMessage()
+        {
+            _logger.LogError(
+                "{@GrainType} {@GrainKey} received a null message.",
+                GrainType, GrainKey);
+        }
+
+        /// <summary>
+        /// Logs a debug entry regarding this grain updating the user info.
+        /// </summary>
+        private void LogUserInfoUpdated(UserInfo info)
+        {
+            _logger.LogDebug("{@GrainType} {@GrainKey} updated info to {@UserInfo}",
+                GrainType, GrainKey, info);
+        }
+
+        #endregion
     }
 }

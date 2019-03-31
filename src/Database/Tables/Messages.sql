@@ -1,9 +1,10 @@
 ﻿CREATE TABLE [dbo].[Messages]
 (
 	[Id] UNIQUEIDENTIFIER NOT NULL,
-	[PublisherId] UNIQUEIDENTIFIER NOT NULL,
-	[PublisherHandle] NVARCHAR(100) NOT NULL,
-	[PublisherName] NVARCHAR(100) NOT NULL,
+	[SenderId] UNIQUEIDENTIFIER NOT NULL,
+	[SenderHandle] NVARCHAR(100) NOT NULL,
+	[SenderName] NVARCHAR(100) NOT NULL,
+	[ReceiverId] UNIQUEIDENTIFIER NOT NULL,
 	[Content] NVARCHAR(1000) NOT NULL,
 	[Timestamp] DATETIME2(2) NOT NULL
 )
@@ -16,10 +17,18 @@ ON [dbo].[Messages]
 )
 GO
 
-CREATE NONCLUSTERED INDEX [UK_Messages_PublisherId]
+CREATE NONCLUSTERED INDEX [UK_Messages_SenderId]
 ON [dbo].[Messages]
 (
-	[PublisherId],
-	[Timestamp]
+	[SenderId],
+	[Timestamp] DESC
+)
+GO
+
+CREATE NONCLUSTERED INDEX [UK_Messages_ReceiverId]
+ON [dbo].[Messages]
+(
+	[ReceiverId],
+	[Timestamp] DESC
 )
 GO

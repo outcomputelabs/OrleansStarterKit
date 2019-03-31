@@ -11,7 +11,8 @@ namespace Grains
             modelBuilder.Entity<UserInfo>().HasIndex(_ => _.Handle).IsUnique();
 
             modelBuilder.Entity<Message>().HasKey(_ => _.Id);
-            modelBuilder.Entity<Message>().HasIndex(_ => new { _.PublisherId, _.Timestamp });
+            modelBuilder.Entity<Message>().HasIndex(_ => new { _.SenderId, _.Timestamp });
+            modelBuilder.Entity<Message>().HasIndex(_ => new { _.ReceiverId, _.Timestamp });
 
             base.OnModelCreating(modelBuilder);
         }

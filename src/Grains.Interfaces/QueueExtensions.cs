@@ -35,5 +35,25 @@ namespace Grains
             // enqueue the new item
             queue.Enqueue(item);
         }
+
+        /// <summary>
+        /// Enqueues the given enumeration of objects.
+        /// If the new queue size would be greater than <paramref name="capacity"/> then this method makes room as needed.
+        /// </summary>
+        /// <typeparam name="T">The type of object to enqueue.</typeparam>
+        /// <param name="queue">The queue to apply this extension on.</param>
+        /// <param name="items">The enumeration of objects to enqueue.</param>
+        /// <param name="capacity">
+        /// The maximum queue capacity to enforce.
+        /// If the new queue size would be greater than this value then items are dequeued until there is space for the new item.
+        /// This value must greater than zero.
+        /// </param>
+        public static void Enqueue<T>(this Queue<T> queue, IEnumerable<T> items, int capacity)
+        {
+            foreach (var item in items)
+            {
+                queue.Enqueue(item, capacity);
+            }
+        }
     }
 }
