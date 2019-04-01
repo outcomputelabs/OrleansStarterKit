@@ -133,5 +133,23 @@ namespace Grains.Tests
             // assert
             Assert.Equal("message", error.ParamName);
         }
+
+        [Fact]
+        public async Task TellAsync_Throws_On_Misdirected_Message()
+        {
+            // arrage
+            var id = Guid.NewGuid();
+            var otherId = Guid.NewGuid();
+            var grain = _fixture.Cluster.GrainFactory.GetGrain<IChannelGrain>(id);
+            await grain.SetInfoAsync(new ChannelInfo(id, "SomeHandle", "SomeDescription"));
+
+            // act and assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await _fixture.Cluster.GrainFactory
+                     .GetGrain<IChannelGrain>(otherId)
+                     .TellAsync(null);
+            });
+        }
     }
 }
