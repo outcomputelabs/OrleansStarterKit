@@ -113,5 +113,25 @@ namespace Grains.Tests
             Assert.NotNull(state);
             Assert.Equal(id, state.Id);
         }
+
+        [Fact]
+        public async Task TellAsync_Throws_On_Null_Message()
+        {
+            // arrage
+            var id = Guid.NewGuid();
+            var grain = _fixture.Cluster.GrainFactory.GetGrain<IChannelGrain>(id);
+            await grain.SetInfoAsync(new ChannelInfo(id, "SomeHandle", "SomeDescription"));
+
+            // act
+            var error = await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            {
+                await _fixture.Cluster.GrainFactory
+                     .GetGrain<IChannelGrain>(id)
+                     .TellAsync(null);
+            });
+
+            // assert
+            Assert.Equal("message", error.ParamName);
+        }
     }
 }
