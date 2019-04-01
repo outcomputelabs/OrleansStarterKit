@@ -139,7 +139,6 @@ namespace Grains.Tests
         {
             // arrage
             var id = Guid.NewGuid();
-            var otherId = Guid.NewGuid();
             var grain = _fixture.Cluster.GrainFactory.GetGrain<IChannelGrain>(id);
             await grain.SetInfoAsync(new ChannelInfo(id, "SomeHandle", "SomeDescription"));
 
@@ -147,8 +146,8 @@ namespace Grains.Tests
             await Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
                 await _fixture.Cluster.GrainFactory
-                     .GetGrain<IChannelGrain>(otherId)
-                     .TellAsync(null);
+                     .GetGrain<IChannelGrain>(id)
+                     .TellAsync(new Message(Guid.NewGuid(), Guid.NewGuid(), "SenderHandle", "SenderName", Guid.NewGuid(), "Content", DateTime.Now));
             });
         }
     }
