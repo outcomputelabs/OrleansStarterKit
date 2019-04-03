@@ -72,6 +72,7 @@
     <Build Include="Tables\Users.sql" />
     <Build Include="Tables\Messages.sql" />
     <Build Include="Tables\Channels.sql" />
+    <Build Include="Tables\ChannelUsers.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

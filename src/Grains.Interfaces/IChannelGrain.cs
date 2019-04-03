@@ -11,5 +11,12 @@ namespace Grains
         Task<ChannelInfo> GetInfoAsync();
         Task TellAsync(Message message);
         Task<ImmutableList<Message>> GetLatestMessagesAsync();
+
+        /// <summary>
+        /// Adds a user to the channel.
+        /// This method is intended for calling from the <see cref="IUserGrain"/> info.
+        /// Do not call this method from the client api.
+        /// </summary>
+        Task AddUserAsync(IUserGrain user);
     }
 }
