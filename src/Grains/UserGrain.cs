@@ -17,8 +17,7 @@ namespace Grains
         private readonly UserOptions _options;
         private readonly Queue<Message> _messages = new Queue<Message>();
 
-        private IUserRegistryGrain _userRegistry;
-        private IMessageRegistryGrain _messageRegistry;
+        private IStorageRegistryGrain _registry;
 
         private UserInfo _info;
 
@@ -33,17 +32,14 @@ namespace Grains
 
         public override async Task OnActivateAsync()
         {
-            // keep the user registry proxy for comfort
-            _userRegistry = GrainFactory.GetGrain<IUserRegistryGrain>(Guid.Empty);
-
-            // keep the message registry proxy for comfort
-            _messageRegistry = GrainFactory.GetGrain<IMessageRegistryGrain>(Guid.Empty);
+            // keep the registry proxy for comfort
+            _registry = GrainFactory.GetGrain<IStorageRegistryGrain>(Guid.Empty);
 
             // cache any existing user info from the registry
-            _info = await _userRegistry.GetAsync(GrainKey);
+            _info = await _registry.GetUserAsync(GrainKey);
 
             // cache latest messages
-            _messages.Enqueue(await _messageRegistry.GetLatestByReceiverIdAsync(GrainKey, _options.MaxCachedMessages), _options.MaxCachedMessages);
+            _messages.Enqueue(await _registry.GetLatestMessagesByReceiverIdAsync(GrainKey, _options.MaxCachedMessages), _options.MaxCachedMessages);
         }
 
         /// <summary>
@@ -54,7 +50,7 @@ namespace Grains
             ValidateUserInfo(info);
 
             // save info state to registry
-            await _userRegistry.RegisterAsync(info);
+            await _registry.RegisterUserAsync(info);
 
             LogUserInfoUpdated(info);
         }
@@ -78,7 +74,7 @@ namespace Grains
             LogTell(message);
 
             // save this message to the registry
-            await _messageRegistry.RegisterAsync(message);
+            await _registry.RegisterMessageAsync(message);
 
             // cache this message in memory
             // this helps fulfill requests for the latest messages without touching storage
