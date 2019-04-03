@@ -11,5 +11,6 @@ namespace Grains
         Task<UserInfo> GetInfoAsync();
         Task TellAsync(Message message);
         Task<ImmutableList<Message>> GetLatestMessagesAsync();
+        Task JoinChannelAsync(IChannelGrain channel);
     }
 }

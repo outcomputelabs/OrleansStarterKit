@@ -93,6 +93,16 @@ namespace Grains
             return Task.FromResult(_messages.ToImmutableList());
         }
 
+        public Task JoinChannelAsync(IChannelGrain channel)
+        {
+            // todo: tell the channel to add this user
+
+
+            // todo: persist the channel to this grains list of channels
+
+            return Task.CompletedTask;
+        }
+
         #region Helpers
 
         /// <summary>

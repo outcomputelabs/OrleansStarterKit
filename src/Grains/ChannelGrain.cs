@@ -96,6 +96,15 @@ namespace Grains
             return Task.FromResult(_messages.ToImmutableList());
         }
 
+        /// <inheritdoc />
+        public Task AddUserAsync(IUserGrain user)
+        {
+            // todo: add this user to the persisted list of participating users in the channel
+
+            // todo: add it to the cached list as well
+            return Task.CompletedTask;
+        }
+
         #region Helpers
 
         /// <summary>
