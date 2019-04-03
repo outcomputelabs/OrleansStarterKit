@@ -17,8 +17,7 @@ namespace Grains
         private readonly ChannelOptions _options;
         private readonly Queue<Message> _messages = new Queue<Message>();
 
-        private IChannelRegistryGrain _channelRegistry;
-        private IMessageRegistryGrain _messageRegistry;
+        private IStorageRegistryGrain _registry;
 
         private ChannelInfo _info;
 
@@ -33,17 +32,14 @@ namespace Grains
 
         public override async Task OnActivateAsync()
         {
-            // keep the channel registry proxy for comfort
-            _channelRegistry = GrainFactory.GetGrain<IChannelRegistryGrain>(Guid.Empty);
-
-            // keep the message registry proxy for comfort
-            _messageRegistry = GrainFactory.GetGrain<IMessageRegistryGrain>(Guid.Empty);
+            // keep the registry proxy for comfort
+            _registry = GrainFactory.GetGrain<IStorageRegistryGrain>(Guid.Empty);
 
             // cache any existing channel info from the registry
-            _info = await _channelRegistry.GetAsync(GrainKey);
+            _info = await _registry.GetChannelAsync(GrainKey);
 
             // cache latest messages
-            _messages.Enqueue(await _messageRegistry.GetLatestByReceiverIdAsync(GrainKey, _options.MaxCachedMessages), _options.MaxCachedMessages);
+            _messages.Enqueue(await _registry.GetLatestMessagesByReceiverIdAsync(GrainKey, _options.MaxCachedMessages), _options.MaxCachedMessages);
         }
 
         /// <summary>
@@ -54,7 +50,7 @@ namespace Grains
             ValidateChannelInfo(info);
 
             // save info state to registry
-            await _channelRegistry.RegisterAsync(info);
+            await _registry.RegisterChannelAsync(info);
 
             // keep it cached
             _info = info;
@@ -81,7 +77,7 @@ namespace Grains
             LogTell(message);
 
             // save this message to the registry
-            await _messageRegistry.RegisterAsync(message);
+            await _registry.RegisterMessageAsync(message);
 
             // cache this message in memory
             // this helps fulfill requests for the latest messages without touching storage
