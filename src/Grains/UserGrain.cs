@@ -16,6 +16,7 @@ namespace Grains
         private readonly ILogger<UserGrain> _logger;
         private readonly UserOptions _options;
         private readonly Queue<Message> _messages = new Queue<Message>();
+        private readonly HashSet<ChannelUser> _channels = new HashSet<ChannelUser>();
 
         private IStorageRegistryGrain _registry;
 
@@ -40,6 +41,9 @@ namespace Grains
 
             // cache latest messages
             _messages.Enqueue(await _registry.GetLatestMessagesByReceiverIdAsync(GrainKey, _options.MaxCachedMessages), _options.MaxCachedMessages);
+
+            // cache joined channels
+            _channels.UnionWith(await _registry.GetChannelsByUserAsync(GrainKey));
         }
 
         /// <summary>
@@ -89,14 +93,19 @@ namespace Grains
             return Task.FromResult(_messages.ToImmutableList());
         }
 
-        public Task JoinChannelAsync(IChannelGrain channel)
+        public async Task JoinChannelAsync(IChannelGrain channel)
         {
-            // todo: tell the channel to add this user
+            // register this participation with the registry
+            // this ensures both this user and the channel can recover from the registry upon activation
+            var member = new ChannelUser(channel.GetPrimaryKey(), GrainKey);
+            await _registry.RegisterChannelUserAsync(member);
 
+            // tell the channel to add this user now
+            // in case this call fails the channel can now recover
+            await channel.AddUserAsync(member);
 
-            // todo: persist the channel to this grains list of channels
-
-            return Task.CompletedTask;
+            // keep this membership cached to facilitate queries on it
+            _channels.Add(member);
         }
 
         #region Helpers
