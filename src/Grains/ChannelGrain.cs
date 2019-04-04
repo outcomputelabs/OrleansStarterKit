@@ -16,6 +16,7 @@ namespace Grains
         private readonly ILogger<ChannelGrain> _logger;
         private readonly ChannelOptions _options;
         private readonly Queue<Message> _messages = new Queue<Message>();
+        private readonly HashSet<ChannelUser> _members = new HashSet<ChannelUser>();
 
         private IStorageRegistryGrain _registry;
 
@@ -40,6 +41,9 @@ namespace Grains
 
             // cache latest messages
             _messages.Enqueue(await _registry.GetLatestMessagesByReceiverIdAsync(GrainKey, _options.MaxCachedMessages), _options.MaxCachedMessages);
+
+            // cache members
+            _members.UnionWith(await _registry.GetUsersByChannelAsync(GrainKey));
         }
 
         /// <summary>
@@ -93,11 +97,16 @@ namespace Grains
         }
 
         /// <inheritdoc />
-        public Task AddUserAsync(IUserGrain user)
+        public Task AddUserAsync(ChannelUser member)
         {
-            // todo: add this user to the persisted list of participating users in the channel
+            // validate
+            if (member == null) throw new ArgumentNullException(nameof(member));
+            if (member.ChannelId != GrainKey) throw new ArgumentOutOfRangeException(nameof(member.ChannelId));
 
-            // todo: add it to the cached list as well
+            // add the user to the cache of joined users
+            // we expect the calling user grain to have registered this membership already
+            _members.Add(member);
+
             return Task.CompletedTask;
         }
 

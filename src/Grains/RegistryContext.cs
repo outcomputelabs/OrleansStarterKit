@@ -26,6 +26,13 @@ namespace Grains
                 e.Property(_ => _.Description);
             });
 
+            modelBuilder.Entity<ChannelUser>(e =>
+            {
+                e.HasKey(_ => new { _.ChannelId, _.UserId });
+                e.HasIndex(_ => new { _.ChannelId, _.UserId });
+                e.HasIndex(_ => new { _.UserId, _.ChannelId });
+            });
+
             modelBuilder.Entity<Message>(e =>
             {
                 e.HasKey(_ => _.Id);
@@ -42,5 +49,6 @@ namespace Grains
         public DbSet<UserInfo> Users { get; set; }
         public DbSet<ChannelInfo> Channels { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<ChannelUser> ChannelUsers { get; set; }
     }
 }

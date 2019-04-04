@@ -104,6 +104,45 @@ namespace Grains
 
         #endregion
 
+        #region Channel Users
+
+        public async Task RegisterChannelUserAsync(ChannelUser entity)
+        {
+            var context = _factory();
+            if (await context.ChannelUsers.ContainsAsync(entity))
+            {
+                context.ChannelUsers.Update(entity);
+            }
+            else
+            {
+                context.ChannelUsers.Add(entity);
+            }
+            await context.SaveChangesAsync();
+        }
+
+        public async Task UnregisterChannelUserAsync(ChannelUser entity)
+        {
+            var context = _factory();
+            context.ChannelUsers.Remove(entity);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<ImmutableList<ChannelUser>> GetUsersByChannelAsync(Guid channelId)
+        {
+            var context = _factory();
+            var result = await context.ChannelUsers.Where(_ => _.ChannelId == channelId).ToListAsync();
+            return result.ToImmutableList();
+        }
+
+        public async Task<ImmutableList<ChannelUser>> GetChannelsByUserAsync(Guid userId)
+        {
+            var context = _factory();
+            var result = await context.ChannelUsers.Where(_ => _.UserId == userId).ToListAsync();
+            return result.ToImmutableList();
+        }
+
+        #endregion
+
         #region Messages
 
         public async Task<ImmutableList<Message>> GetLatestMessagesByReceiverIdAsync(Guid receiverId, int count)

@@ -68,6 +68,15 @@ namespace Grains
 
         #endregion
 
+        #region Channel Users
+
+        Task RegisterChannelUserAsync(ChannelUser entity);
+        Task UnregisterChannelUserAsync(ChannelUser entity);
+        Task<ImmutableList<ChannelUser>> GetUsersByChannelAsync(Guid channelId);
+        Task<ImmutableList<ChannelUser>> GetChannelsByUserAsync(Guid userId);
+
+        #endregion
+
         #region Messages
 
         /// <summary>
