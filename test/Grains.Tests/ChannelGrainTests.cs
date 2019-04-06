@@ -171,9 +171,32 @@ namespace Grains.Tests
             var state = await grain.GetLatestMessagesAsync();
             Assert.NotNull(state);
             Assert.Collection(state,
-                m => Assert.Equal(m, message1),
-                m => Assert.Equal(m, message2),
-                m => Assert.Equal(m, message3));
+                m => Assert.Equal(message1, m),
+                m => Assert.Equal(message2, m),
+                m => Assert.Equal(message3, m));
+        }
+
+        [Fact]
+        public async Task AddUserAsync_Adds_Members()
+        {
+            // arrange
+            var key = Guid.NewGuid();
+            var member1 = new ChannelUser(key, Guid.NewGuid());
+            var member2 = new ChannelUser(key, Guid.NewGuid());
+            var member3 = new ChannelUser(key, Guid.NewGuid());
+            var grain = _fixture.Cluster.GrainFactory.GetGrain<IChannelGrain>(key);
+
+            // act
+            await grain.AddUserAsync(member1);
+            await grain.AddUserAsync(member2);
+            await grain.AddUserAsync(member3);
+            var state = await grain.GetUsersAsync();
+
+            // assert
+            Assert.Collection(state,
+                m => Assert.Equal(member1, m),
+                m => Assert.Equal(member2, m),
+                m => Assert.Equal(member3, m));
         }
     }
 }
