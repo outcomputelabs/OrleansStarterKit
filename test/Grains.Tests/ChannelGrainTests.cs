@@ -198,5 +198,19 @@ namespace Grains.Tests
                 m => Assert.Equal(member2, m),
                 m => Assert.Equal(member3, m));
         }
+
+        [Fact]
+        public async Task GetInfoAsync_Requires_Initialization()
+        {
+            // arrange
+            var key = Guid.NewGuid();
+            var grain = _fixture.Cluster.GrainFactory.GetGrain<IChannelGrain>(key);
+
+            // act and assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await grain.GetInfoAsync();
+            });
+        }
     }
 }
