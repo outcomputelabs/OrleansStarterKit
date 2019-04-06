@@ -2,6 +2,6 @@
 {
     public class UserOptions
     {
-        public int MaxCachedMessages { get; set; }
+        public int MaxCachedMessages { get; set; } = 100;
     }
 }

@@ -56,6 +56,9 @@ namespace Grains
             // save info state to registry
             await _registry.RegisterUserAsync(info);
 
+            // keep it cached to fulfill queries
+            _info = info;
+
             LogUserInfoUpdated(info);
         }
 
