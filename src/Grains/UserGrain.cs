@@ -6,6 +6,7 @@ using Orleans;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -40,7 +41,7 @@ namespace Grains
             _info = await _registry.GetUserAsync(GrainKey);
 
             // cache latest messages
-            _messages.Enqueue(await _registry.GetLatestMessagesByReceiverIdAsync(GrainKey, _options.MaxCachedMessages), _options.MaxCachedMessages);
+            _messages.Enqueue((await _registry.GetLatestMessagesByReceiverIdAsync(GrainKey, _options.MaxCachedMessages)).OrderBy(_ => _.Timestamp), _options.MaxCachedMessages);
 
             // cache joined channels
             _channels.UnionWith(await _registry.GetChannelsByUserAsync(GrainKey));
