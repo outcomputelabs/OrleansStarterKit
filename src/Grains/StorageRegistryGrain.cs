@@ -22,45 +22,29 @@ namespace Grains
 
         #region Users
 
-        public async Task<UserInfo> GetUserAsync(Guid id)
-        {
-            using (var context = _factory())
-            {
-                return await context.Users.FindAsync(id);
-            }
-        }
+        public async Task<UserInfo> GetUserAsync(Guid id) => await _factory().Users.FindAsync(id);
 
-        public async Task<UserInfo> GetUserByHandleAsync(string handle)
-        {
-            using (var context = _factory())
-            {
-                return await context.Users.SingleOrDefaultAsync(_ => _.Handle == handle);
-            }
-        }
+        public async Task<UserInfo> GetUserByHandleAsync(string handle) => await _factory().Users.SingleOrDefaultAsync(_ => _.Handle == handle);
 
         public async Task RegisterUserAsync(UserInfo entity)
         {
-            using (var context = _factory())
+            var context = _factory();
+            if (await context.Users.CountAsync(_ => _.Id == entity.Id) == 0)
             {
-                if (await context.Users.CountAsync(_ => _.Id == entity.Id) == 0)
-                {
-                    context.Users.Add(entity);
-                }
-                else
-                {
-                    context.Users.Update(entity);
-                }
-                await context.SaveChangesAsync();
+                context.Users.Add(entity);
             }
+            else
+            {
+                context.Users.Update(entity);
+            }
+            await context.SaveChangesAsync();
         }
 
         public async Task UnregisterUserAsync(UserInfo entity)
         {
-            using (var context = _factory())
-            {
-                context.Users.Remove(entity);
-                await context.SaveChangesAsync();
-            }
+            var context = _factory();
+            context.Users.Remove(entity);
+            await context.SaveChangesAsync();
         }
 
         #endregion

@@ -1,9 +1,8 @@
 ﻿using Grains.Models;
-using Orleans.TestingHost;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
 using Xunit;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Grains.Tests
 {
