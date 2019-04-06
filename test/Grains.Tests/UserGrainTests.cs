@@ -32,5 +32,23 @@ namespace Grains.Tests
             var state = await context.Users.FindAsync(key);
             Assert.Equal(info, state);
         }
+
+        [Fact]
+        public async Task GetInfoAsync_Gets_State()
+        {
+            // arrange
+            var context = _fixture.SiloServiceProvider.GetService<RegistryContext>();
+            var key = Guid.NewGuid();
+            var info = new UserInfo(key, Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+            context.Users.Add(info);
+            await context.SaveChangesAsync();
+            var grain = _fixture.Cluster.GrainFactory.GetGrain<IUserGrain>(key);
+
+            // act
+            var state = await grain.GetInfoAsync();
+
+            // assert
+            Assert.Equal(info, state);
+        }
     }
 }
