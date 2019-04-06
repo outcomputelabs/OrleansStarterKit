@@ -17,6 +17,11 @@ namespace Grains
         /// This method is intended for calling from the <see cref="IUserGrain"/> info.
         /// Do not call this method from the client api.
         /// </summary>
-        Task AddUserAsync(ChannelUser user);
+        Task AddUserAsync(ChannelUser member);
+
+        /// <summary>
+        /// Returns the list of users that joined this channel.
+        /// </summary>
+        Task<ImmutableList<ChannelUser>> GetUsersAsync();
     }
 }

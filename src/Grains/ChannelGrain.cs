@@ -110,6 +110,9 @@ namespace Grains
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc />
+        public Task<ImmutableList<ChannelUser>> GetUsersAsync() => Task.FromResult(_members.ToImmutableList());
+
         #region Helpers
 
         /// <summary>
