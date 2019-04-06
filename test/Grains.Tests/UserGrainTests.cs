@@ -68,5 +68,52 @@ namespace Grains.Tests
             var state = await context.Messages.FindAsync(message.Id);
             Assert.Equal(message, state);
         }
+
+        [Fact]
+        public async Task GetLatestMessagesAsync_Returns_Tells()
+        {
+            // arrange
+            var key = Guid.NewGuid();
+            var grain = _fixture.Cluster.GrainFactory.GetGrain<IUserGrain>(key);
+            await grain.SetInfoAsync(new UserInfo(key, Guid.NewGuid().ToString(), Guid.NewGuid().ToString()));
+            var message1 = new Message(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), key, Guid.NewGuid().ToString(), DateTime.Now);
+            var message2 = new Message(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), key, Guid.NewGuid().ToString(), DateTime.Now);
+            var message3 = new Message(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), key, Guid.NewGuid().ToString(), DateTime.Now);
+
+            // act
+            await grain.TellAsync(message1);
+            await grain.TellAsync(message2);
+            await grain.TellAsync(message3);
+            var state = await grain.GetLatestMessagesAsync();
+
+            // assert
+            Assert.Collection(state,
+                m => Assert.Equal(message1, m),
+                m => Assert.Equal(message2, m),
+                m => Assert.Equal(message3, m));
+        }
+
+        [Fact]
+        public async Task GetLatestMessagesAsync_Returns_State()
+        {
+            // arrange
+            var key = Guid.NewGuid();
+            var grain = _fixture.Cluster.GrainFactory.GetGrain<IUserGrain>(key);
+            var message1 = new Message(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), key, Guid.NewGuid().ToString(), DateTime.Now);
+            var message2 = new Message(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), key, Guid.NewGuid().ToString(), DateTime.Now);
+            var message3 = new Message(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), key, Guid.NewGuid().ToString(), DateTime.Now);
+            var context = _fixture.SiloServiceProvider.GetService<RegistryContext>();
+            context.Messages.AddRange(message1, message2, message3);
+            await context.SaveChangesAsync();
+
+            // act
+            var state = await grain.GetLatestMessagesAsync();
+
+            // assert
+            Assert.Collection(state,
+                m => Assert.Equal(message1, m),
+                m => Assert.Equal(message2, m),
+                m => Assert.Equal(message3, m));
+        }
     }
 }
