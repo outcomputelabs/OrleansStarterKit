@@ -203,13 +203,26 @@ namespace Grains.Tests
         public async Task GetInfoAsync_Requires_Initialization()
         {
             // arrange
-            var key = Guid.NewGuid();
-            var grain = _fixture.Cluster.GrainFactory.GetGrain<IChannelGrain>(key);
+            var grain = _fixture.Cluster.GrainFactory.GetGrain<IChannelGrain>(Guid.NewGuid());
 
             // act and assert
             await Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
                 await grain.GetInfoAsync();
+            });
+        }
+
+        [Fact]
+        public async Task SetInfoAsync_Validates_Input()
+        {
+            // arrange
+            var grain = _fixture.Cluster.GrainFactory.GetGrain<IChannelGrain>(Guid.NewGuid());
+            var info = new ChannelInfo(Guid.NewGuid(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+
+            // act and assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await grain.SetInfoAsync(info);
             });
         }
     }
