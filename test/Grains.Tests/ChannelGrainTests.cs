@@ -150,5 +150,30 @@ namespace Grains.Tests
                      .TellAsync(new Message(Guid.NewGuid(), Guid.NewGuid(), "SenderHandle", "SenderName", Guid.NewGuid(), "Content", DateTime.Now));
             });
         }
+
+        [Fact]
+        public async Task GetLatestMessagesAsync_Returns_Cached_Messages()
+        {
+            // arrange
+            var key = Guid.NewGuid();
+            var message1 = new Message(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), key, Guid.NewGuid().ToString(), DateTime.Now);
+            var message2 = new Message(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), key, Guid.NewGuid().ToString(), DateTime.Now);
+            var message3 = new Message(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), key, Guid.NewGuid().ToString(), DateTime.Now);
+            var grain = _fixture.Cluster.GrainFactory.GetGrain<IChannelGrain>(key);
+            await grain.SetInfoAsync(new ChannelInfo(key, Guid.NewGuid().ToString(), Guid.NewGuid().ToString()));
+
+            // act
+            await grain.TellAsync(message1);
+            await grain.TellAsync(message2);
+            await grain.TellAsync(message3);
+
+            // assert
+            var state = await grain.GetLatestMessagesAsync();
+            Assert.NotNull(state);
+            Assert.Collection(state,
+                m => Assert.Equal(m, message1),
+                m => Assert.Equal(m, message2),
+                m => Assert.Equal(m, message3));
+        }
     }
 }
