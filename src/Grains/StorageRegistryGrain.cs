@@ -11,11 +11,11 @@ namespace Grains
 {
     [Reentrant]
     [StatelessWorker]
-    public class EfStorageRegistryGrain : Grain, IStorageRegistryGrain
+    public class StorageRegistryGrain : Grain, IStorageRegistryGrain
     {
         private readonly Func<RegistryContext> _factory;
 
-        public EfStorageRegistryGrain(Func<RegistryContext> factory)
+        public StorageRegistryGrain(Func<RegistryContext> factory)
         {
             _factory = factory;
         }
