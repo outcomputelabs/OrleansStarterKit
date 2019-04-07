@@ -131,8 +131,7 @@ namespace Grains.Tests
             await user.JoinChannelAsync(channel3);
 
             // assert
-            var context = _fixture.SiloServiceProvider.GetService<RegistryContext>();
-            var state = await context.ChannelUsers.Where(_ => _.UserId == userKey).ToListAsync();
+            var state = await _fixture.Cluster.GrainFactory.GetGrain<IStorageRegistryGrain>(Guid.Empty).GetChannelsByUserAsync(userKey);
             Assert.Collection(state,
                 m => Assert.Equal(channel1.GetPrimaryKey(), m.ChannelId),
                 m => Assert.Equal(channel2.GetPrimaryKey(), m.ChannelId),
