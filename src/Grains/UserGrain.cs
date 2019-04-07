@@ -112,6 +112,8 @@ namespace Grains
             _channels.Add(member);
         }
 
+        public Task<ImmutableList<ChannelUser>> GetChannelsAsync() => Task.FromResult(_channels.ToImmutableList());
+
         #region Helpers
 
         /// <summary>
