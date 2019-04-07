@@ -101,9 +101,9 @@ namespace Grains.Tests
             var message1 = new Message(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), key, Guid.NewGuid().ToString(), DateTime.Now);
             var message2 = new Message(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), key, Guid.NewGuid().ToString(), DateTime.Now);
             var message3 = new Message(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), key, Guid.NewGuid().ToString(), DateTime.Now);
-            var context = _fixture.SiloServiceProvider.GetService<RegistryContext>();
-            context.Messages.AddRange(message1, message2, message3);
-            await context.SaveChangesAsync();
+            await _fixture.Cluster.GrainFactory.GetGrain<IStorageRegistryGrain>(Guid.Empty).RegisterMessageAsync(message1);
+            await _fixture.Cluster.GrainFactory.GetGrain<IStorageRegistryGrain>(Guid.Empty).RegisterMessageAsync(message2);
+            await _fixture.Cluster.GrainFactory.GetGrain<IStorageRegistryGrain>(Guid.Empty).RegisterMessageAsync(message3);
 
             // act
             var state = await grain.GetLatestMessagesAsync();
