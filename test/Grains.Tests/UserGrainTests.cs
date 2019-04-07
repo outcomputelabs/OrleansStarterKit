@@ -39,11 +39,9 @@ namespace Grains.Tests
         public async Task GetInfoAsync_Gets_State()
         {
             // arrange
-            var context = _fixture.SiloServiceProvider.GetService<RegistryContext>();
             var key = Guid.NewGuid();
             var info = new UserInfo(key, Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            context.Users.Add(info);
-            await context.SaveChangesAsync();
+            await _fixture.Cluster.GrainFactory.GetGrain<IStorageRegistryGrain>(Guid.Empty).RegisterUserAsync(info);
             var grain = _fixture.Cluster.GrainFactory.GetGrain<IUserGrain>(key);
 
             // act
