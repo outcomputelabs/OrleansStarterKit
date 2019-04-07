@@ -208,5 +208,18 @@ namespace Grains.Tests
                 await grain.GetInfoAsync();
             });
         }
+
+        [Fact]
+        public async Task SetInfoAsync_SetInfoAsync_Validates_Key()
+        {
+            // arrange
+            var grain = _fixture.Cluster.GrainFactory.GetGrain<IUserGrain>(Guid.NewGuid());
+
+            // act and assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await grain.SetInfoAsync(new UserInfo(Guid.NewGuid(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString()));
+            });
+        }
     }
 }
