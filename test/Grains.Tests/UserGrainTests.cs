@@ -1,6 +1,9 @@
 ﻿using Grains.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Orleans;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -114,6 +117,30 @@ namespace Grains.Tests
                 m => Assert.Equal(message1, m),
                 m => Assert.Equal(message2, m),
                 m => Assert.Equal(message3, m));
+        }
+
+        [Fact]
+        public async Task JoinChannelAsync_Saves_User_State()
+        {
+            // arrange
+            var userKey = Guid.NewGuid();
+            var user = _fixture.Cluster.GrainFactory.GetGrain<IUserGrain>(userKey);
+            var channel1 = _fixture.Cluster.GrainFactory.GetGrain<IChannelGrain>(Guid.NewGuid());
+            var channel2 = _fixture.Cluster.GrainFactory.GetGrain<IChannelGrain>(Guid.NewGuid());
+            var channel3 = _fixture.Cluster.GrainFactory.GetGrain<IChannelGrain>(Guid.NewGuid());
+
+            // act
+            await user.JoinChannelAsync(channel1);
+            await user.JoinChannelAsync(channel2);
+            await user.JoinChannelAsync(channel3);
+
+            // assert
+            var context = _fixture.SiloServiceProvider.GetService<RegistryContext>();
+            var state = await context.ChannelUsers.Where(_ => _.UserId == userKey).ToListAsync();
+            Assert.Collection(state,
+                m => Assert.Equal(channel1.GetPrimaryKey(), m.ChannelId),
+                m => Assert.Equal(channel2.GetPrimaryKey(), m.ChannelId),
+                m => Assert.Equal(channel3.GetPrimaryKey(), m.ChannelId));
         }
     }
 }
