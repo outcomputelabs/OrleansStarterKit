@@ -31,8 +31,7 @@ namespace Grains.Tests
             await grain.SetInfoAsync(info);
 
             // assert
-            var context = _fixture.SiloServiceProvider.GetService<RegistryContext>();
-            var state = await context.Users.FindAsync(key);
+            var state = await _fixture.Cluster.GrainFactory.GetGrain<IStorageRegistryGrain>(Guid.Empty).GetUserAsync(key);
             Assert.Equal(info, state);
         }
 
