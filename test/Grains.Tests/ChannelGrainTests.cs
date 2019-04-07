@@ -224,5 +224,33 @@ namespace Grains.Tests
                 await grain.SetInfoAsync(info);
             });
         }
+
+        [Fact]
+        public async Task AddUserAsync_Validates_Null_User()
+        {
+            // arrange
+            var channel = _fixture.Cluster.GrainFactory.GetGrain<IChannelGrain>(Guid.NewGuid());
+
+            // act and assert
+            var error = await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            {
+                await channel.AddUserAsync(null);
+            });
+            Assert.Equal("member", error.ParamName);
+        }
+
+        [Fact]
+        public async Task AddUserAsync_Validates_Channel_Key()
+        {
+            // arrange
+            var channel = _fixture.Cluster.GrainFactory.GetGrain<IChannelGrain>(Guid.NewGuid());
+
+            // act and assert
+            var error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
+            {
+                await channel.AddUserAsync(new ChannelUser(Guid.NewGuid(), Guid.NewGuid()));
+            });
+            Assert.Equal(nameof(ChannelUser.ChannelId), error.ParamName);
+        }
     }
 }
