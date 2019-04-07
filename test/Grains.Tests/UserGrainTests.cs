@@ -142,5 +142,33 @@ namespace Grains.Tests
                 m => Assert.Equal(channel2.GetPrimaryKey(), m.ChannelId),
                 m => Assert.Equal(channel3.GetPrimaryKey(), m.ChannelId));
         }
+
+        [Fact]
+        public async Task GetChannelsAsync_Returns_User_State()
+        {
+            // arrange
+            var userKey = Guid.NewGuid();
+            var user = _fixture.Cluster.GrainFactory.GetGrain<IUserGrain>(userKey);
+            var storage = _fixture.Cluster.GrainFactory.GetGrain<IStorageRegistryGrain>(Guid.Empty);
+            var channels = new ChannelUser[]
+            {
+                new ChannelUser(Guid.NewGuid(), userKey),
+                new ChannelUser(Guid.NewGuid(), userKey),
+                new ChannelUser(Guid.NewGuid(), userKey)
+            };
+            foreach (var channel in channels)
+            {
+                await storage.RegisterChannelUserAsync(channel);
+            }
+
+            // act
+            var state = await user.GetChannelsAsync();
+
+            // assert
+            Assert.Collection(state,
+                m => Assert.Equal(channels[0].ChannelId, m.ChannelId),
+                m => Assert.Equal(channels[1].ChannelId, m.ChannelId),
+                m => Assert.Equal(channels[2].ChannelId, m.ChannelId));
+        }
     }
 }
