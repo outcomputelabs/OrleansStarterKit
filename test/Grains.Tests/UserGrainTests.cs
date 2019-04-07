@@ -165,5 +165,35 @@ namespace Grains.Tests
                 m => Assert.Equal(channels[1].ChannelId, m.ChannelId),
                 m => Assert.Equal(channels[2].ChannelId, m.ChannelId));
         }
+
+        [Fact]
+        public async Task ValidateMessage_Refuses_Null_Messages()
+        {
+            // arrange
+            var key = Guid.NewGuid();
+            var grain = _fixture.Cluster.GrainFactory.GetGrain<IUserGrain>(key);
+            await grain.SetInfoAsync(new UserInfo(key, Guid.NewGuid().ToString(), Guid.NewGuid().ToString()));
+
+            // act and assert
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            {
+                await grain.TellAsync(null);
+            });
+        }
+
+        [Fact]
+        public async Task ValidateMessage_Refuses_Mismatched_Key()
+        {
+            // arrange
+            var key = Guid.NewGuid();
+            var grain = _fixture.Cluster.GrainFactory.GetGrain<IUserGrain>(key);
+            await grain.SetInfoAsync(new UserInfo(key, Guid.NewGuid().ToString(), Guid.NewGuid().ToString()));
+
+            // act and assert
+            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await grain.TellAsync(new Message(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid(), Guid.NewGuid().ToString(), DateTime.Now));
+            });
+        }
     }
 }
