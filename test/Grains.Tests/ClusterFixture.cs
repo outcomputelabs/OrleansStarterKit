@@ -52,7 +52,7 @@ namespace Grains.Tests
                         services.AddDbContext<RegistryContext>(options =>
                         {
                             options.UseInMemoryDatabase(nameof(TestCluster), _registryContextRoot);
-                        });
+                        }, ServiceLifetime.Transient);
                         services.AddSingleton<Func<RegistryContext>>(_ => () => _.GetService<RegistryContext>());
                     })
                     .UseServiceProviderFactory(services =>

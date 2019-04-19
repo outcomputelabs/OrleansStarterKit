@@ -28,23 +28,27 @@ namespace Grains
 
         public async Task RegisterUserAsync(UserInfo entity)
         {
-            var context = _factory();
-            if (await context.Users.CountAsync(_ => _.Id == entity.Id) == 0)
+            using (var context = _factory())
             {
-                context.Users.Add(entity);
+                if (await context.Users.CountAsync(_ => _.Id == entity.Id) == 0)
+                {
+                    context.Users.Add(entity);
+                }
+                else
+                {
+                    context.Users.Update(entity);
+                }
+                await context.SaveChangesAsync();
             }
-            else
-            {
-                context.Users.Update(entity);
-            }
-            await context.SaveChangesAsync();
         }
 
         public async Task UnregisterUserAsync(UserInfo entity)
         {
-            var context = _factory();
-            context.Users.Remove(entity);
-            await context.SaveChangesAsync();
+            using (var context = _factory())
+            {
+                context.Users.Remove(entity);
+                await context.SaveChangesAsync();
+            }
         }
 
         #endregion
@@ -53,37 +57,45 @@ namespace Grains
 
         public Task<ChannelInfo> GetChannelAsync(Guid id)
         {
-            return _factory()
-                .Channels
-                .FindAsync(id);
+            using (var context = _factory())
+            {
+                return context.Channels
+                    .FindAsync(id);
+            }
         }
 
         public Task<ChannelInfo> GetChannelByHandleAsync(string handle)
         {
-            return _factory()
-                .Channels
-                .SingleOrDefaultAsync(_ => _.Handle == handle);
+            using (var context = _factory())
+            {
+                return context.Channels
+                    .SingleOrDefaultAsync(_ => _.Handle == handle);
+            }
         }
 
         public async Task RegisterChannelAsync(ChannelInfo entity)
         {
-            var context = _factory();
-            if (await context.Channels.CountAsync(_ => _.Id == entity.Id) == 0)
+            using (var context = _factory())
             {
-                context.Channels.Add(entity);
+                if (await context.Channels.CountAsync(_ => _.Id == entity.Id) == 0)
+                {
+                    context.Channels.Add(entity);
+                }
+                else
+                {
+                    context.Channels.Update(entity);
+                }
+                await context.SaveChangesAsync();
             }
-            else
-            {
-                context.Channels.Update(entity);
-            }
-            await context.SaveChangesAsync();
         }
 
         public async Task UnregisterChannelAsync(ChannelInfo entity)
         {
-            var context = _factory();
-            context.Channels.Remove(entity);
-            await context.SaveChangesAsync();
+            using (var context = _factory())
+            {
+                context.Channels.Remove(entity);
+                await context.SaveChangesAsync();
+            }
         }
 
         #endregion
@@ -92,37 +104,45 @@ namespace Grains
 
         public async Task RegisterChannelUserAsync(ChannelUser entity)
         {
-            var context = _factory();
-            if (await context.ChannelUsers.ContainsAsync(entity))
+            using (var context = _factory())
             {
-                context.ChannelUsers.Update(entity);
+                if (await context.ChannelUsers.ContainsAsync(entity))
+                {
+                    context.ChannelUsers.Update(entity);
+                }
+                else
+                {
+                    context.ChannelUsers.Add(entity);
+                }
+                await context.SaveChangesAsync();
             }
-            else
-            {
-                context.ChannelUsers.Add(entity);
-            }
-            await context.SaveChangesAsync();
         }
 
         public async Task UnregisterChannelUserAsync(ChannelUser entity)
         {
-            var context = _factory();
-            context.ChannelUsers.Remove(entity);
-            await context.SaveChangesAsync();
+            using (var context = _factory())
+            {
+                context.ChannelUsers.Remove(entity);
+                await context.SaveChangesAsync();
+            }
         }
 
         public async Task<ImmutableList<ChannelUser>> GetUsersByChannelAsync(Guid channelId)
         {
-            var context = _factory();
-            var result = await context.ChannelUsers.Where(_ => _.ChannelId == channelId).ToListAsync();
-            return result.ToImmutableList();
+            using (var context = _factory())
+            {
+                var result = await context.ChannelUsers.Where(_ => _.ChannelId == channelId).ToListAsync();
+                return result.ToImmutableList();
+            }
         }
 
         public async Task<ImmutableList<ChannelUser>> GetChannelsByUserAsync(Guid userId)
         {
-            var context = _factory();
-            var result = await context.ChannelUsers.Where(_ => _.UserId == userId).ToListAsync();
-            return result.ToImmutableList();
+            using (var context = _factory())
+            {
+                var result = await context.ChannelUsers.Where(_ => _.UserId == userId).ToListAsync();
+                return result.ToImmutableList();
+            }
         }
 
         #endregion
@@ -131,39 +151,50 @@ namespace Grains
 
         public async Task<ImmutableList<Message>> GetLatestMessagesByReceiverIdAsync(Guid receiverId, int count)
         {
-            var result = await _factory().Messages
-                .Where(_ => _.ReceiverId == receiverId)
-                .OrderByDescending(_ => _.Timestamp)
-                .Take(count)
-                .ToListAsync();
+            using (var context = _factory())
+            {
+                var result = await context.Messages
+                    .Where(_ => _.ReceiverId == receiverId)
+                    .OrderByDescending(_ => _.Timestamp)
+                    .Take(count)
+                    .ToListAsync();
 
-            return result.ToImmutableList();
+                return result.ToImmutableList();
+            }
         }
 
         public async Task<Message> GetMessageAsync(Guid id)
         {
-            return await _factory().Messages.FindAsync(id);
+            using (var context = _factory())
+            {
+                return await context.Messages
+                    .FindAsync(id);
+            }
         }
 
         public async Task RegisterMessageAsync(Message entity)
         {
-            var context = _factory();
-            if (await context.Messages.FindAsync(entity.Id) == null)
+            using (var context = _factory())
             {
-                context.Messages.Add(entity);
+                if (await context.Messages.FindAsync(entity.Id) == null)
+                {
+                    context.Messages.Add(entity);
+                }
+                else
+                {
+                    context.Messages.Update(entity);
+                }
+                await context.SaveChangesAsync();
             }
-            else
-            {
-                context.Messages.Update(entity);
-            }
-            await context.SaveChangesAsync();
         }
 
         public async Task UnregisterMessageAsync(Message entity)
         {
-            var context = _factory();
-            context.Messages.Remove(entity);
-            await context.SaveChangesAsync();
+            using (var context = _factory())
+            {
+                context.Messages.Remove(entity);
+                await context.SaveChangesAsync();
+            }
         }
 
         #endregion
