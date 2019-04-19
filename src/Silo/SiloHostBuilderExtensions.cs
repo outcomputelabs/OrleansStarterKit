@@ -148,7 +148,8 @@ namespace Silo
                     {
                         options.UseSqlServer(
                             configuration.GetConnectionString(configuration["Registry:Providers:SqlServer:ConnectionStringName"]));
-                    });
+                    }, ServiceLifetime.Transient);
+                    services.AddSingleton<Func<RegistryContext>>(_ => () => _.GetService<RegistryContext>());
                 });
             }
 
@@ -168,7 +169,8 @@ namespace Silo
                     {
                         options.UseInMemoryDatabase(
                             configuration["Registry:Providers:InMemory:DatabaseName"]);
-                    });
+                    }, ServiceLifetime.Transient);
+                    services.AddSingleton<Func<RegistryContext>>(_ => () => _.GetService<RegistryContext>());
                 });
             }
 
