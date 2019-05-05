@@ -64,9 +64,9 @@ namespace Silo
                     }
                 })
 
-                .Configure<UserOptions>(options =>
+                .Configure<UserOptions>(_ =>
                 {
-                    options.MaxCachedMessages = 100;
+                    _.MaxCachedMessages = 100;
                 })
 
                 .Configure<ProcessExitHandlingOptions>(_ =>
