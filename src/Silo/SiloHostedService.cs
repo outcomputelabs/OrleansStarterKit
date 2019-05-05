@@ -49,15 +49,18 @@ namespace Silo
                 {
                     _.AddApplicationPart(typeof(TestGrain).Assembly).WithReferences();
                 })
+
                 .ConfigureLogging(_ =>
                 {
                     _.AddProvider(loggerProvider);
                 })
+
                 .Configure<ClusterMembershipOptions>(_ =>
                 {
                     if (environment.IsDevelopment())
                     {
                         _.ValidateInitialConnectivity = false;
+                        _.NumVotesForDeathDeclaration = 1;
                     }
                 })
 
@@ -66,7 +69,13 @@ namespace Silo
                     options.MaxCachedMessages = 100;
                 })
 
+                .Configure<ProcessExitHandlingOptions>(_ =>
+                {
+                    _.FastKillOnProcessExit = false;
+                })
+
                 .AddSimpleMessageStreamProvider(SimpleMessageStreamProviderName)
+
                 .UseDashboard(_ =>
                 {
                     _.HostSelf = true;
